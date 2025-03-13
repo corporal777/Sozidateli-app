@@ -135,7 +135,6 @@ data class UserDetail(
         }
     }
 
-    fun getSessionsCount(): Int = binds?.deviceSessionsCount ?: 0
 
     fun loadUserImage(): String? {
         return if (image == null) null
@@ -161,6 +160,11 @@ data class UserDetail(
 
     fun setIfCurrentUser(userId : Int){
         if (id == userId) isCurrentUser = true
+    }
+
+    fun setUserFavorite(favorite: EventUserFavorite?){
+        if (binds == null) binds = UserBinds()
+        binds?.userFavorite = favorite
     }
 
 

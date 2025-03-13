@@ -16,6 +16,7 @@ import com.example.extensions.getSymbols
 import com.example.util.getColor
 import com.example.extensions.onFocusChanged
 import com.example.extensions.onTextChanged
+import com.example.extensions.textColor
 import java.nio.charset.Charset
 
 class CustomPasswordView : FrameLayout {
@@ -170,25 +171,25 @@ class CustomPasswordView : FrameLayout {
 
     private fun TextView.changeTextColorError(isRegistered: Boolean, isValid: Boolean) {
         if (isValid) {
-            setTextColor(getColor(R.color.password_errors_text_color_valid))
+            textColor = R.color.password_errors_text_color_valid
             typeface = boldTypeFace
         } else {
-            setTextColor(getColor(R.color.password_errors_text_color))
+            textColor = R.color.password_errors_text_color
             typeface = if (isRegistered) boldTypeFace else defaultTypeFace
         }
     }
 
     private fun showFirstPasswordError(show: Boolean) {
         binding.apply {
-            if (show) tvNew.setTextColor(getColor(R.color.title_text_error_red))
-            else tvNew.setTextColor(getColor(R.color.chat_list_date))
+            if (show) tvNew.textColor = R.color.title_text_error_red
+            else tvNew.textColor = R.color.chat_list_date
         }
     }
 
     private fun showSecondPasswordError(show: Boolean) {
         binding.apply {
-            if (show) tvConfirm.setTextColor(getColor(R.color.title_text_error_red))
-            else tvConfirm.setTextColor(getColor(R.color.chat_list_date))
+            if (show) tvConfirm.textColor = R.color.title_text_error_red
+            else tvConfirm.textColor = R.color.chat_list_date
         }
     }
 

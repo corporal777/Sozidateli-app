@@ -19,7 +19,9 @@ import com.example.app.databinding.LayoutLoadingButtonBinding
 import com.example.extensions.dp
 import com.example.extensions.inverseSp
 import com.example.extensions.px
+import com.example.extensions.setTextCustomSize
 import com.example.extensions.sp
+import com.example.extensions.textColor
 import com.example.ui.views.UserSubscribeButton
 import com.example.util.getDrawable
 import io.github.inflationx.calligraphy3.CalligraphyUtils

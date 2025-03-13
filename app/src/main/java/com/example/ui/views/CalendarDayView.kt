@@ -7,6 +7,7 @@ import android.widget.LinearLayout
 import com.example.app.R
 import com.example.data.models.EventScheduleDay
 import com.example.app.databinding.ItemDayBinding
+import com.example.extensions.textColor
 
 class CalendarDayView : LinearLayout {
 
@@ -35,10 +36,10 @@ class CalendarDayView : LinearLayout {
     fun updateView(){
         binding.apply {
             if (day?.hasEvents == false){
-                tvDayName.setTextColor(context.getColor(R.color.input_text_color_disabled))
+                tvDayName.textColor = R.color.input_text_color_disabled
                 tvDayNumber.setTextColor(context.getColorStateList(R.color.text_color_calendar_day_disabled))
             } else {
-                tvDayName.setTextColor(context.getColor(R.color.black))
+                tvDayName.textColor = R.color.black
                 tvDayNumber.setTextColor(context.getColorStateList(R.color.text_color_calendar_day))
             }
 

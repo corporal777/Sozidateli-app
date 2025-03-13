@@ -12,6 +12,12 @@ import moxy.viewstate.strategy.alias.Skip
 interface BaseContract {
     interface View : MvpView, LoadingView {
         @StateStrategyType(SkipStrategy::class)
+        fun showSnackBar(@StringRes message: Int)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showSnackBar(message: String)
+
+        @StateStrategyType(SkipStrategy::class)
         fun showToast(@StringRes message: Int)
 
         @StateStrategyType(SkipStrategy::class)

@@ -5,27 +5,19 @@ import android.app.NotificationManager
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
-import android.util.TypedValue
-import android.view.Gravity
 import android.view.KeyEvent
 import android.view.MenuItem
 import android.view.View
-import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.annotation.StringRes
 import androidx.core.os.bundleOf
 import androidx.core.splashscreen.SplashScreen
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
 import androidx.navigation.navOptions
 import androidx.navigation.ui.setupWithNavController
-import androidx.transition.Slide
-import androidx.transition.TransitionManager
 import com.example.app.R
 import com.example.app.databinding.LayoutNoInternetBinding
 import com.example.data.models.Notification
@@ -33,10 +25,8 @@ import com.example.data.models.RemoteNotification
 import com.example.data.models.SupportData
 import com.example.data.models.UserDetail
 import com.example.extensions.decodeBase64ToJson
-import com.example.extensions.dp
 import com.example.extensions.getFragmentLifecycleCallback
 import com.example.extensions.onBackPressedCallback
-import com.example.extensions.px
 import com.example.extensions.setArgument
 import com.example.extensions.setSystemBarsAppearance
 import com.example.interfaces.DoNotCheckConnectionFragment
@@ -65,8 +55,7 @@ import com.example.ui.views.dialogs.ClickType
 import com.example.ui.views.dialogs.DefaultAlertDialog
 import com.example.ui.views.dialogs.EventRegistrationSuccessBottomDialog
 import com.example.ui.views.dialogs.StateType
-import com.example.ui.views.dialogs.UpdateAppBottomSheet
-import com.example.ui.views.toolbar.CustomAppBarLayoutBehavior
+import com.example.ui.views.dialogs.UpdateAppBottomSheetDialog
 import com.example.ui.views.toolbar.ToolbarContent
 import com.example.util.ASSISTANT
 import com.example.util.AUTH_CONFIRM_EMAIL
@@ -177,7 +166,6 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
             else if (fragment != null && fragment is BaseVBFragment<*>) fragment.navigateUp()
             else navigateUp()
         }
-        mBinding.ibErrorClose.setOnClickListener { presenter.onRequestHideErrorMessage() }
     }
 
 
@@ -423,10 +411,9 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     }
 
     override fun showUpdateApp(isRequired: Boolean) {
-        UpdateAppBottomSheet(this, isRequired)
+        UpdateAppBottomSheetDialog(this, isRequired)
             .setDismissCallback { presenter.startUpdateTimer(null, isRequired) }
             .show()
-        if (isRequired) mBinding.include.inappDim.setBackgroundResource(R.color.main_background)
     }
 
     override fun showInAppNew(listInApp: List<Notification>) {
@@ -469,10 +456,6 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 
     override fun onSupportNavigateUp() = findNavController().navigateUp()
 
-    override fun onDestroy() {
-        unregisterFragmentLifecycleCallback()
-        super.onDestroy()
-    }
 
     override fun showEventRegistrationSuccessDialog() {
         EventRegistrationSuccessBottomDialog(this)
@@ -512,7 +495,6 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                         val args = bundleOf("type" to UserState.BASE, "screen" to 3)
                         findNavController().navigate(R.id.mainInfoFragment, args)
                     }
-
                     ClickType.MAX -> {
                         if (presenter.getHasBase()) when (Utils.maxStateScreen(presenter.getUserData())) {
                             MaxStateScreenType.BASE -> navigate(R.id.maxStatusContactsFragment)
@@ -601,37 +583,37 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         DefaultAlertDialog(this, null, getString(R.string.request_server_error))
     }
 
+    override fun showSnackBar(@StringRes message: Int) = showSnackBar(getString(message))
+    override fun showSnackBar(message: String) = showErrorMessage(message)
+
     override fun showErrorMessage(message: String) {
-        mBinding.tvErrorMessage.text = message
-        TransitionManager.beginDelayedTransition(mBinding.root, Slide(Gravity.TOP))
-        mBinding.errorContainer.isVisible = true
+        mBinding.viewSnackBar.setText(message)
+        mBinding.viewSnackBar.show(mBinding.root)
+        presenter.onRequestShowErrorMessage()
+    }
+    override fun hideErrorMessage() = mBinding.viewSnackBar.hide(mBinding.root)
+
+    override fun setAppBarElevation(value: Float) {
+        mBinding.appBar.elevation = if (value <= 10f) value else 10f
     }
 
-    override fun hideErrorMessage() {
-        TransitionManager.beginDelayedTransition(mBinding.root, Slide(Gravity.TOP))
-        mBinding.errorContainer.isVisible = false
-    }
-
-    override fun setAppBarElevation(value: Float) = mBinding.appBar.changeAppBarElevation(value)
-    override fun showBadgeNotification(count: Int) =
-        mBinding.mainNavBar.setBadge(R.id.notification, count)
-
+    override fun showBadgeNotification(count: Int) = mBinding.mainNavBar.setBadge(R.id.notification, count)
     override fun showBadgeChat(count: Int) = mBinding.mainNavBar.setBadge(R.id.chats, count)
 
     private fun showNavBar() {
         window.navigationBarColor = navBarColorBottomNav
-        mBinding.navBarContainer.visibility = View.VISIBLE
+        mBinding.mainNavBar.visibility = View.VISIBLE
     }
 
     private fun hideNavBar() {
         window.navigationBarColor = navBarColorDefault
-        mBinding.navBarContainer.visibility = View.GONE
+        mBinding.mainNavBar.visibility = View.GONE
     }
-
 
     override fun showProgressView() = mBinding.progressView.showProgressBar()
     override fun hideProgressView() = mBinding.progressView.hideProgressBar()
     override fun showBrowser(url: String) = showCustomTabsBrowser(this, url)
+
 
     private fun registerFragmentLifecycleCallback() {
         getNavHostFragment().childFragmentManager
@@ -643,10 +625,8 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
             .unregisterFragmentLifecycleCallbacks(navFragmentsLifecycleCallback)
     }
 
-    private fun getBehavior(): CustomAppBarLayoutBehavior? {
-        val param = mBinding.navHostFragment.layoutParams as CoordinatorLayout.LayoutParams
-        if (param.behavior is CustomAppBarLayoutBehavior) {
-            return param.behavior as CustomAppBarLayoutBehavior
-        } else return null
+    override fun onDestroy() {
+        unregisterFragmentLifecycleCallback()
+        super.onDestroy()
     }
 }

@@ -16,7 +16,7 @@ import com.google.api.Context
 class CustomSnackBar(
     parent: ViewGroup,
     content: View,
-    contentViewCallback: ContentViewCallback
+    contentViewCallback: ViewCallback
 ) : BaseTransientBottomBar<CustomSnackBar>(parent, content, contentViewCallback) {
 
     companion object{
@@ -24,7 +24,7 @@ class CustomSnackBar(
         fun make(parent: ViewGroup, duration: Int): CustomSnackBar {
             val inflater: LayoutInflater = LayoutInflater.from(parent.context)
             val content: View = inflater.inflate(R.layout.layout_custom_snack_bar, parent, false)
-            val viewCallback = ContentViewCallback(content)
+            val viewCallback = ViewCallback(content)
             val customSnackbar = CustomSnackBar(parent, content, viewCallback)
             customSnackbar.view.setBackgroundColor(android.R.color.transparent)
             customSnackbar.getView().setPadding(0, 0, 0, 0)
@@ -46,7 +46,7 @@ class CustomSnackBar(
         return this
     }
 
-    class ContentViewCallback(content: View) : BaseTransientBottomBar.ContentViewCallback {
+    class ViewCallback(content: View) : BaseTransientBottomBar.ContentViewCallback {
         private val content: View
         override fun animateContentIn(delay: Int, duration: Int) {
             ViewCompat.setScaleY(content, 0f)

@@ -4,6 +4,7 @@ import android.view.View
 import androidx.core.view.isVisible
 import com.example.app.R
 import com.example.app.databinding.ItemEventRegistrationFieldDescriptionBinding
+import com.example.extensions.textColor
 import com.example.util.getColor
 import com.xwray.groupie.viewbinding.BindableItem
 
@@ -20,9 +21,7 @@ class RegisterEventFileDescItem(
             textViewTitle.apply {
                 text = title
                 isVisible = !title.isNullOrEmpty()
-
-                if (isErrorShown) setTextColor(getColor(R.color.red_new))
-                else setTextColor(getColor(R.color.profile_data_text_hint))
+                textColor = if (isErrorShown) R.color.red_new else R.color.profile_data_text_hint
             }
             textViewDescription.apply {
                 text = description

@@ -18,6 +18,7 @@ import com.example.util.getColor
 import com.example.extensions.onFocusChanged
 import com.example.extensions.onTextChanged
 import com.example.extensions.showHidePasswordText
+import com.example.extensions.textColor
 
 class CustomTextInputView : LinearLayout {
 
@@ -107,10 +108,10 @@ class CustomTextInputView : LinearLayout {
             passwordToggle.isVisible = isPasswordInputType(inputTextType) && !show
             btnAction.isEnabled = !isErrorShown
             btnAction.isVisible = isErrorShown
-            if (isErrorShown) tvTitle.setTextColor(getColor(R.color.title_text_error_red))
+            if (isErrorShown) tvTitle.textColor = R.color.title_text_error_red
             else {
                 tvTitle.text = titleText
-                tvTitle.setTextColor(getColor(R.color.chat_list_date))
+                tvTitle.textColor = R.color.chat_list_date
             }
         }
     }
@@ -122,7 +123,7 @@ class CustomTextInputView : LinearLayout {
             btnAction.isVisible = true
             passwordToggle.isVisible = false
             tvTitle.text = text
-            tvTitle.setTextColor(getColor(R.color.title_text_error_red))
+            tvTitle.textColor = R.color.title_text_error_red
         }
     }
 
@@ -167,12 +168,6 @@ class CustomTextInputView : LinearLayout {
             maxLines = inputMaxLines
         }
     }
-    var View.textInputType: Int
-        get() = layoutView.etInput.inputType
-        set(value) {
-            inputTextType = value
-            layoutView.etInput.inputType = value
-        }
 
     fun getEditText() : EditText = layoutView.etInput
 

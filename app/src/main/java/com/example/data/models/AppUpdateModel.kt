@@ -24,4 +24,10 @@ data class AppUpdateModel(
     fun isUpdateRequired(): Boolean {
         return status == UpdateStatus.UNSUPPORTED
     }
+
+    companion object {
+        fun createTest(): AppUpdateModel {
+            return AppUpdateModel(UpdateStatus.DEPRECATED)
+        }
+    }
 }

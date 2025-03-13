@@ -422,21 +422,14 @@ class MainPresenter
         viewState.showNoConnectionMessage(!isInternetConnected && !isDoNotCheckConnectionFragmentOpened)
     }
 
-    override fun onRequestShowErrorMessage(message: String) {
-        errorMessageDisposable.clear()
-        errorMessageDisposable += Completable.fromAction { viewState.showErrorMessage(message) }
-            .andThen(Completable.timer(3, TimeUnit.SECONDS, Schedulers.io()))
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-                viewState.hideErrorMessage()
-            }, {
-                viewState.hideErrorMessage()
-            })
-    }
-
-    override fun onRequestHideErrorMessage() {
-        errorMessageDisposable.clear()
-        viewState.hideErrorMessage()
+    override fun onRequestShowErrorMessage() {
+        errorMessageDisposable += Completable.complete()
+            .withDelay(2000)
+            .performOnBackgroundOutOnMain()
+            .subscribeSimple(
+                onError = { viewState.hideErrorMessage() },
+                onComplete = { viewState.hideErrorMessage() }
+            )
     }
 
     fun ignoreTokenListener(isIgnore: Boolean) {

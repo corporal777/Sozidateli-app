@@ -7,6 +7,7 @@ import com.example.app.R
 import com.example.app.databinding.ItemRegisterEventProfileFileBinding
 import com.example.data.models.FileModel
 import com.example.extensions.parseAsHtmlWithoutUnderline
+import com.example.extensions.textColor
 import com.example.holders.registerEvent.BaseRegisterProfileItem
 import com.example.util.getColor
 import com.example.util.showCustomTabsBrowser
@@ -22,9 +23,7 @@ class REProfileFileItem (
     override fun bind(viewBinding: ItemRegisterEventProfileFileBinding, position: Int) {
         super.bind(viewBinding, position)
         viewBinding.tvFileName.apply {
-            if (isErrorShown) setTextColor(getColor(R.color.red_new))
-            else setTextColor(getColor(R.color.about_event_date))
-
+            textColor = if (isErrorShown) R.color.red_new else R.color.about_event_date
 
             highlightColor = getColor(R.color.event_tabs_text_unchecked)
             movementMethod = LinkMovementMethod.getInstance()

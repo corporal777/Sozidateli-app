@@ -6,6 +6,7 @@ import androidx.annotation.CallSuper
 import androidx.core.view.isVisible
 import androidx.viewbinding.ViewBinding
 import com.example.app.R
+import com.example.extensions.textColor
 import com.example.util.getColor
 import com.xwray.groupie.viewbinding.BindableItem
 
@@ -19,8 +20,7 @@ abstract class BaseRegisterProfileItem<T : ViewBinding>(itemId: Long) : Bindable
     @CallSuper
     override fun bind(viewBinding: T, position: Int) {
         getTitleView(viewBinding)?.apply {
-            if (isErrorShown) setTextColor(getColor(R.color.red_new))
-            else setTextColor(getColor(R.color.profile_data_text_hint))
+            textColor = if (isErrorShown) R.color.red_new else R.color.profile_data_text_hint
         }
         getErrorFrameView(viewBinding)?.isVisible = isErrorShown
     }

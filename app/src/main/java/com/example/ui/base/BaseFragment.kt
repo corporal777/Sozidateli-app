@@ -81,10 +81,11 @@ abstract class BaseFragment<binding : ViewDataBinding> : MvpAppCompatFragment(),
     @LayoutRes
     abstract fun layout(): Int
 
+    override fun showSnackBar(@StringRes message: Int) = showSnackBar(getString(message))
+    override fun showSnackBar(message: String) { mActivity?.showSnackBar(message) }
 
     override fun showToast(@StringRes message: Int) = showToast(getString(message))
-    override fun showToast(message: String) =
-        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+    override fun showToast(message: String) = Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
 
     override fun showProgressBarLoading() { mActivity?.showProgressBarLoading() }
     override fun hideProgressBarLoading() { mActivity?.hideProgressBarLoading() }

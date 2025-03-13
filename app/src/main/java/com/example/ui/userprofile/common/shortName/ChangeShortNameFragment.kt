@@ -5,6 +5,7 @@ import android.view.View
 import androidx.core.view.isVisible
 import com.example.app.R
 import com.example.app.databinding.FragmentChangeShortNameBinding
+import com.example.extensions.textColor
 import com.example.ui.base.BaseVBFragment
 import com.example.ui.views.CustomSpannableString
 import moxy.presenter.InjectPresenter
@@ -27,7 +28,7 @@ class ChangeShortNameFragment : BaseVBFragment<FragmentChangeShortNameBinding>()
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mBinding.apply {
-            etShortName.initInput{
+            etShortName.initInput {
                 presenter.onChangeShortName(it.toString())
             }
             btnSave.setOnClickListener {
@@ -59,19 +60,16 @@ class ChangeShortNameFragment : BaseVBFragment<FragmentChangeShortNameBinding>()
     override fun setUserShortNameUnique(isUnique: Boolean, name: String?) {
         mBinding.tvShortNameInvalidError.apply {
             isVisible = !name.isNullOrEmpty()
-            if (isUnique) {
-                setTextColor(resources.getColor(R.color.profile_status_complete))
-                text = getString(R.string.short_name_valid_message)
-            } else {
-                setTextColor(resources.getColor(R.color.red_new))
-                text = getString(R.string.short_name_invalid_error)
-            }
+            textColor = if (isUnique) R.color.profile_status_complete else R.color.red_new
+            text = if (isUnique) getString(R.string.short_name_valid_message)
+            else getString(R.string.short_name_invalid_error)
         }
     }
 
     override fun enableBtnSave(enabled: Boolean) {
         mBinding.btnSave.isEnabled = enabled
     }
+
     override fun showCustomLoading() = mBinding.btnSave.showProgressLoading(true)
     override fun hideCustomLoading() = mBinding.btnSave.showProgressLoading(false)
 

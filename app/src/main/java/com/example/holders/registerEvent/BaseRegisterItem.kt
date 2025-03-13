@@ -6,7 +6,7 @@ import androidx.core.view.isVisible
 import androidx.databinding.ViewDataBinding
 import com.example.app.R
 import com.example.data.models.eventRegister.EventRegisterField
-import com.example.util.getColor
+import com.example.extensions.textColor
 import com.xwray.groupie.viewbinding.BindableItem
 
 abstract class BaseRegisterItem<T : ViewDataBinding>(
@@ -36,8 +36,7 @@ abstract class BaseRegisterItem<T : ViewDataBinding>(
         if (binding != null) {
             getTitleView(binding!!).apply {
                 text = fieldData.field.name
-                if (show) setTextColor(getColor(R.color.red_new))
-                else setTextColor(getColor(R.color.profile_data_text_hint))
+                textColor = if (show) R.color.red_new else R.color.profile_data_text_hint
             }
         }
     }
@@ -45,14 +44,8 @@ abstract class BaseRegisterItem<T : ViewDataBinding>(
     open fun showErrorText(show: Boolean, errorText: String){
         if (binding != null) {
             getTitleView(binding!!).apply {
-                if (show) {
-                    text = errorText
-                    setTextColor(getColor(R.color.red_new))
-                }
-                else {
-                    text = fieldData.field.name
-                    setTextColor(getColor(R.color.profile_data_text_hint))
-                }
+                text = if (show) errorText else fieldData.field.name
+                textColor = if (show) R.color.red_new else R.color.profile_data_text_hint
             }
         }
     }

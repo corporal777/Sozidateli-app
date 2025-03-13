@@ -58,6 +58,7 @@ import com.example.extensions.dp
 import com.example.extensions.onTextChanged
 import com.example.extensions.parseColor
 import com.example.extensions.px
+import com.example.extensions.textColor
 import com.google.android.material.appbar.AppBarLayout
 import com.squareup.picasso.Picasso
 import io.reactivex.disposables.CompositeDisposable
@@ -328,37 +329,6 @@ fun LinearLayoutManager.smoothScrollToFirstItem(
 }
 
 
-
-fun openDeviceCalendarApp(
-    context: Context,
-    dateFrom: String?,
-    dateTo: String?,
-    name: String?,
-    desc: String?,
-    address: String?
-) {
-    try {
-        val startCal = defaultServerDateFormatter.parse(dateFrom ?: "").calendar()
-        val endCal = defaultServerDateFormatter.parse(dateTo ?: "").calendar()
-
-        val intent: Intent = Intent(Intent.ACTION_INSERT).apply {
-            data = CalendarContract.Events.CONTENT_URI
-            putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, startCal.timeInMillis)
-            putExtra(CalendarContract.EXTRA_EVENT_END_TIME, endCal.timeInMillis)
-            putExtra(CalendarContract.Events.TITLE, name)
-            putExtra(CalendarContract.Events.DESCRIPTION, desc)
-            putExtra(CalendarContract.Events.EVENT_LOCATION, address)
-            putExtra(
-                CalendarContract.Events.AVAILABILITY,
-                CalendarContract.Events.AVAILABILITY_BUSY
-            )
-        }
-        context.startActivity(intent)
-    } catch (e: Exception) {
-        e.printStackTrace()
-    }
-}
-
 fun saveImageToGallery(context: Context, bitmap: Bitmap, albumName: String) {
     val filename = "${System.currentTimeMillis()}.png"
     val write: (OutputStream) -> Boolean = {
@@ -547,7 +517,6 @@ fun Fragment.getMakeSceneTransition(view: View): ActivityOptionsCompat {
 }
 
 fun TextView.changeTitleTextColor(show: Boolean){
-    if (show) setTextColor(getColor(R.color.title_text_error_red))
-    else setTextColor(getColor(R.color.chat_list_date))
+    textColor = if (show) R.color.title_text_error_red else R.color.chat_list_date
 }
 

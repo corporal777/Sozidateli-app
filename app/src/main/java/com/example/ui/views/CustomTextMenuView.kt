@@ -17,6 +17,7 @@ import com.example.util.initDropDownAdapter
 import com.google.android.material.textfield.TextInputLayout
 import com.example.extensions.initAsDatePicker
 import com.example.extensions.onTextChanged
+import com.example.extensions.textColor
 import java.util.*
 
 
@@ -86,10 +87,10 @@ class CustomTextMenuView : LinearLayout {
             btnAction.isVisible = isErrorShown
             btnAction.isEnabled = !isErrorShown
             tilInput.isEndIconVisible = !isErrorShown
-            if (show) tvTitle.setTextColor(ContextCompat.getColor(context, R.color.red_new))
+            if (show) tvTitle.textColor = R.color.red_new
             else {
                 tvTitle.text = titleText
-                tvTitle.setTextColor(ContextCompat.getColor(context, R.color.chat_list_date))
+                tvTitle.textColor = R.color.chat_list_date
             }
         }
     }

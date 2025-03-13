@@ -7,17 +7,15 @@ import android.view.LayoutInflater
 import androidx.core.view.isVisible
 import com.example.app.R
 import com.example.app.databinding.BottomSheetUpdateAppBinding
+import com.example.util.getDrawable
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 
-class UpdateAppBottomSheet(
-    val context: Context,
-    val isRequired: Boolean,
-) {
+class UpdateAppBottomSheetDialog(val context: Context, val isRequired: Boolean) {
 
     private val mDialog =
         if (isRequired) BottomSheetDialog(context, R.style.UpdateAppWithoutDimDialogTheme)
-        else BottomSheetDialog(context)
+        else BottomSheetDialog(context, R.style.TransparentBottomSheetDialogTheme)
 
     private val mBinding = BottomSheetUpdateAppBinding.inflate(LayoutInflater.from(context))
     private var onActionClick: () -> Unit = {}
@@ -27,38 +25,40 @@ class UpdateAppBottomSheet(
         mDialog.apply {
             setContentView(mBinding.root)
             behavior.state = BottomSheetBehavior.STATE_EXPANDED
+            behavior.skipCollapsed = true
+            behavior.isDraggable = !isRequired
             setCancelable(!isRequired)
         }
 
         mBinding.apply {
-            clTop.isVisible = !isRequired
-            tvTitle.text =
-                if (isRequired) "Обновите приложение Созидатели, так как текущая версия устарела и больше не поддерживается."
-                else "Доступна новая версия приложения. \n" + "Нажмите ниже, чтобы обновить."
+            clContent.apply {
+                if (isRequired) setBackgroundColor(context.getColor(R.color.main_background))
+                else background = getDrawable(R.drawable.background_bottom_sheet)
+            }
 
-            btnClose.setOnClickListener {
+            tvTitle.text =
+                if (isRequired) context.getString(R.string.app_update_required_text)
+                else context.getString(R.string.app_update_not_required_text)
+
+            viewSize.isVisible = isRequired
+            viewTop.isVisible = !isRequired
+            btnClose.apply {
+                isVisible = !isRequired
+                setOnClickListener { mDialog.dismiss() }
+            }
+            btnUpdate.setOnClickListener {
+                openPlayMarket()
                 if (!isRequired) mDialog.dismiss()
             }
-            btnUpdate.apply {
-                setOnClickListener {
-                    openPlayMarket()
-                    if (!isRequired) mDialog.dismiss()
-                }
-            }
         }
-        if (!isRequired) {
-            mDialog.setOnDismissListener { onDismissClick.invoke() }
-        }
+        if (!isRequired) mDialog.setOnDismissListener { onDismissClick.invoke() }
     }
 
     private fun openPlayMarket() {
         val appPackageName = context.packageName
         try {
             context.startActivity(
-                Intent(
-                    Intent.ACTION_VIEW,
-                    Uri.parse("market://details?id=$appPackageName")
-                )
+                Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=$appPackageName"))
             )
         } catch (e: android.content.ActivityNotFoundException) {
             context.startActivity(
@@ -73,12 +73,12 @@ class UpdateAppBottomSheet(
     fun show() = mDialog.show()
 
 
-    fun setUpdateClickCallback(block: () -> Unit): UpdateAppBottomSheet {
+    fun setUpdateClickCallback(block: () -> Unit): UpdateAppBottomSheetDialog {
         onActionClick = block
         return this
     }
 
-    fun setDismissCallback(block: () -> Unit): UpdateAppBottomSheet {
+    fun setDismissCallback(block: () -> Unit): UpdateAppBottomSheetDialog {
         onDismissClick = block
         return this
     }

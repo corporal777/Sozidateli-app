@@ -12,6 +12,7 @@ import coil.request.CachePolicy
 import coil.size.Scale
 import com.example.app.R
 import com.example.extensions.px
+import com.example.extensions.textColor
 import com.example.util.getColor
 import com.example.util.getDrawable
 import io.github.inflationx.calligraphy3.CalligraphyUtils
@@ -41,7 +42,7 @@ class CustomAvatarView : RelativeLayout {
         CalligraphyUtils.applyFontToTextView(context, this, "fonts/sf_pro_text_semibold.ttf")
         letterSpacing = -0.01f
         text = "Нет фото"
-        setTextColor(getColor(R.color.white))
+        textColor = R.color.white
         layoutParams = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT).apply {
             addRule(CENTER_IN_PARENT)
         }

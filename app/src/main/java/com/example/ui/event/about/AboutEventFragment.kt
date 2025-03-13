@@ -3,6 +3,7 @@ package com.example.ui.event.about
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.provider.CalendarContract
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
@@ -23,13 +24,18 @@ import com.example.data.models.EventActivityModel
 import com.example.data.models.EventFormModel
 import com.example.data.models.EventNew
 import com.example.data.models.NewTags
+import com.example.data.models.Optional
 import com.example.data.models.Tag
+import com.example.extensions.calendar
+import com.example.extensions.defaultServerDateFormatter
 import com.example.extensions.dp
 import com.example.extensions.findItemBy
 import com.example.extensions.onScrolled
 import com.example.extensions.px
 import com.example.extensions.setArgument
 import com.example.extensions.setOnClickListener
+import com.example.extensions.startChooserIntent
+import com.example.extensions.startIntent
 import com.example.extensions.statusBarColorValue
 import com.example.extensions.topMargin
 import com.example.extensions.updateItems
@@ -61,7 +67,6 @@ import com.example.ui.views.dialogs.EventAgreementBottomSheet
 import com.example.ui.views.dialogs.EventDetailInformationBottomSheetDialog
 import com.example.ui.views.dialogs.StateType
 import com.example.util.SYSTEM_UI_LIGHT_STATUS_BAR
-import com.example.util.openDeviceCalendarApp
 import com.xwray.groupie.GroupieAdapter
 import com.xwray.groupie.Section
 import moxy.presenter.InjectPresenter
@@ -312,28 +317,29 @@ class AboutEventFragment : BaseVBFragment<FragmentAboutEventBinding>(), AboutEve
     }
 
     override fun showShare(eventId: String) {
-        try {
-            val link = BuildConfig.SHARE_URL + "portal/event/$eventId"
-            val shareApp = Intent(Intent.ACTION_SEND)
-            shareApp.type = "text/plain"
-
-            shareApp.putExtra(Intent.EXTRA_TEXT, link)
-            startActivity(Intent.createChooser(shareApp, "Choose one of the:"))
-        } catch (e: Exception) {
-            showRequestErrorMessage()
+        startChooserIntent {
+            action = Intent.ACTION_SEND
+            type = "text/plain"
+            putExtra(Intent.EXTRA_TEXT, BuildConfig.SHARE_URL + "portal/event/$eventId")
         }
     }
 
     override fun addEventToCalendar(eventData: EventNew?) {
         if (eventData == null) return
-        openDeviceCalendarApp(
-            requireContext(),
-            eventData.holdingDate?.from,
-            eventData.holdingDate?.to,
-            eventData.name,
-            eventData.description,
-            eventData.address?.city
-        )
+        val startCal = eventData.holdingDate?.from?.calendar(defaultServerDateFormatter)
+        val endCal = eventData.holdingDate?.to?.calendar(defaultServerDateFormatter)
+        startIntent(Intent.ACTION_INSERT){
+            data = CalendarContract.Events.CONTENT_URI
+            putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, startCal?.timeInMillis)
+            putExtra(CalendarContract.EXTRA_EVENT_END_TIME, endCal?.timeInMillis)
+            putExtra(CalendarContract.Events.TITLE, eventData.name)
+            putExtra(CalendarContract.Events.DESCRIPTION, eventData.description)
+            putExtra(CalendarContract.Events.EVENT_LOCATION, eventData.address?.city)
+            putExtra(
+                CalendarContract.Events.AVAILABILITY,
+                CalendarContract.Events.AVAILABILITY_BUSY
+            )
+        }
     }
 
     fun setupToolbarTopMargin(margin : Int){

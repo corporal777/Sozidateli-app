@@ -11,6 +11,7 @@ import androidx.core.view.isVisible
 import com.example.app.R
 import com.example.app.databinding.LayoutCircleLoadingButtonBinding
 import com.example.extensions.dp
+import com.example.extensions.textColor
 import com.example.util.getColor
 import com.example.util.getDrawable
 import com.example.util.setLeftDrawable
@@ -70,11 +71,11 @@ class CustomCircleLoadingButton : ConstraintLayout {
         loadingView.btnAction.apply {
             if (isActive) {
                 background = getDrawable(R.drawable.btn_rounded_corners_active)
-                setTextColor(getColor(R.color.main_brown_color_new))
+                textColor = R.color.main_brown_color_new
                 setButtonLeftIcon(R.drawable.ic_circle_plus_icon)
             } else {
                 background = getDrawable(R.drawable.btn_rounded_corners_inactive)
-                setTextColor(getColor(R.color.circle_rounded_corners_button_color))
+                textColor = R.color.circle_rounded_corners_button_color
                 setButtonLeftIcon(R.drawable.ic_circle_done_icon)
             }
             text = str

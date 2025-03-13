@@ -51,7 +51,9 @@ class EnterCodeFragment : BaseToolbarFragment<FragmentEnterCodeBinding>(), Enter
         findNavController().navigate(R.id.about_event_fragment, args)
     }
 
-    override fun showEventNotFoundError() = showToast(R.string.qr_scan_not_found_event)
+    override fun showEventNotFoundError() {
+        showToast(R.string.qr_scan_not_found_event)
+    }
 
     override fun showCustomLoading() = mBinding.btnSearch.showProgressLoading(true)
     override fun hideCustomLoading() = mBinding.btnSearch.showProgressLoading(false)

@@ -116,8 +116,7 @@ interface MainContract {
         fun onRetryConnectionClick()
         fun onStoriesComplete()
 
-        fun onRequestShowErrorMessage(message: String)
-        fun onRequestHideErrorMessage()
+        fun onRequestShowErrorMessage()
 
         fun onInviteRegister(email: String, code: String, name: String, lastName: String, middleName: String, invite: Int)
         fun onHandleAuthWebsite(code : String?, socketId : String?)

@@ -11,6 +11,7 @@
         <item name="actionMenuTextColor">@color/colorAccent</item>
         <item name="android:listDivider">@drawable/divider</item>
         <item name="android:windowSharedElementsUseOverlay">false</item>
+
         <item name="alertDialogTheme">@style/AlertDialogTheme</item>
         <item name="android:timePickerDialogTheme">@style/AlertDialogTheme</item>
         <item name="android:datePickerDialogTheme">@style/AlertDialogTheme</item>
@@ -40,26 +41,12 @@
         <item name="android:background">@android:color/transparent</item>
     </style>
 
-    <style name="AppModalStyle" parent="Widget.Design.BottomSheet.Modal">
-        <item name="android:background">@drawable/background_bottom_sheet</item>
-    </style>
-
     <style name="TransparentBottomSheetDialogTheme" parent="Theme.MaterialComponents.Light.BottomSheetDialog">
         <item name="bottomSheetStyle">@style/CustomBottomSheetStyle</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="android:navigationBarColor">@color/navBarDefault</item>
-    </style>
-
-    <style name="AppBottomSheetDialogTheme" parent="Theme.MaterialComponents.Light.BottomSheetDialog">
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="bottomSheetStyle">@style/AppModalStyle</item>
-        <item name="android:windowIsFloating">false</item>
-        <item name="android:navigationBarColor">@color/navBarDefault</item>
-        <item name="android:windowSoftInputMode">adjustResize</item>
     </style>
 
     <style name="UpdateAppWithoutDimDialogTheme" parent="Theme.MaterialComponents.Light.BottomSheetDialog">
@@ -73,7 +60,20 @@
     </style>
 
 
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="AppModalStyle" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@drawable/background_bottom_sheet</item>
+    </style>
+
+    <style name="AppBottomSheetDialogTheme" parent="Theme.MaterialComponents.Light.BottomSheetDialog">
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="bottomSheetStyle">@style/AppModalStyle</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:navigationBarColor">@color/navBarDefault</item>
+        <item name="android:windowSoftInputMode">adjustResize</item>
+    </style>
+
 
     <style name="AppTheme.Transparent">
         <item name="windowNoTitle">true</item>
@@ -96,11 +96,33 @@
         <item name="colorControlNormal">@android:color/white</item>
     </style>
 
+    <style name="MainBottomNavigationView" parent="Widget.MaterialComponents.BottomNavigationView">
+        <item name="itemIconTint">@color/bottom_navigation_colors</item>
+        <item name="itemTextColor">@color/bottom_navigation_colors</item>
+        <item name="itemTextAppearanceActive">@style/MainBottomNavigationView.TextAppearance</item>
+        <item name="itemTextAppearanceInactive">@style/MainBottomNavigationView.TextAppearance</item>
+
+        <item name="elevation">0dp</item>
+        <item name="android:elevation">0dp</item>
+    </style>
+
+    <style name="MainBottomNavigationView.TextAppearance" parent="TextAppearance.AppCompat.Caption">
+        <item name="android:textSize">10sp</item>
+        <item name="android:itemPadding">0dp</item>
+        <item name="android:letterSpacing">0.01</item>
+        <item name="fontFamily">@font/sf_pro_text_medium</item>
+    </style>
+
     <style name="WindowAnimationStyle">
         <item name="android:activityOpenEnterAnimation">@anim/activity_open_enter</item>
         <item name="android:activityOpenExitAnimation">@anim/activity_open_exit</item>
         <item name="android:activityCloseEnterAnimation">@anim/activity_close_enter</item>
         <item name="android:activityCloseExitAnimation">@anim/activity_close_exit</item>
+    </style>
+
+
+    <style name="AlertDialogTheme.Rounded" parent="AlertDialogTheme">
+        <item name="dialogCornerRadius">16dp</item>
     </style>
 
     <style name="AlertDialogTheme" parent="Theme.MaterialComponents.Light.Dialog.Alert">
@@ -122,6 +144,9 @@
         <item name="android:textColor">@color/text_color_default</item>
         <item name="android:background">?attr/selectableItemBackground</item>
         <item name="android:foreground">?attr/selectableItemBackground</item>
+
+        <item name="fontPath">fonts/sf_pro_text_semibold.ttf</item>
+        <item name="android:textAllCaps">false</item>
     </style>
 
     <style name="AlertDialogTheme.DatePickerSpinner">
@@ -132,24 +157,7 @@
         <item name="android:datePickerMode">spinner</item>
     </style>
 
-    <style name="AppTheme.Tabs" parent="AppTheme">
-        <item name="android:layout_height">64dp</item>
-        <item name="tabGravity">fill</item>
-        <item name="tabIndicatorColor">?attr/colorAccent</item>
-        <item name="tabMaxWidth">0dp</item>
-        <item name="tabMode">fixed</item>
-        <item name="tabSelectedTextColor">@color/tab_text_selected</item>
-        <item name="tabTextAppearance">@style/EventsTabText</item>
-        <item name="tabTextColor">@color/tab_text</item>
-        <item name="tabIndicatorFullWidth">false</item>
-    </style>
 
-    <style name="EventsTabText" parent="TextAppearance.Design.Tab">
-        <item name="textAllCaps">false</item>
-        <item name="android:textSize">15sp</item>
-        <item name="android:letterSpacing">-0.05</item>
-        <item name="fontPath">fonts/Roboto-Light.ttf</item>
-    </style>
 
     <style name="ViewBackground" />
 
@@ -681,21 +689,6 @@
         <item name="android:textAllCaps">false</item>
         <item name="android:textStyle">bold</item>
         <item name="colorPrimary">@color/dialog_buttons</item>
-    </style>
-
-
-    <style name="MainBottomNavigationView" parent="Widget.MaterialComponents.BottomNavigationView">
-        <item name="itemIconTint">@drawable/bottom_navigation_colors</item>
-        <item name="itemTextColor">@drawable/bottom_navigation_colors</item>
-        <item name="itemTextAppearanceActive">@style/CustomNavigationView.TextAppearance</item>
-        <item name="itemTextAppearanceInactive">@style/CustomNavigationView.TextAppearance</item>
-    </style>
-
-    <style name="CustomNavigationView.TextAppearance" parent="TextAppearance.MaterialComponents.Caption">
-        <item name="android:textSize">10sp</item>
-        <item name="android:itemPadding">0dp</item>
-        <item name="android:letterSpacing">0.01</item>
-        <item name="fontFamily">@font/sf_pro_text_medium</item>
     </style>
 
 

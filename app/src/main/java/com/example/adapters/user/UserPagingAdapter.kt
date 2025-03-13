@@ -43,7 +43,8 @@ class UserPagingAdapter(
     fun updateUserFavorite(user: UserDetail) {
         snapshot().items.find { x -> x.id == user.id }.let { local ->
             if (local != null) {
-                local.binds?.userFavorite = user.binds?.userFavorite
+                local.setUserFavorite(user.binds?.userFavorite)
+                //local.binds?.userFavorite = user.binds?.userFavorite
                 val position = snapshot().items.indexOf(local)
                 notifyItemChanged(position)
             }

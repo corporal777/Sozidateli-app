@@ -55,7 +55,7 @@ class SearchUserPresenter
 
     override fun onUserActionCLick(user: UserDetail) {
         compositeDisposable += userRepository.addOrRemoveUserFavorite(user)
-            .doOnSuccess { user.binds?.userFavorite = it.value }
+            .doOnSuccess { user.setUserFavorite(it.value)  }
             .performOnBackgroundOutOnMain()
             .subscribeSimple(
                 onError = {

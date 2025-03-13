@@ -10,6 +10,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.text.SpannableStringBuilder
 import android.text.method.LinkMovementMethod
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
@@ -23,6 +24,8 @@ import com.example.app.R
 import com.example.app.databinding.FragmentProfileBinding
 import com.example.data.models.UserDetail
 import com.example.extensions.firstLetterToUppercase
+import com.example.extensions.startIntent
+import com.example.extensions.textColor
 import com.example.ui.base.BaseToolbarFragment
 import com.example.ui.profile.data.ProfileDataFragment
 import com.example.ui.views.dialogs.AddPhoneEmailDialog
@@ -91,7 +94,8 @@ class ProfileFragment : BaseToolbarFragment<FragmentProfileBinding>(), ProfileCo
             tvName.text = user.nameLastName
 
             tvChangeAccount.apply {
-                if (user.getSessionsCount() <= 1) {
+                val sessionsCount = user.binds?.deviceSessionsCount ?: 0
+                if (sessionsCount <= 1) {
                     text = getString(R.string.add_account_label)
                     setLeftDrawable(R.drawable.ic_profile_add_account_edit)
                 } else {
@@ -112,19 +116,12 @@ class ProfileFragment : BaseToolbarFragment<FragmentProfileBinding>(), ProfileCo
 
     override fun setUserState(hasBase: Boolean, hasMax: Boolean) {
         val newState =
-            if (!hasBase && !hasMax) getString(R.string.state).firstLetterToUppercase() + " " + getString(
-                R.string.state_empty
-            )
-            else if (hasBase && !hasMax) getString(R.string.state_base).firstLetterToUppercase() + " " + getString(
-                R.string.state
-            )
-            else getString(R.string.state_max).firstLetterToUppercase() + " " + getString(R.string.state)
+            if (!hasBase && !hasMax) getString(R.string.state_empty_text)
+            else if (hasBase && !hasMax) getString(R.string.state_base_text)
+            else getString(R.string.state_max_text)
 
         mBinding.stateTitle.apply {
-            setTextColor(
-                if (!hasBase && !hasMax) getColor(R.color.red_new)
-                else getColor(R.color.main_brown_color_new)
-            )
+            textColor = if (!hasBase && !hasMax) R.color.red_new else R.color.main_brown_color_new
             text = newState
             setOnClickListener { showStates() }
         }
@@ -242,39 +239,27 @@ class ProfileFragment : BaseToolbarFragment<FragmentProfileBinding>(), ProfileCo
 
 
     override fun openSupportEmail(uid: String) {
-        try {
-            val intent = Intent(ACTION_SENDTO)
-            intent.data = Uri.parse("mailto:")
-            intent.putExtra(EXTRA_EMAIL, arrayOf(getString(R.string.support_email)))
-            intent.putExtra(EXTRA_SUBJECT, getString(R.string.support_email_title))
-            intent.putExtra(EXTRA_TEXT, buildEmailText(uid))
-            startActivity(intent)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-
-    }
-
-    private fun buildEmailText(uid: String): String {
-        val os = "OS: Android"
-        val api = "API: ${android.os.Build.VERSION.SDK_INT}"
+        val os = "OS: Android" + "\n" + "API: ${android.os.Build.VERSION.SDK_INT}"
         val appVersion = "App version: ${BuildConfig.VERSION_NAME}(${BuildConfig.VERSION_CODE})"
         val userId = "User id: $uid"
         val postfix = "\n---------------\nПожалуйста, опишите проблему ниже.\n\n"
-        return listOf(os, api, appVersion, userId).joinToString(separator = "\n", postfix = postfix)
+        val email = listOf(os, appVersion, userId).joinToString("\n", postfix = postfix)
+        startIntent(Intent.ACTION_SENDTO){
+            data = Uri.parse("mailto:")
+            putExtra(EXTRA_EMAIL, arrayOf(getString(R.string.support_email)))
+            putExtra(EXTRA_SUBJECT, getString(R.string.support_email_title))
+            putExtra(EXTRA_TEXT, email)
+        }
     }
+
 
     override fun openPlayMarket() {
         val appPackageName = requireContext().packageName
         try {
             startActivity(Intent(ACTION_VIEW, Uri.parse("market://details?id=$appPackageName")))
         } catch (e: android.content.ActivityNotFoundException) {
-            startActivity(
-                Intent(
-                    ACTION_VIEW,
-                    Uri.parse("https://play.google.com/store/apps/details?id=$appPackageName")
-                )
-            )
+            val url ="https://play.google.com/store/apps/details?id=$appPackageName"
+            startActivity(Intent(ACTION_VIEW, Uri.parse(url)))
         }
     }
 

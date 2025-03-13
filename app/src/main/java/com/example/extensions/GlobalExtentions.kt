@@ -6,6 +6,7 @@ import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.ContentResolver
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.net.ConnectivityManager
@@ -13,6 +14,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
+import android.provider.CalendarContract
 import android.provider.OpenableColumns
 import android.text.Editable
 import android.text.Html
@@ -63,15 +65,20 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
 import androidx.viewpager2.widget.ViewPager2
 import com.example.adapters.NoFilterArrayAdapter
+import com.example.app.BuildConfig
 import com.example.app.R
+import com.example.data.models.UserDetail
 import com.example.data.models.asArgument
+import com.example.ui.base.BaseVBFragment
 import com.example.ui.base.bottomSheet.BaseBSFragment
 import com.example.util.ClickableSpan
 import com.example.util.CropCircleTransformation
 import com.example.util.SYSTEM_UI_LIGHT_STATUS_BAR
 import com.example.util.URLSpanNoUnderline
+import com.example.util.getColor
 import com.example.util.showCustomTabsBrowser
 import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.textfield.TextInputLayout
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonDeserializer
@@ -687,6 +694,12 @@ var View.isVisibleAnim: Boolean
         } else visibility = View.GONE
     }
 
+var TextView.textColor : Int
+    get() = currentTextColor
+    set(value) {
+        setTextColor(getColor(value))
+    }
+
 fun Fragment.onBackPressedCallback(
     enabled: Boolean,
     onBackClick: () -> Unit
@@ -722,6 +735,24 @@ fun View?.getLocationOfView(): Pair<Int, Int> {
 
 fun ViewGroup.setChildSelected(position : Int){
     for (p in 0 until childCount) getChildAt(p).isSelected = p == position
+}
+
+fun BaseVBFragment<*>.startIntent(type : String, intent : Intent.() -> Unit){
+    try {
+        val newIntent = Intent(type).apply(intent)
+        requireContext().startActivity(newIntent)
+    } catch (e: Exception) {
+        showRequestErrorMessage()
+    }
+}
+
+fun BaseVBFragment<*>.startChooserIntent(intent : Intent.() -> Unit){
+    try {
+        val newIntent = Intent().apply(intent)
+        requireContext().startActivity(Intent.createChooser(newIntent, "Choose one of the:"))
+    } catch (e: Exception) {
+        showRequestErrorMessage()
+    }
 }
 
 

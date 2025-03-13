@@ -8,6 +8,7 @@ import android.view.View
 import androidx.activity.OnBackPressedCallback
 import com.example.app.R
 import com.example.app.databinding.FragmentStoriesBinding
+import com.example.extensions.textColor
 import com.example.interfaces.BackgroundImageFragment
 import com.example.interfaces.DoNotCheckConnectionFragment
 import com.example.ui.base.BaseVBFragment
@@ -149,13 +150,13 @@ class StoriesFragment : BaseVBFragment<FragmentStoriesBinding>(), StoriesContrac
         if (position == 0 || position == 3) {
             mBinding.btnContinue.apply {
                 background = getDrawable(R.drawable.btn_background_corners_brown)
-                setTextColor(getColor(R.color.black))
+                textColor = R.color.black
             }
             mBinding.btnClose.setImageResource(R.drawable.ic_close_camera)
         } else {
             mBinding.btnContinue.apply {
                 background = getDrawable(R.drawable.btn_background_corners_white)
-                setTextColor(getColor(R.color.white))
+                textColor = R.color.white
             }
             mBinding.btnClose.setImageResource(R.drawable.ic_close_light)
         }

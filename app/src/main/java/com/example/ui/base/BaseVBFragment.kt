@@ -71,6 +71,9 @@ abstract class BaseVBFragment<VB : ViewBinding> : MvpAppCompatFragment(), BaseCo
     @LayoutRes
     abstract fun layout(): Int
 
+    override fun showSnackBar(@StringRes message: Int) = showSnackBar(getString(message))
+    override fun showSnackBar(message: String) { mActivity?.showSnackBar(message) }
+
     override fun showToast(@StringRes message: Int) = showToast(getString(message))
     override fun showToast(message: String) { mActivity?.showToast(message) }
 
