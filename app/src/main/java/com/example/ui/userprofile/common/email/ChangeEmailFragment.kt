@@ -12,6 +12,7 @@ import com.example.extensions.onTextChanged
 import com.example.ui.base.BaseVBFragment
 import com.example.ui.views.dialogs.DefaultAlertDialog
 import com.example.util.changeTitleTextColor
+import com.example.util.showInputError
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
@@ -58,7 +59,7 @@ class ChangeEmailFragment : BaseVBFragment<FragmentChangeEmailBinding>(), Change
 
     override fun showEmailError(show: Boolean) {
         mBinding.newEmailTitle.changeTitleTextColor(show)
-        mBinding.tilNewEmail.showCustomError(show)
+        mBinding.etNewEmail.showInputError(show)
     }
 
 

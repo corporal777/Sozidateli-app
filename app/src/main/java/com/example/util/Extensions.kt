@@ -39,6 +39,7 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.util.Pair
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import androidx.core.widget.ImageViewCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -518,5 +519,15 @@ fun Fragment.getMakeSceneTransition(view: View): ActivityOptionsCompat {
 
 fun TextView.changeTitleTextColor(show: Boolean){
     textColor = if (show) R.color.title_text_error_red else R.color.chat_list_date
+}
+
+fun TextView.showInputError(show: Boolean){
+    if (show) {
+        setRightDrawable(R.drawable.ic_input_error_icon)
+        updatePadding(right = 10.dp)
+    } else {
+        setRightDrawable(0)
+        updatePadding(right = 15.dp)
+    }
 }
 

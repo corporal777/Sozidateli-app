@@ -5,6 +5,7 @@ import android.view.View
 import androidx.core.view.isVisible
 import com.example.app.R
 import com.example.app.databinding.FragmentChangeShortNameBinding
+import com.example.extensions.onTextChanged
 import com.example.extensions.textColor
 import com.example.ui.base.BaseVBFragment
 import com.example.ui.views.CustomSpannableString
@@ -28,7 +29,7 @@ class ChangeShortNameFragment : BaseVBFragment<FragmentChangeShortNameBinding>()
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mBinding.apply {
-            etShortName.initInput {
+            etShortName.onTextChanged {
                 presenter.onChangeShortName(it.toString())
             }
             btnSave.setOnClickListener {

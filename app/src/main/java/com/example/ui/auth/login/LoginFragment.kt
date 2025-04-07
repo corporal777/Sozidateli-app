@@ -16,6 +16,7 @@ import com.example.ui.base.BaseVBFragment
 import com.example.ui.views.dialogs.DefaultAlertDialog
 import com.example.util.changeTitleTextColor
 import com.example.util.getColor
+import com.example.util.showInputError
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
@@ -75,7 +76,7 @@ class LoginFragment : BaseVBFragment<FragmentLoginBinding>(), LoginContract.View
 
     override fun showLoginError(show: Boolean) {
         mBinding.tvTitleLogin.changeTitleTextColor(show)
-        mBinding.tilLogin.showCustomError(show)
+        mBinding.etLogin.showInputError(show)
     }
 
     override fun showPasswordError(show: Boolean) {

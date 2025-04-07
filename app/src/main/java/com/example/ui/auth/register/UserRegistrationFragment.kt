@@ -24,6 +24,7 @@ import com.example.util.changeTitleTextColor
 import com.example.util.getColor
 import com.example.util.initInput
 import com.example.util.setTint
+import com.example.util.showInputError
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import java.util.Calendar
@@ -110,7 +111,7 @@ class UserRegistrationFragment : BaseToolbarFragment<FragmentRegistrationUserBin
     }
 
     override fun showLastNameError(show: Boolean, error: String?) {
-        mBinding.tilLastName.showCustomError(show)
+        mBinding.etLastName.showInputError(show)
         mBinding.tvTitleLastName.apply {
             changeTitleTextColor(show)
             text = error ?: getString(R.string.user_profile_last_name)
@@ -118,7 +119,7 @@ class UserRegistrationFragment : BaseToolbarFragment<FragmentRegistrationUserBin
     }
 
     override fun showFirstNameError(show: Boolean, error: String?) {
-        mBinding.tilFirstName.showCustomError(show)
+        mBinding.etFirstName.showInputError(show)
         mBinding.tvTitleFirstName.apply {
             changeTitleTextColor(show)
             text = error ?: getString(R.string.user_profile_name)
@@ -126,7 +127,7 @@ class UserRegistrationFragment : BaseToolbarFragment<FragmentRegistrationUserBin
     }
 
     override fun showMiddleNameError(show: Boolean, error: String?) {
-        mBinding.tilMiddleName.showCustomError(show)
+        mBinding.etMiddleName.showInputError(show)
         mBinding.tvTitleMiddleName.apply {
             changeTitleTextColor(show)
             text = error ?: getString(R.string.user_profile_middle_name)
@@ -143,7 +144,7 @@ class UserRegistrationFragment : BaseToolbarFragment<FragmentRegistrationUserBin
 
     override fun showLoginError(show: Boolean) {
         mBinding.tvTitlePhone.changeTitleTextColor(show)
-        mBinding.tilPhone.showCustomError(show)
+        mBinding.etPhone.showInputError(show)
     }
 
     override fun showBirthdayError(show: Boolean) {

@@ -1,134 +1,108 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:id="@+id/scroll_view_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/main_background">
 
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/scroll_view_content"
+    <LinearLayout
+        android:id="@+id/ln_content"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/main_background">
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="15dp"
+        android:orientation="vertical">
 
-        <LinearLayout
-            android:id="@+id/ln_content"
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvTitleLastName"
+            style="@style/Profile.Edit.TextViewTitleThin"
+            android:text="@string/user_profile_last_name" />
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/et_last_name"
+            style="@style/ProfileData.EditText"
+            android:hint="@string/auth_input_last_name_hint" />
+
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvTitleFirstName"
+            style="@style/Profile.Edit.TextViewTitleThin"
+            android:text="@string/user_profile_name" />
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/et_first_name"
+            style="@style/ProfileData.EditText"
+            android:hint="@string/auth_input_first_name_hint" />
+
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvTitleMiddleName"
+            style="@style/Profile.Edit.TextViewTitleThin"
+            android:text="@string/user_profile_middle_name" />
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/et_middle_name"
+            style="@style/ProfileData.EditText"
+            android:hint="@string/auth_input_middle_name_hint" />
+
+        <androidx.appcompat.widget.AppCompatCheckBox
+            android:id="@+id/sc_no_middle_name"
+            style="@style/Profile.Edit.Switch"
+            android:text="@string/profile_edit_user_no_middle_name" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvTitlePhone"
+            style="@style/Profile.Edit.TextViewTitleThin"
+            android:layout_marginTop="10dp"
+            android:text="@string/search_filter_phone" />
+
+        <com.example.ui.views.phoneText.PhoneFormatEditText
+            android:id="@+id/etPhone"
+            style="@style/ProfileData.EditText"
+            android:inputType="textNoSuggestions|phone"
+            app:phoneFormatHint="@string/auth_input_phone_hint" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvTitleBirthday"
+            style="@style/Profile.Edit.TextViewTitleThin"
+            android:text="@string/profile_birthday" />
+
+        <com.example.ui.views.CustomTextInputLayout
+            android:id="@+id/tilBirthday"
+            style="@style/TextInputLayoutStyle"
+            app:endIconDrawable="@drawable/ic_calendar_new"
+            app:endIconMode="custom"
+            app:endIconTint="#C3996C">
+
+            <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+                android:id="@+id/etBirthday"
+                style="@style/TextInputAutoTextStyle"
+                android:hint="@string/profile_birthday" />
+        </com.example.ui.views.CustomTextInputLayout>
+
+
+        <com.example.ui.views.passwordView.CustomPasswordView
+            android:id="@+id/passwordView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="15dp"
-            android:orientation="vertical">
+            android:layout_marginTop="20dp" />
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tvTitleLastName"
-                style="@style/Profile.Edit.TextViewTitleThin"
-                android:text="@string/user_profile_last_name" />
+        <com.example.ui.views.CustomCheckView
+            android:id="@+id/view_agreement"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            app:checkViewText="@string/auth_user_agreement"
+            app:isCheckable="true" />
 
-            <com.example.ui.views.CustomTextInputLayout
-                android:id="@+id/til_last_name"
-                style="@style/TextInputLayoutStyle">
+        <com.example.ui.views.loading.CustomLoadingButton
+            android:id="@+id/btn_save"
+            style="@style/BtnLoadingStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="20dp"
+            app:buttonText="@string/auth_action_register" />
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/et_last_name"
-                    style="@style/TextInputEditTextStyle"
-                    android:hint="@string/auth_input_last_name_hint" />
-            </com.example.ui.views.CustomTextInputLayout>
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>
 
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tvTitleFirstName"
-                style="@style/Profile.Edit.TextViewTitleThin"
-                android:text="@string/user_profile_name" />
-
-            <com.example.ui.views.CustomTextInputLayout
-                android:id="@+id/til_first_name"
-                style="@style/TextInputLayoutStyle">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/et_first_name"
-                    style="@style/TextInputEditTextStyle"
-                    android:hint="@string/auth_input_first_name_hint" />
-            </com.example.ui.views.CustomTextInputLayout>
-
-
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tvTitleMiddleName"
-                style="@style/Profile.Edit.TextViewTitleThin"
-                android:text="@string/user_profile_middle_name" />
-
-            <com.example.ui.views.CustomTextInputLayout
-                android:id="@+id/til_middle_name"
-                style="@style/TextInputLayoutStyle">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/et_middle_name"
-                    style="@style/TextInputEditTextStyle"
-                    android:hint="@string/auth_input_middle_name_hint" />
-            </com.example.ui.views.CustomTextInputLayout>
-
-            <androidx.appcompat.widget.AppCompatCheckBox
-                android:id="@+id/sc_no_middle_name"
-                style="@style/Profile.Edit.Switch"
-                android:text="@string/profile_edit_user_no_middle_name" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tvTitlePhone"
-                style="@style/Profile.Edit.TextViewTitleThin"
-                android:layout_marginTop="10dp"
-                android:text="@string/search_filter_phone" />
-
-            <com.example.ui.views.CustomTextInputLayout
-                android:id="@+id/til_phone"
-                style="@style/TextInputLayoutStyle">
-
-                <com.example.ui.views.phoneText.PhoneFormatEditText
-                    android:id="@+id/etPhone"
-                    style="@style/TextInputEditTextStyle"
-                    android:imeOptions="actionDone"
-                    android:inputType="textNoSuggestions|phone"
-                    app:phoneFormatHint="@string/auth_input_phone_hint" />
-            </com.example.ui.views.CustomTextInputLayout>
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tvTitleBirthday"
-                style="@style/Profile.Edit.TextViewTitleThin"
-                android:text="@string/profile_birthday" />
-
-            <com.example.ui.views.CustomTextInputLayout
-                android:id="@+id/tilBirthday"
-                style="@style/TextInputLayoutStyle"
-                app:endIconDrawable="@drawable/ic_calendar_new"
-                app:endIconMode="custom"
-                app:endIconTint="#C3996C">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etBirthday"
-                    style="@style/TextInputAutoTextStyle"
-                    android:hint="@string/profile_birthday" />
-            </com.example.ui.views.CustomTextInputLayout>
-
-
-            <com.example.ui.views.passwordView.CustomPasswordView
-                android:id="@+id/passwordView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp" />
-
-            <com.example.ui.views.CustomCheckView
-                android:id="@+id/view_agreement"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
-                app:checkViewText="@string/auth_user_agreement"
-                app:isCheckable="true" />
-
-            <com.example.ui.views.loading.CustomLoadingButton
-                android:id="@+id/btn_save"
-                style="@style/BtnLoadingStyle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginVertical="20dp"
-                app:buttonText="@string/auth_action_register" />
-
-        </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
-
-</layout>

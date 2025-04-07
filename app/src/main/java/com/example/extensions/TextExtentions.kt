@@ -35,6 +35,7 @@ import org.json.JSONObject
 import java.nio.charset.StandardCharsets
 import java.util.*
 
+
 fun CharSequence.substringToWholeWord(maxLength: Int = this.length): CharSequence {
     return if (maxLength in 1 until length) {
         val maxString = subSequence(0, maxLength - 1).trim()

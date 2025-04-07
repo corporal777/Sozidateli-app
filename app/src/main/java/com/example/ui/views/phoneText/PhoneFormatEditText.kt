@@ -1,22 +1,13 @@
 package com.example.ui.views.phoneText
 
 import android.content.Context
-import android.text.Editable
-import android.text.SpannableStringBuilder
-import android.text.style.ForegroundColorSpan
 import android.util.AttributeSet
 import android.util.Log
-import androidx.appcompat.widget.AppCompatEditText
-import androidx.core.content.ContextCompat
 import androidx.core.widget.doAfterTextChanged
-import androidx.core.widget.doBeforeTextChanged
 import androidx.core.widget.doOnTextChanged
 import com.example.app.R
 import com.example.extensions.onFocusChanged
-import com.example.extensions.onTextChanged
-import com.example.util.Utils.isContainLetters
 import com.example.util.Utils.isContainsNumbers
-import com.example.util.Utils.isPhone
 import com.google.android.material.textfield.TextInputEditText
 
 class PhoneFormatEditText : TextInputEditText {
@@ -68,7 +59,7 @@ class PhoneFormatEditText : TextInputEditText {
     }
 
     private fun makeMaskedText(text: String): String {
-        formattedText = clearPhoneText(text)
+        formattedText = makeText(text)
 
         if (formattedText.isNullOrBlank()) {
             formattedText = mask
@@ -86,11 +77,23 @@ class PhoneFormatEditText : TextInputEditText {
         return formattedText
     }
 
+    private fun makeText(text: String): String {
+        if (text.isEmpty()) return ""
+        else {
+            val str = text.cleanStr().replace("+7", "").let {
+                if (it.length > 10 && it.first() == '8') {
+                    it.replaceFirst("8", "")
+                }
+                else it
+            }
+            return if (str.length > 10) str.substring(0, 10) else str
+        }
+    }
+
     fun setPhoneHint(text: CharSequence?) {
         hint =
             if (isContainsNumbers(text.toString())) formatPhoneText(text.toString())
             else text
-        //hint = formatPhoneText(text.toString())
     }
 
     fun setPhoneText(text: CharSequence?) {
@@ -101,15 +104,19 @@ class PhoneFormatEditText : TextInputEditText {
     }
 
     private fun clearPhoneText(text: String): String {
-        if (text.isNullOrEmpty()) return ""
+        if (text.isEmpty()) return ""
         else {
-            val str = text.replace(" ", "")
-                .replace("(", "")
-                .replace(")", "")
-                .replace("-", "")
+            val str = text.cleanStr()
             if (str.length > 12) return str.substring(0, 12)
             else return str
         }
+    }
+
+    private fun String.cleanStr(): String {
+        return replace(" ", "")
+            .replace("(", "")
+            .replace(")", "")
+            .replace("-", "")
     }
 
     private fun formatPhoneText(text: String?): String {
@@ -147,6 +154,16 @@ class PhoneFormatEditText : TextInputEditText {
         }
     }
 
+    override fun onSelectionChanged(selStart: Int, selEnd: Int) {
+        val text: CharSequence? = text
+        if (text != null) {
+            if (selStart == text.length || selEnd != text.length) {
+                setSelection(text.length, text.length)
+                return
+            }
+        }
+        super.onSelectionChanged(selStart, selEnd)
+    }
 
     fun onInputFocusChanged(onFocusChanged: (hasFocus: Boolean) -> Unit) {
         this.onInputFocusChanged = onFocusChanged

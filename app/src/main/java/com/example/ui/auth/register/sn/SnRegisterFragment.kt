@@ -17,6 +17,7 @@ import com.example.util.DATE_STRING_FORMAT_SHORT_MONTH_FULL_YEAR
 import com.example.util.changeTitleTextColor
 import com.example.util.getColor
 import com.example.util.setTint
+import com.example.util.showInputError
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import java.util.Calendar
@@ -95,22 +96,22 @@ class SnRegisterFragment : BaseToolbarFragment<FragmentRegisterSnBinding>(), SnR
 
     override fun showLastNameError(show: Boolean) {
         mBinding.tvTitleLastName.changeTitleTextColor(show)
-        mBinding.tilLastName.showCustomError(show)
+        mBinding.etLastName.showInputError(show)
     }
 
     override fun showFirstNameError(show: Boolean){
         mBinding.tvTitleFirstName.changeTitleTextColor(show)
-        mBinding.tilFirstName.showCustomError(show)
+        mBinding.etFirstName.showInputError(show)
     }
 
     override fun showMiddleNameError(show: Boolean) {
         mBinding.tvTitleMiddleName.changeTitleTextColor(show)
-        mBinding.tilMiddleName.showCustomError(show)
+        mBinding.etMiddleName.showInputError(show)
     }
 
     override fun showPhoneError(show: Boolean) {
         mBinding.tvTitlePhone.changeTitleTextColor(show)
-        mBinding.tilPhone.showCustomError(show)
+        mBinding.etPhone.showInputError(show)
     }
 
     override fun showBirthdayError(show: Boolean) {
@@ -124,7 +125,7 @@ class SnRegisterFragment : BaseToolbarFragment<FragmentRegisterSnBinding>(), SnR
             text = if (show && !mBinding.etEmail.getText().isNullOrEmpty()) "Введите корректный e-mail"
             else getString(R.string.email_for_communication_text)
         }
-        mBinding.tilEmail.showCustomError(show)
+        mBinding.etEmail.showInputError(show)
 
     }
 

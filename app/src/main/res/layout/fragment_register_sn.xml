@@ -24,18 +24,13 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <com.example.ui.views.CustomTextInputLayout
-                android:id="@+id/til_last_name"
-                style="@style/TextInputLayoutStyle"
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/et_last_name"
+                style="@style/ProfileData.EditText"
                 android:layout_width="match_parent"
                 android:layout_marginTop="5dp"
-                app:layout_constraintTop_toBottomOf="@id/tvTitleLastName">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/et_last_name"
-                    style="@style/TextInputEditTextStyle"
-                    android:hint="@string/auth_input_last_name_hint" />
-            </com.example.ui.views.CustomTextInputLayout>
+                android:hint="@string/auth_input_last_name_hint"
+                app:layout_constraintTop_toBottomOf="@id/tvTitleLastName" />
 
 
             <androidx.appcompat.widget.AppCompatTextView
@@ -43,20 +38,15 @@
                 style="@style/Profile.Edit.TextViewTitleThin"
                 android:text="@string/user_profile_name"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/til_last_name" />
+                app:layout_constraintTop_toBottomOf="@id/et_last_name" />
 
-            <com.example.ui.views.CustomTextInputLayout
-                android:id="@+id/til_first_name"
-                style="@style/TextInputLayoutStyle"
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/et_first_name"
+                style="@style/ProfileData.EditText"
                 android:layout_width="match_parent"
                 android:layout_marginTop="5dp"
-                app:layout_constraintTop_toBottomOf="@id/tvTitleFirstName">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/et_first_name"
-                    style="@style/TextInputEditTextStyle"
-                    android:hint="@string/auth_input_first_name_hint" />
-            </com.example.ui.views.CustomTextInputLayout>
+                android:hint="@string/auth_input_first_name_hint"
+                app:layout_constraintTop_toBottomOf="@id/tvTitleFirstName" />
 
 
             <androidx.appcompat.widget.AppCompatTextView
@@ -64,20 +54,15 @@
                 style="@style/Profile.Edit.TextViewTitleThin"
                 android:text="@string/user_profile_middle_name"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/til_first_name" />
+                app:layout_constraintTop_toBottomOf="@id/et_first_name" />
 
-            <com.example.ui.views.CustomTextInputLayout
-                android:id="@+id/til_middle_name"
-                style="@style/TextInputLayoutStyle"
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/et_middle_name"
+                style="@style/ProfileData.EditText"
                 android:layout_width="match_parent"
                 android:layout_marginTop="5dp"
-                app:layout_constraintTop_toBottomOf="@id/tvTitleMiddleName">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/et_middle_name"
-                    style="@style/TextInputEditTextStyle"
-                    android:hint="@string/auth_input_middle_name_hint" />
-            </com.example.ui.views.CustomTextInputLayout>
+                android:hint="@string/auth_input_middle_name_hint"
+                app:layout_constraintTop_toBottomOf="@id/tvTitleMiddleName" />
 
 
             <androidx.appcompat.widget.AppCompatCheckBox
@@ -85,7 +70,7 @@
                 style="@style/Profile.Edit.Switch"
                 android:text="@string/profile_edit_user_no_middle_name"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/til_middle_name" />
+                app:layout_constraintTop_toBottomOf="@id/et_middle_name" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvTitlePhone"
@@ -95,27 +80,21 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/sc_no_middle_name" />
 
-            <com.example.ui.views.CustomTextInputLayout
-                android:id="@+id/til_phone"
-                style="@style/TextInputLayoutStyle"
+            <com.example.ui.views.phoneText.PhoneFormatEditText
+                android:id="@+id/etPhone"
+                style="@style/ProfileData.EditText"
                 android:layout_width="match_parent"
                 android:layout_marginTop="5dp"
-                app:layout_constraintTop_toBottomOf="@id/tvTitlePhone">
-
-                <com.example.ui.views.phoneText.PhoneFormatEditText
-                    android:id="@+id/etPhone"
-                    style="@style/TextInputEditTextStyle"
-                    android:imeOptions="actionDone"
-                    android:inputType="textNoSuggestions|phone"
-                    app:phoneFormatHint="@string/auth_input_phone_hint" />
-            </com.example.ui.views.CustomTextInputLayout>
+                android:inputType="textNoSuggestions|phone"
+                app:layout_constraintTop_toBottomOf="@id/tvTitlePhone"
+                app:phoneFormatHint="@string/auth_input_phone_hint" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvTitleBirthday"
                 style="@style/Profile.Edit.TextViewTitleThin"
                 android:text="@string/profile_birthday"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/til_phone" />
+                app:layout_constraintTop_toBottomOf="@id/etPhone" />
 
             <com.example.ui.views.CustomTextInputLayout
                 android:id="@+id/tilBirthday"
@@ -134,7 +113,6 @@
             </com.example.ui.views.CustomTextInputLayout>
 
 
-
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvTitleEmail"
                 style="@style/Profile.Edit.TextViewTitleThin"
@@ -142,20 +120,14 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tilBirthday" />
 
-            <com.example.ui.views.CustomTextInputLayout
-                android:id="@+id/til_email"
-                style="@style/TextInputLayoutStyle"
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/et_email"
+                style="@style/ProfileData.EditText"
                 android:layout_width="match_parent"
                 android:layout_marginTop="5dp"
-                app:layout_constraintTop_toBottomOf="@id/tvTitleEmail">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/et_email"
-                    android:inputType="textEmailAddress"
-                    style="@style/TextInputEditTextStyle"
-                    android:hint="@string/input_your_email_text" />
-            </com.example.ui.views.CustomTextInputLayout>
-
+                android:hint="@string/input_your_email_text"
+                android:inputType="textEmailAddress"
+                app:layout_constraintTop_toBottomOf="@id/tvTitleEmail" />
 
 
             <com.example.ui.views.loading.CustomLoadingButton
@@ -167,7 +139,7 @@
                 android:layout_marginBottom="20dp"
                 app:buttonText="@string/auth_action_continue"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/til_email"
+                app:layout_constraintTop_toBottomOf="@id/et_email"
                 app:layout_constraintVertical_bias="1.0"
                 tools:layout_editor_absoluteX="17dp" />
 

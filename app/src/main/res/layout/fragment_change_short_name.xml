@@ -97,15 +97,25 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tvRegisterWithPhone" />
 
-                <com.example.ui.views.CustomTextInputView
-                    android:id="@+id/etShortName"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvTitleShortName"
+                    style="@style/Profile.Edit.TextViewTitleThin"
                     android:layout_marginHorizontal="15dp"
                     android:layout_marginTop="20dp"
-                    app:hintText="@string/input_short_name_hint"
-                    app:layout_constraintTop_toBottomOf="@+id/tvShortName"
-                    app:titleText="@string/short_name_label" />
+                    android:text="@string/short_name_label"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvShortName" />
+
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/etShortName"
+                    style="@style/ProfileData.EditText"
+                    android:layout_width="match_parent"
+                    android:layout_marginHorizontal="15dp"
+                    android:layout_marginTop="5dp"
+                    android:hint="@string/input_short_name_hint"
+                    app:layout_constraintTop_toBottomOf="@+id/tvTitleShortName" />
+
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tv_short_name_invalid_error"

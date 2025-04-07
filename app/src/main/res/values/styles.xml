@@ -807,6 +807,29 @@
         <item name="android:includeFontPadding">false</item>
     </style>
 
+    <style name="ProfileData.EditText">
+        <item name="fontPath">fonts/sf_pro_display.OTF</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/common_edit_text_min_height</item>
+        <item name="android:minHeight">@dimen/common_edit_text_min_height</item>
+        <item name="android:textColor">@color/input_text_color</item>
+        <item name="android:textColorHint">@color/input_hint_text_color</item>
+        <item name="android:textSize">@dimen/common_edit_text_size</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:inputType">textCapSentences</item>
+        <item name="android:imeOptions">actionDone</item>
+        <item name="android:background">@drawable/background_input_edit_text</item>
+        <item name="android:letterSpacing">-0.01</item>
+        <item name="android:theme">@style/EditTextSelectorTheme</item>
+        <item name="android:colorControlActivated">@color/colorAccent</item>
+
+        <item name="android:paddingStart">15dp</item>
+        <item name="android:paddingEnd">15dp</item>
+        <item name="android:drawablePadding">10dp</item>
+    </style>
+
+
     <style name="ClickableTextView">
         <item name="android:letterSpacing">-0.01</item>
         <item name="fontPath">fonts/sf_pro_display_bold.ttf</item>
@@ -926,6 +949,7 @@
         <item name="android:colorAccent">@color/colorAccent</item>
         <item name="android:colorControlNormal">@color/input_border_color</item>
     </style>
+
 
     <style name="EventRegistration" />
 
