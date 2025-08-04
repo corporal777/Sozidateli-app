@@ -135,3 +135,5 @@ fabric.properties
 .idea/httpRequests
 
 release.properties
+/app/fond.jks
+fond.jks
