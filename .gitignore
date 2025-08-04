@@ -137,3 +137,6 @@ fabric.properties
 release.properties
 /app/fond.jks
 fond.jks
+
+# Jks Files
+*.jks
