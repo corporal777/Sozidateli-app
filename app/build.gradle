@@ -78,20 +78,6 @@ android {
         }
     }
 
-//    flavorDimensions "version"
-//    productFlavors {
-//        "new" {
-//            dimension "version"
-//            buildConfigField "String", "SHARE_URL", "\"https://alfa.sozidateli.ru/\""
-//            buildConfigField "String", "SOCKET_URL", "\"https://alfa-socket-data-provider.sozidateli.ru/\""
-//
-//            buildConfigField "String", "API_URL", "\"http://alfa-api.sozidateli.ru/\""
-//            buildConfigField "String", "NEW_API_URL", "\"https://alfa-restapi.sozidateli.ru/\""
-//            buildConfigField "Boolean", "REGISTER_AGREEMENT_ENABLED", "true"
-//            buildConfigField "Boolean", "NEW_PROFILE_EDIT", "true"
-//        }
-//    }
-
     variantFilter { variant ->
         if (variant.name == "debug") setIgnore(true)
     }
