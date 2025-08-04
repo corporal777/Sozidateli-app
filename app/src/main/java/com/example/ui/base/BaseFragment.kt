@@ -18,10 +18,8 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import com.example.app.R
 import com.example.data.models.UserDetail
-import com.example.ui.main.MainActivity
 import com.example.ui.state.UserState
 import com.example.ui.state.maxNew.MaxStateScreenType
-import com.example.ui.views.*
 import com.example.ui.views.dialogs.ChangeStateBottomDialog
 import com.example.ui.views.dialogs.ClickType
 import com.example.ui.views.dialogs.DefaultAlertDialog
@@ -29,7 +27,6 @@ import com.example.ui.views.dialogs.StateType
 import com.example.util.Utils
 import com.google.android.material.transition.MaterialFadeThrough
 import com.google.android.material.transition.MaterialSharedAxis
-import dagger.android.support.AndroidSupportInjection
 
 abstract class BaseFragment<binding : ViewDataBinding> : MvpAppCompatFragment(), BaseContract.View {
 
@@ -44,7 +41,6 @@ abstract class BaseFragment<binding : ViewDataBinding> : MvpAppCompatFragment(),
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        AndroidSupportInjection.inject(this)
         super.onCreate(savedInstanceState)
         if (animationType() == AnimType.AXIS) {
             postponeEnterTransition()

@@ -7,7 +7,6 @@ import com.example.data.AppData
 import com.example.repository.UserRepository
 import com.example.util.FIELD_ACTION
 import com.example.util.FIELD_NOTIFICATION_ID
-import dagger.android.AndroidInjection
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
@@ -24,7 +23,6 @@ class NotificationClickJobService : JobService() {
     private val compositeDisposable = CompositeDisposable()
 
     override fun onCreate() {
-        AndroidInjection.inject(this)
         super.onCreate()
     }
 

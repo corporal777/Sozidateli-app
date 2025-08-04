@@ -2,7 +2,6 @@ package com.example.ui.base
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,14 +12,10 @@ import androidx.navigation.fragment.findNavController
 import androidx.viewbinding.ViewBinding
 import com.example.app.R
 import com.example.data.models.UserDetail
-import com.example.ui.base.BaseFragment.Companion
 import com.example.ui.views.dialogs.DefaultAlertDialog
 import com.example.ui.views.dialogs.StateType
-import com.google.android.material.transition.MaterialFadeThrough
 import com.google.android.material.transition.MaterialSharedAxis
 import com.google.android.material.transition.ScaleProvider
-import dagger.android.support.AndroidSupportInjection
-import dev.androidbroadcast.vbpd.CreateMethod
 import dev.androidbroadcast.vbpd.viewBinding
 
 abstract class BaseVBFragment<VB : ViewBinding> : MvpAppCompatFragment(), BaseContract.View {
@@ -37,7 +32,6 @@ abstract class BaseVBFragment<VB : ViewBinding> : MvpAppCompatFragment(), BaseCo
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        AndroidSupportInjection.inject(this)
         super.onCreate(savedInstanceState)
         if (animationType() == AnimType.AXIS) {
             postponeEnterTransition()

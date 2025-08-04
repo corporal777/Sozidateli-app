@@ -3,7 +3,6 @@ package com.example.ui.base
 import android.os.Bundle
 import androidx.viewbinding.ViewBinding
 import com.example.ui.views.dialogs.CustomProgressDialog
-import dagger.android.AndroidInjection
 
 abstract class BaseCustomActivity<B : ViewBinding> : MvpAppCompatActivity() {
 
@@ -14,7 +13,6 @@ abstract class BaseCustomActivity<B : ViewBinding> : MvpAppCompatActivity() {
     var isBackEnabled = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
 
         overridePendingTransition(0, 0)

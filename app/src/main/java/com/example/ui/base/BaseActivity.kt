@@ -3,9 +3,7 @@ package com.example.ui.base
 import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.Drawable
-import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.View
@@ -14,9 +12,6 @@ import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.annotation.StringRes
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
@@ -37,7 +32,6 @@ import com.example.util.cancelWindowTransparency
 import com.example.util.doEdgeWindow
 import com.example.util.setWindowTransparency
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import dagger.android.AndroidInjection
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
 import io.reactivex.exceptions.UndeliverableException
 import io.reactivex.plugins.RxJavaPlugins
@@ -50,7 +44,6 @@ abstract class BaseActivity : MvpAppCompatActivity(), BaseContract.View {
     private lateinit var mProgressDialog : CustomProgressDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
 
         mBinding = ActivityMainBinding.inflate(layoutInflater)

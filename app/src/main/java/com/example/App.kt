@@ -8,37 +8,22 @@ import android.os.Build
 import com.example.app.BuildConfig
 import com.example.app.R
 import com.example.di.AppComponent
-import com.example.di.DaggerAppComponent
-import dagger.android.AndroidInjector
-import dagger.android.DispatchingAndroidInjector
-import dagger.android.HasAndroidInjector
+import dagger.hilt.android.HiltAndroidApp
 import io.github.inflationx.calligraphy3.CalligraphyConfig
 import io.github.inflationx.calligraphy3.CalligraphyInterceptor
 import io.github.inflationx.viewpump.ViewPump
 import timber.log.Timber
 import javax.inject.Inject
 
-class App : Application(), HasAndroidInjector {
-
-    @Inject
-    lateinit var androidInjector: DispatchingAndroidInjector<Any>
-
-    @Inject
-    internal lateinit var calligraphyConfig: CalligraphyConfig
+@HiltAndroidApp
+class App : Application() {
 
     lateinit var appComponent: AppComponent
         private set
 
-    override fun androidInjector(): AndroidInjector<Any> = androidInjector
-
     override fun onCreate() {
         super.onCreate()
         if (BuildConfig.DEBUG) Timber.plant(Timber.DebugTree())
-
-        appComponent = DaggerAppComponent.builder()
-            .application(this)
-            .build()
-            .apply { inject(this@App) }
 
         createNotificationChannels()
         initViewPump()

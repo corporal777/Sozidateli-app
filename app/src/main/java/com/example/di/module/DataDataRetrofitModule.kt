@@ -1,10 +1,12 @@
-package com.example.di
+package com.example.di.module
 
 import com.example.app.BuildConfig
 import com.example.api.ApiDataData
 import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 import io.reactivex.schedulers.Schedulers
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -15,6 +17,7 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 @Module
+@InstallIn(SingletonComponent::class)
 class DataDataRetrofitModule {
 
     @Provides

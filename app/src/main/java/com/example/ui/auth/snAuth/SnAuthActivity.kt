@@ -13,7 +13,6 @@ import com.vk.id.AccessToken
 import com.vk.id.VKID
 import com.vk.id.VKIDAuthFail
 import com.vk.id.internal.log.LogEngine
-import dagger.android.AndroidInjection
 import io.reactivex.subjects.SingleSubject
 
 
@@ -34,7 +33,6 @@ class SnAuthActivity : AppCompatActivity() {
     private lateinit var authSubject: SingleSubject<SnAuth>
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
 
         val args = intent.extras ?: return

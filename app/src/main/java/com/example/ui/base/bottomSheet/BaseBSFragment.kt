@@ -3,23 +3,14 @@ package com.example.ui.base.bottomSheet
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
-import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
-import androidx.fragment.app.Fragment
 import com.example.app.R
 import com.example.ui.base.BaseActivity
-import com.example.ui.views.CustomSnackBar
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.snackbar.Snackbar
-import dagger.android.support.AndroidSupportInjection
-import java.io.Serializable
-import kotlin.properties.ReadOnlyProperty
-import androidx.core.os.BundleCompat
-import com.example.data.models.asArgument
 
 abstract class BaseBSFragment : MvpAppCompatBottomSheetFragment, BaseBSContract.View {
 
@@ -39,7 +30,6 @@ abstract class BaseBSFragment : MvpAppCompatBottomSheetFragment, BaseBSContract.
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        AndroidSupportInjection.inject(this)
         super.onCreate(savedInstanceState)
     }
 

@@ -1,4 +1,4 @@
-package com.example.di
+package com.example.di.module
 
 import android.app.Application
 import android.app.NotificationManager
@@ -11,6 +11,7 @@ import com.example.data.UserEventData
 import com.example.data.database.Db
 import com.example.data.prefs.AppPrefs
 import com.example.data.prefs.AppPrefsImpl
+import com.example.di.Connectivity
 import com.example.repository.EventRepository
 import com.example.util.SnAuthManager
 import com.example.util.ChatHelper
@@ -21,12 +22,14 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import dagger.Module
 import dagger.Provides
-import dagger.android.support.AndroidSupportInjectionModule
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 import io.github.inflationx.calligraphy3.CalligraphyConfig
 import io.reactivex.Observable
 import javax.inject.Singleton
 
-@Module(includes = [RepositoryModule::class, AndroidSupportInjectionModule::class, RetrofitModule::class, DataDataRetrofitModule::class])
+@Module(includes = [RepositoryModule::class, RetrofitModule::class, DataDataRetrofitModule::class])
+@InstallIn(SingletonComponent::class)
 class AppModule {
 
     @Provides

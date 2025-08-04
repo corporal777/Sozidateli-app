@@ -1,4 +1,4 @@
-package com.example.di
+package com.example.di.module
 
 import android.content.Context
 import android.util.Log
@@ -12,6 +12,8 @@ import dagger.Module
 import dagger.Provides
 import io.reactivex.schedulers.Schedulers
 import com.example.extensions.isConnectedToNetwork
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 import okhttp3.Cache
 import okhttp3.CacheControl
 import okhttp3.OkHttpClient
@@ -25,6 +27,7 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 @Module
+@InstallIn(SingletonComponent::class)
 class RetrofitModule {
 
     companion object {

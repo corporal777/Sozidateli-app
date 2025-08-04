@@ -1,28 +1,33 @@
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-parcelize'
-apply plugin: 'kotlin-kapt'
-apply plugin: 'androidx.navigation.safeargs'
-apply plugin: 'com.google.gms.google-services'
-apply plugin: 'com.google.firebase.crashlytics'
-apply plugin: 'com.google.firebase.firebase-perf'
+plugins {
+    alias(libs.plugins.com.android.application)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.kotlin.parcelize)
+    alias(libs.plugins.kotlin.plugin.compose)
+    alias(libs.plugins.navigation.safeargs)
+    alias(libs.plugins.firebase.crashlytics)
+    alias(libs.plugins.gms.google.services)
+    id 'kotlin-kapt'
+    alias(libs.plugins.com.google.dagger.hilt)
+    alias(libs.plugins.ksp)
+}
+
 
 android {
     namespace 'com.example.app'
-    compileSdk 34
+    compileSdk 35
     defaultConfig {
         applicationId "ru.houseofapps.sozidateli"
         minSdk 24
         targetSdk 34
         versionCode 70
         versionName "1.0.42"
+
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+        vectorDrawables { useSupportLibrary true }
     }
 
-    buildFeatures {
-        dataBinding = true
-        viewBinding = true
-    }
+
     signingConfigs {
         release {
             storeFile file("fond.jks")
@@ -33,7 +38,6 @@ android {
     }
 
     defaultConfig {
-        buildConfigField "String", "DATA_DATA_API_URL", "\"https://suggestions.dadata.ru/\""
         signingConfig signingConfigs.debug
 
         applicationVariants.configureEach { variant ->
@@ -44,6 +48,9 @@ android {
         }
     }
 
+    Properties properties = new Properties()
+    properties.load(project.rootProject.file("local.properties").newDataInputStream())
+
     buildTypes {
         release {
             minifyEnabled false
@@ -51,47 +58,23 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             if (signingConfigs.hasProperty("release")) signingConfig signingConfigs.release
 
-            buildConfigField "String", "SHARE_URL", "\"https://sozidateli.ru/\""
-            buildConfigField "String", "SOCKET_URL", "\"https://socket-data-provider.sozidateli.ru/\""
-            buildConfigField "String", "API_URL", "\"https://api.sozidateli.ru/\""
-            buildConfigField "String", "NEW_API_URL", "\"https://restapi.sozidateli.ru/\""
-
-            manifestPlaceholders = [
-                    VKIDRedirectHost  : "vk.com",
-                    VKIDRedirectScheme: "vk51869254",
-                    VKIDClientID      : "51869254",
-                    VKIDClientSecret  : "kjx7edb0jsEwtq5Hmia8"
-            ]
+            buildConfigField("String","SHARE_URL",properties.getProperty("SHARE_URL"))
+            buildConfigField("String","SOCKET_URL",properties.getProperty("SOCKET_URL"))
+            buildConfigField("String","NEW_API_URL",properties.getProperty("API_URL"))
         }
         beta {
             initWith(debug)
-            buildConfigField "String", "SHARE_URL", "\"https://beta.sozidateli.ru/\""
-            buildConfigField "String", "SOCKET_URL", "\"https://beta-socket-data-provider.sozidateli.ru/\""
-            buildConfigField "String", "API_URL", "\"https://beta-api.sozidateli.ru/\""
-            buildConfigField "String", "NEW_API_URL", "\"https://beta-restapi.sozidateli.ru/\""
-
+            buildConfigField("String","SHARE_URL",properties.getProperty("BETA_SHARE_URL"))
+            buildConfigField("String","SOCKET_URL",properties.getProperty("BETA_SOCKET_URL"))
+            buildConfigField("String","NEW_API_URL",properties.getProperty("BETA_API_URL"))
             matchingFallbacks = ['debug', 'release']
-            manifestPlaceholders = [
-                    VKIDRedirectHost  : "vk.com",
-                    VKIDRedirectScheme: "vk51929340",
-                    VKIDClientID      : "51929340",
-                    VKIDClientSecret  : "2hAUSfP0zjXS7dr2PWuq"
-            ]
         }
         "new" {
             initWith(debug)
-            buildConfigField "String", "SHARE_URL", "\"https://alfa.sozidateli.ru/\""
-            buildConfigField "String", "SOCKET_URL", "\"https://alfa-socket-data-provider.sozidateli.ru/\""
-            buildConfigField "String", "API_URL", "\"http://alfa-api.sozidateli.ru/\""
-            buildConfigField "String", "NEW_API_URL", "\"https://alfa-restapi.sozidateli.ru/\""
-
+            buildConfigField("String","SHARE_URL",properties.getProperty("ALFA_SHARE_URL"))
+            buildConfigField("String","SOCKET_URL",properties.getProperty("ALFA_SOCKET_URL"))
+            buildConfigField("String","NEW_API_URL",properties.getProperty("ALFA_API_URL"))
             matchingFallbacks = ['debug', 'release']
-            manifestPlaceholders = [
-                    VKIDRedirectHost  : "vk.com",
-                    VKIDRedirectScheme: "vk51817061",
-                    VKIDClientID      : "51817061",
-                    VKIDClientSecret  : "ZPcUM4IDxpFP26ych1qA"
-            ]
         }
     }
 
@@ -118,6 +101,13 @@ android {
         lintConfig file("../lint.xml")
     }
 
+    buildFeatures {
+        dataBinding true
+        viewBinding true
+        compose true
+        buildConfig true
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11
@@ -125,6 +115,10 @@ android {
 
     kotlinOptions {
         jvmTarget = "11"
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion '1.5.1'
     }
 
     testOptions {
@@ -143,13 +137,28 @@ dependencies {
         exclude group: 'org.json', module: 'json'
     }
 
+    //compose
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.compose.material3)
+    implementation(libs.compose.ui)
+    implementation(libs.compose.ui.tooling)
+    implementation(libs.compose.ui.graphics)
+    implementation(libs.compose.ui.tooling.preview)
+    implementation(libs.compose.constraintlayout)
+    implementation(libs.compose.navigation)
+
+    //hilt
+    implementation(libs.dagger.hilt.android)
+    ksp(libs.dagger.hilt.compiler)
+    implementation(libs.dagger.hilt.navigation.compose)
+
     // support
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'com.google.android.material:material:1.12.0'
-    implementation 'androidx.core:core-ktx:1.10.1'
-    implementation 'androidx.fragment:fragment-ktx:1.6.2'
-    implementation "androidx.activity:activity-ktx:1.7.2"
+    implementation "androidx.appcompat:appcompat:$app_compat"
+    implementation "com.google.android.material:material:$androidx_material"
+    implementation "androidx.core:core-ktx:$core_ktx"
+    //implementation "androidx.fragment:fragment-ktx:$fragment_ktx"
+    //implementation "androidx.activity:activity-ktx:$activity_ktx"
 
     // google
     implementation platform('com.google.firebase:firebase-bom:31.1.1')
@@ -175,11 +184,11 @@ dependencies {
     implementation 'io.reactivex.rxjava2:rxkotlin:2.3.0'
 
     // dagger 2
-    implementation "com.google.dagger:dagger:$dagger_version"
-    implementation "com.google.dagger:dagger-android:$dagger_version"
-    implementation "com.google.dagger:dagger-android-support:$dagger_version"
-    kapt "com.google.dagger:dagger-compiler:$dagger_version"
-    kapt "com.google.dagger:dagger-android-processor:$dagger_version"
+    //implementation "com.google.dagger:dagger:$dagger_version"
+    //implementation "com.google.dagger:dagger-android:$dagger_version"
+    //implementation "com.google.dagger:dagger-android-support:$dagger_version"
+    //kapt "com.google.dagger:dagger-compiler:$dagger_version"
+    //kapt "com.google.dagger:dagger-android-processor:$dagger_version"
 
     // moxy
     implementation "com.github.moxy-community:moxy:$moxy_version"
@@ -214,7 +223,7 @@ dependencies {
     implementation "com.airbnb.android:lottie:3.4.0"
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
     implementation 'com.github.Dimezis:BlurView:version-2.0.3'
-    
+
 
     //utils
     implementation 'com.github.FrangSierra:RxFirebase:1.5.6'

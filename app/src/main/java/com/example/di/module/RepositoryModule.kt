@@ -1,13 +1,16 @@
-package com.example.di
+package com.example.di.module
 
 import com.example.data.socket.SocketIOManager
 import com.example.data.socket.SocketIOManagerImpl
 import com.example.repository.*
 import dagger.Module
 import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
 @Module
+@InstallIn(SingletonComponent::class)
 class RepositoryModule {
 
     @Provides

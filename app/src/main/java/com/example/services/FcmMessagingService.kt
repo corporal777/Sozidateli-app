@@ -4,7 +4,6 @@ import android.app.PendingIntent
 import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Handler
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.os.bundleOf
 import com.example.app.R
@@ -13,11 +12,17 @@ import com.example.data.models.RemoteNotification
 import com.example.data.models.RemoteNotification.Companion.TYPE_INVITE
 import com.example.receivers.NotificationClickBroadcastReceiver
 import com.example.repository.ChatRepository
-import com.example.util.*
+import com.example.util.ChatHelper
+import com.example.util.CropCircleTransformation
+import com.example.util.FIELD_ACTION
+import com.example.util.FIELD_EVENT
+import com.example.util.FIELD_NOTIFICATION
+import com.example.util.FIELD_NOTIFICATION_ID
+import com.example.util.NotificationUtil
+import com.example.util.loadBitmap
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.google.gson.Gson
-import dagger.android.AndroidInjection
 import javax.inject.Inject
 
 class FcmMessagingService : FirebaseMessagingService() {
@@ -37,7 +42,6 @@ class FcmMessagingService : FirebaseMessagingService() {
     private lateinit var channel: String
 
     override fun onCreate() {
-        AndroidInjection.inject(this)
         super.onCreate()
         channel = getString(R.string.app_name)
     }
@@ -111,7 +115,7 @@ class FcmMessagingService : FirebaseMessagingService() {
                                         FIELD_ACTION to NotificationClickJobService.ACTION_MARK_AS_READ
                                 ))
                             },
-                            PendingIntent.FLAG_CANCEL_CURRENT
+                        PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE
                     )
                     addAction(0, getString(R.string.notifications_mark_as_read), actionIntent)
                 }

@@ -15,7 +15,6 @@ import com.example.ui.base.BaseCustomActivity
 import com.example.ui.base.MvpAppCompatActivity
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
-import dagger.android.AndroidInjection
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
