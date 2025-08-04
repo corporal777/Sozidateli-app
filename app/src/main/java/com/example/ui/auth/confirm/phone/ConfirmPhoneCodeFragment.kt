@@ -71,7 +71,7 @@ class ConfirmPhoneCodeFragment : BaseToolbarFragment<FragmentPhoneCodeConfirmBin
     }
 
     override fun setFinishRegister(isFinish: Boolean) {
-        (requireActivity() as MainActivity).setFinishRegister(isFinish)
+        //(requireActivity() as MainActivity).setFinishRegister(isFinish)
     }
 
     override fun navigateUp() {

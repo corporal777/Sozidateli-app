@@ -46,6 +46,13 @@ android {
                 outputFileName = "sozidateli-${buildType}-${variant.versionName}($variant.versionCode).apk"
             }
         }
+
+        manifestPlaceholders = [
+                VKIDClientID: "",
+                VKIDClientSecret: "",
+                VKIDRedirectHost: "",
+                VKIDRedirectScheme: ""
+        ]
     }
 
     Properties properties = new Properties()
@@ -58,22 +65,22 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             if (signingConfigs.hasProperty("release")) signingConfig signingConfigs.release
 
-            buildConfigField("String","SHARE_URL",properties.getProperty("SHARE_URL"))
-            buildConfigField("String","SOCKET_URL",properties.getProperty("SOCKET_URL"))
-            buildConfigField("String","NEW_API_URL",properties.getProperty("API_URL"))
+            buildConfigField("String", "SHARE_URL", properties.getProperty("SHARE_URL"))
+            buildConfigField("String", "SOCKET_URL", properties.getProperty("SOCKET_URL"))
+            buildConfigField("String", "NEW_API_URL", properties.getProperty("API_URL"))
         }
         beta {
             initWith(debug)
-            buildConfigField("String","SHARE_URL",properties.getProperty("BETA_SHARE_URL"))
-            buildConfigField("String","SOCKET_URL",properties.getProperty("BETA_SOCKET_URL"))
-            buildConfigField("String","NEW_API_URL",properties.getProperty("BETA_API_URL"))
+            buildConfigField("String", "SHARE_URL", properties.getProperty("BETA_SHARE_URL"))
+            buildConfigField("String", "SOCKET_URL", properties.getProperty("BETA_SOCKET_URL"))
+            buildConfigField("String", "NEW_API_URL", properties.getProperty("BETA_API_URL"))
             matchingFallbacks = ['debug', 'release']
         }
         "new" {
             initWith(debug)
-            buildConfigField("String","SHARE_URL",properties.getProperty("ALFA_SHARE_URL"))
-            buildConfigField("String","SOCKET_URL",properties.getProperty("ALFA_SOCKET_URL"))
-            buildConfigField("String","NEW_API_URL",properties.getProperty("ALFA_API_URL"))
+            buildConfigField("String", "SHARE_URL", properties.getProperty("ALFA_SHARE_URL"))
+            buildConfigField("String", "SOCKET_URL", properties.getProperty("ALFA_SOCKET_URL"))
+            buildConfigField("String", "NEW_API_URL", properties.getProperty("ALFA_API_URL"))
             matchingFallbacks = ['debug', 'release']
         }
     }

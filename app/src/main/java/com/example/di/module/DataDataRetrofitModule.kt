@@ -26,7 +26,7 @@ class DataDataRetrofitModule {
         val retrofit = retrofit2.Retrofit.Builder()
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
                 .addConverterFactory(GsonConverterFactory.create(GsonBuilder().create()))
-                .baseUrl(BuildConfig.DATA_DATA_API_URL)
+                .baseUrl("BuildConfig.DATA_DATA_API_URL")
 
         val clientBuilder = OkHttpClient.Builder()
                 .connectTimeout(5, TimeUnit.SECONDS)

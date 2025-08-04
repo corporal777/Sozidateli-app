@@ -8,13 +8,19 @@ import android.os.Bundle
 import android.view.KeyEvent
 import android.view.MenuItem
 import android.view.View
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.annotation.StringRes
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.Scaffold
 import androidx.core.os.bundleOf
 import androidx.core.splashscreen.SplashScreen
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavOptions
+import androidx.navigation.compose.rememberNavController
 import androidx.navigation.findNavController
 import androidx.navigation.navOptions
 import androidx.navigation.ui.setupWithNavController
@@ -31,6 +37,7 @@ import com.example.extensions.setArgument
 import com.example.extensions.setSystemBarsAppearance
 import com.example.interfaces.DoNotCheckConnectionFragment
 import com.example.interfaces.ToolbarFragment
+import com.example.navigation.NavigationGraph
 import com.example.ui.auth.recoveryPassword.RecoveryPasswordFragmentArgs
 import com.example.ui.base.BaseFragment
 import com.example.ui.base.BaseFragmentActivity
@@ -49,6 +56,7 @@ import com.example.ui.qrscanner.auth.AuthWebsiteFragmentArgs
 import com.example.ui.state.UserState
 import com.example.ui.state.maxNew.MaxStateScreenType
 import com.example.ui.support.detail.SupportQuestionDetailFragmentArgs
+import com.example.ui.theme.SozidateliTheme
 import com.example.ui.user.UserFragmentArgs
 import com.example.ui.views.dialogs.ChangeStateBottomDialog
 import com.example.ui.views.dialogs.ClickType

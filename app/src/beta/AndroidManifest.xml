@@ -29,13 +29,5 @@
                 <data android:pathPrefix="/lp"/>
             </intent-filter>
         </activity>
-
-        <meta-data
-            android:name="api_url"
-            android:value="https://beta-chat.sozidateli.ru/chat/" />
-
-        <meta-data
-            android:name="socket_url"
-            android:value="https://beta-chat-io.sozidateli.ru" />
     </application>
 </manifest>

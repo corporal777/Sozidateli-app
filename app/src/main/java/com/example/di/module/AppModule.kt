@@ -28,7 +28,7 @@ import io.github.inflationx.calligraphy3.CalligraphyConfig
 import io.reactivex.Observable
 import javax.inject.Singleton
 
-@Module(includes = [RepositoryModule::class, RetrofitModule::class, DataDataRetrofitModule::class])
+@Module(includes = [RepositoryModule::class, RetrofitModule::class])
 @InstallIn(SingletonComponent::class)
 class AppModule {
 
