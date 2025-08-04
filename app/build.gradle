@@ -23,17 +23,9 @@ android {
         dataBinding = true
         viewBinding = true
     }
-    signingConfigs {
-        release {
-            storeFile file("fond.jks")
-            storePassword "fondkeystore"
-            keyAlias "fondalias"
-            keyPassword "fondaliaskey"
-        }
-    }
+
 
     defaultConfig {
-        buildConfigField "String", "DATA_DATA_API_URL", "\"https://suggestions.dadata.ru/\""
         signingConfig signingConfigs.debug
 
         applicationVariants.configureEach { variant ->
@@ -41,6 +33,25 @@ android {
             variant.outputs.configureEach {
                 outputFileName = "sozidateli-${buildType}-${variant.versionName}($variant.versionCode).apk"
             }
+        }
+
+        manifestPlaceholders = [
+                VKIDClientID: "",
+                VKIDClientSecret: "",
+                VKIDRedirectHost: "",
+                VKIDRedirectScheme: ""
+        ]
+    }
+
+    Properties properties = new Properties()
+    properties.load(project.rootProject.file("local.properties").newDataInputStream())
+
+    signingConfigs {
+        release {
+            storeFile file(properties.getProperty("STORE_FILE"))
+            storePassword properties.getProperty("STORE_PASSWORD")
+            keyAlias properties.getProperty("KEY_ALIAS")
+            keyPassword properties.getProperty("KEY_PASSWORD")
         }
     }
 
@@ -51,63 +62,26 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             if (signingConfigs.hasProperty("release")) signingConfig signingConfigs.release
 
-            buildConfigField "String", "SHARE_URL", "\"https://sozidateli.ru/\""
-            buildConfigField "String", "SOCKET_URL", "\"https://socket-data-provider.sozidateli.ru/\""
-            buildConfigField "String", "API_URL", "\"https://api.sozidateli.ru/\""
-            buildConfigField "String", "NEW_API_URL", "\"https://restapi.sozidateli.ru/\""
-
-            manifestPlaceholders = [
-                    VKIDRedirectHost  : "vk.com",
-                    VKIDRedirectScheme: "vk51869254",
-                    VKIDClientID      : "51869254",
-                    VKIDClientSecret  : "kjx7edb0jsEwtq5Hmia8"
-            ]
+            buildConfigField("String", "SHARE_URL", properties.getProperty("SHARE_URL"))
+            buildConfigField("String", "SOCKET_URL", properties.getProperty("SOCKET_URL"))
+            buildConfigField("String", "NEW_API_URL", properties.getProperty("API_URL"))
         }
         beta {
             initWith(debug)
-            buildConfigField "String", "SHARE_URL", "\"https://beta.sozidateli.ru/\""
-            buildConfigField "String", "SOCKET_URL", "\"https://beta-socket-data-provider.sozidateli.ru/\""
-            buildConfigField "String", "API_URL", "\"https://beta-api.sozidateli.ru/\""
-            buildConfigField "String", "NEW_API_URL", "\"https://beta-restapi.sozidateli.ru/\""
-
+            buildConfigField("String", "SHARE_URL", properties.getProperty("BETA_SHARE_URL"))
+            buildConfigField("String", "SOCKET_URL", properties.getProperty("BETA_SOCKET_URL"))
+            buildConfigField("String", "NEW_API_URL", properties.getProperty("BETA_API_URL"))
             matchingFallbacks = ['debug', 'release']
-            manifestPlaceholders = [
-                    VKIDRedirectHost  : "vk.com",
-                    VKIDRedirectScheme: "vk51929340",
-                    VKIDClientID      : "51929340",
-                    VKIDClientSecret  : "2hAUSfP0zjXS7dr2PWuq"
-            ]
         }
         "new" {
             initWith(debug)
-            buildConfigField "String", "SHARE_URL", "\"https://alfa.sozidateli.ru/\""
-            buildConfigField "String", "SOCKET_URL", "\"https://alfa-socket-data-provider.sozidateli.ru/\""
-            buildConfigField "String", "API_URL", "\"http://alfa-api.sozidateli.ru/\""
-            buildConfigField "String", "NEW_API_URL", "\"https://alfa-restapi.sozidateli.ru/\""
-
+            buildConfigField("String", "SHARE_URL", properties.getProperty("ALFA_SHARE_URL"))
+            buildConfigField("String", "SOCKET_URL", properties.getProperty("ALFA_SOCKET_URL"))
+            buildConfigField("String", "NEW_API_URL", properties.getProperty("ALFA_API_URL"))
             matchingFallbacks = ['debug', 'release']
-            manifestPlaceholders = [
-                    VKIDRedirectHost  : "vk.com",
-                    VKIDRedirectScheme: "vk51817061",
-                    VKIDClientID      : "51817061",
-                    VKIDClientSecret  : "ZPcUM4IDxpFP26ych1qA"
-            ]
         }
     }
 
-//    flavorDimensions "version"
-//    productFlavors {
-//        "new" {
-//            dimension "version"
-//            buildConfigField "String", "SHARE_URL", "\"https://alfa.sozidateli.ru/\""
-//            buildConfigField "String", "SOCKET_URL", "\"https://alfa-socket-data-provider.sozidateli.ru/\""
-//
-//            buildConfigField "String", "API_URL", "\"http://alfa-api.sozidateli.ru/\""
-//            buildConfigField "String", "NEW_API_URL", "\"https://alfa-restapi.sozidateli.ru/\""
-//            buildConfigField "Boolean", "REGISTER_AGREEMENT_ENABLED", "true"
-//            buildConfigField "Boolean", "NEW_PROFILE_EDIT", "true"
-//        }
-//    }
 
     variantFilter { variant ->
         if (variant.name == "debug") setIgnore(true)

@@ -1,1 +1,9 @@
 /build
+/fond.jks
+fond.jks
+
+/src/main/res/values/sn_api.xml
+sn_api.xml
+
+/src/main/res/values/google_maps_api.xml
+google_maps_api.xml
