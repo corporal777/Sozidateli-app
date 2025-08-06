@@ -142,6 +142,11 @@ dependencies {
     implementation(libs.compose.navigation)
     implementation(libs.compose.systemuicontroller)
 
+    implementation(libs.compose.coil)
+    implementation(libs.compose.coil.network)
+
+    implementation(libs.compose.paging)
+
     implementation(libs.retrofit2.kotlin.coroutines.adapter)
 
     //hilt

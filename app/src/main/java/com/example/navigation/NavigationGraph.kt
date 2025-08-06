@@ -22,7 +22,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.navigation
+import androidx.navigation.navOptions
 import androidx.navigation.navigation
+import com.example.extensions.animComposable
+import com.example.extensions.enterTransition
 import com.example.ui.auth.authorization.AuthorizationScreen
 import com.example.ui.auth.login.LoginScreen
 import com.example.ui.home.HomeScreen
@@ -30,48 +33,48 @@ import com.example.ui.home.HomeScreen
 @Composable
 fun NavigationGraph(
     navController: NavHostController,
-    paddingValues: PaddingValues
+    paddingValues: PaddingValues,
+    startDestination : String
 ) {
 
     NavHost(
         navController = navController,
-        startDestination = Route.Content.route,
+        startDestination = startDestination,
         enterTransition = { EnterTransition.None },
         exitTransition = { ExitTransition.None }
     ) {
-        navigation(route = Route.Auth.route, startDestination = Route.AuthorizationScreen.route) {
-            composable(route = Route.AuthorizationScreen.route) {
-                AuthorizationScreen(paddingValues) {
-                    navController.navigate(Route.LoginScreen.route)
-                }
+        animComposable(route = Route.AuthorizationScreen.route) {
+            AuthorizationScreen(paddingValues) {
+                navController.navigate(Route.LoginScreen.route)
             }
-
-            composable(route = Route.LoginScreen.route) {
-                LoginScreen(paddingValues){
-                    if (it == Route.Content.route) navigatePopUp(navController, it)
-                    else navController.navigate(it)
-                }
+        }
+        animComposable(route = Route.LoginScreen.route) {
+            LoginScreen(paddingValues){
+                if (it == Route.HomeScreen.route) navigatePopUp(navController, it)
+                else navController.navigate(it)
             }
         }
 
-        navigation(route = Route.Content.route, startDestination = Route.HomeScreen.route) {
-            composable(route = Route.HomeScreen.route) {
-                HomeScreen(paddingValues)
-            }
-
-
+        composable(route = Route.HomeScreen.route) {
+            HomeScreen(paddingValues){ navController.navigate(it) }
         }
     }
 }
 
 private fun navigatePopUp(navController: NavController, route: String) {
-    navController.navigate(route) {
+    navController.navigate(route, navOptions {
         navController.graph.startDestinationRoute?.let { start ->
-            popUpTo(start) {
-                saveState = true
-            }
+            popUpTo(start) { inclusive = true }
         }
-        launchSingleTop = true
-        restoreState = true
-    }
+    })
+
+//    navController.navigate(route) {
+//        navController.graph.startDestinationRoute?.let { start ->
+//            popUpTo(start) {
+//                saveState = true
+//            }
+//        }
+//        launchSingleTop = true
+//        restoreState = true
+//    }
 }

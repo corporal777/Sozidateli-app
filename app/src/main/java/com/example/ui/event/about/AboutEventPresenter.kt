@@ -159,7 +159,7 @@ class AboutEventPresenter
     private fun registerToEvent(): Maybe<EventNew> {
         return if (eventData.event.isFormEnabled()) Maybe.just(eventData.event).withDelay(500)
         else eventRepository.registerToEvent(eventId.toInt())
-            .andThen(socket.connectToUpdates())
+            //.andThen(socket.connectToUpdates())
             .andThen(eventRepository.getEventDetails(eventId))
             .doOnSuccess {
                 eventData.event = it

@@ -33,6 +33,7 @@ fun TextNormal(
     maxLines: Int = Int.MAX_VALUE,
     minLines: Int = 1,
     onTextLayout: ((TextLayoutResult) -> Unit)? = null,
+    style: TextStyle = LocalTextStyle.current
 ) {
     Text(
         text = text,
@@ -51,6 +52,6 @@ fun TextNormal(
         maxLines = maxLines,
         minLines = minLines,
         onTextLayout = onTextLayout,
-        style = TextStyle(platformStyle = PlatformTextStyle(includeFontPadding = false))
+        style = style.copy(platformStyle = PlatformTextStyle(includeFontPadding = false))
     )
 }

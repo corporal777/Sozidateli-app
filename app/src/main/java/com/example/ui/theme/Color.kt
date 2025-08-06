@@ -29,6 +29,7 @@ val AuthPagerIndicatorSelectedColor = Color(0x4DEBEBF5)
 
 val MainBrownColor = Color(0xFFBE9B72)
 val BtnBackgroundBrownColor = Color(0xFFC3996C)
+val BtnBackgroundWhiteGhostColor = Color(0xFFF2F2F7)
 val VkBtnBackgroundColor = Color(0xFF0077FF)
 val GosUslugiBtnTextColor = Color(0xFF0D4CD3)
 
@@ -39,5 +40,12 @@ val InputContainerFocusedColor = Color(0x54C3996C)
 val InputContainerUnFocusedColor = Color(0x4DC3996C)
 
 val HomeSearchContainerColor = Color(0x1F767680)
+
+val AmbientShadowColor = Color(0x00486A7A)
+val SpotShadowColor = Color(0xE6181F2A)
+
+val BottomNavigationBarColor = Color(0xFFF9F9F9)
+val BottomNavigationSelectedColor = Color(0xFFC3996C)
+val BottomNavigationNormalColor = Color(0xFF979592)
 
 

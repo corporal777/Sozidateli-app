@@ -70,7 +70,7 @@
     <dimen name="swipe_distance_start_margin">0dp</dimen>
     <dimen name="swipe_distance_end_margin">40dp</dimen>
 
-    <dimen name="event_item_height_new">380dp</dimen>
+    <dimen name="event_item_height_new">428dp</dimen>
     <dimen name="event_image_height_new">400dp</dimen>
     <dimen name="event_image_shadow_height_new">90dp</dimen>
 

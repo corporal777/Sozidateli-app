@@ -160,38 +160,28 @@ class MainPresenter
     }
 
     fun connectToSocket() {
-        chatCompositeDisposable += socket.connect()
-            .performOnBackgroundOutOnMain()
-            .subscribeSimple(
-                onError = { it.printStackTrace() },
-                onNext = {
-                    val connected = it == SocketConnectionState.CONNECTED
-                    if (connected && chatCompositeDisposable.size() == 1) {
-                        subscribeToNotifications()
-                        subscribeChatUnreadCount()
-                        subscribeChatRequestsCount()
-                        updateSocketEmitValues()
-                    }
-                })
+//        chatCompositeDisposable += socket.connect()
+//            .performOnBackgroundOutOnMain()
+//            .subscribeSimple(
+//                onError = { it.printStackTrace() },
+//                onNext = {
+//                    val connected = it == SocketConnectionState.CONNECTED
+//                    if (connected && chatCompositeDisposable.size() == 1) {
+//                        subscribeToNotifications()
+//                        subscribeChatUnreadCount()
+//                        subscribeChatRequestsCount()
+//                        updateSocketEmitValues()
+//                    }
+//                })
     }
 
     private fun updateSocketEmitValues() {
-        chatCompositeDisposable += socket.connectToUpdates()
-            .performOnBackgroundOutOnMain()
-            .subscribe()
+//        chatCompositeDisposable += socket.connectToUpdates()
+//            .performOnBackgroundOutOnMain()
+//            .subscribe()
     }
 
     private fun subscribeToNotifications() {
-        chatCompositeDisposable += socket.subscribeToTotalNotificationsCount()
-            .doOnError { it.printStackTrace() }
-            .performOnBackgroundOutOnMain()
-            .subscribeSimple(
-                onError = { appData.notificationsCount = 0 },
-                onNext = {
-                    Log.e("REQUEST INFO NOTIFICATION", it.toString())
-                    appData.notificationsCount = it
-                }
-            )
         chatCompositeDisposable += socket.subscribeTotalNotificationsTypesCount()
             .performOnBackgroundOutOnMain()
             .subscribeSimple(

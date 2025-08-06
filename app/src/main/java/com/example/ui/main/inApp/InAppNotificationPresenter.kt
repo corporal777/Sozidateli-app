@@ -76,7 +76,7 @@ class InAppNotificationPresenter
 
     private fun updateNotification(request: Completable, notificationId: Int) {
         compositeDisposable += request
-            .andThen(socket.connectToUpdates())
+            //.andThen(socket.connectToUpdates())
             .andThen(userRepository.getNotificationDetail(notificationId.toString(),true))
             .map { Notification.fromRemoteNotification(it) }
             .doOnSuccess { newNote ->

@@ -72,7 +72,7 @@ fun LoginScreen(
     LaunchedEffect(isLoadingState) { isLoading = isLoadingState }
     LaunchedEffect(isEnabledState) { isEnabled = isEnabledState }
     LaunchedEffect(isLoginSuccess) {
-        if (isLoginSuccess) onNavigate(Route.Content.route)
+        if (isLoginSuccess) onNavigate(Route.HomeScreen.route)
     }
 
     val focusManager = LocalFocusManager.current

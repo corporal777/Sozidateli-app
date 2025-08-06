@@ -19,13 +19,19 @@ import com.example.ui.theme.SozidateliTheme
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dagger.hilt.android.AndroidEntryPoint
 import androidx.activity.viewModels
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.LocalOverscrollConfiguration
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import com.example.ui.components.AppBottomNavigation
+import com.example.ui.theme.BottomNavigationBarColor
 
 @AndroidEntryPoint
 class SozidateliActivity : ComponentActivity() {
 
     private val viewModel by viewModels<MainViewModel>()
 
+    @OptIn(ExperimentalFoundationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -37,9 +43,15 @@ class SozidateliActivity : ComponentActivity() {
 
                 SetSystemBarsColor(navController)
 
-                Scaffold() { padding ->
-                    NavigationGraph(navController, padding)
+                CompositionLocalProvider(LocalOverscrollConfiguration provides null) {
+                    Scaffold(
+                        bottomBar = { AppBottomNavigation(navController) }
+                    ) { padding ->
+                        NavigationGraph(navController, padding, viewModel.startDestination.value)
+                    }
                 }
+
+
             }
 
         }
@@ -47,14 +59,21 @@ class SozidateliActivity : ComponentActivity() {
     }
 
     @Composable
-    private fun SetSystemBarsColor(navController: NavController){
+    private fun SetSystemBarsColor(navController: NavController) {
         val backStackEntry by navController.currentBackStackEntryAsState()
         val currentRoute = backStackEntry?.destination?.route ?: ""
 
         val isSystemInDarkMode = currentRoute != Route.AuthorizationScreen.route
         val systemUiColor = rememberSystemUiController()
+        val navBarColor =
+            if (currentRoute != Route.AuthorizationScreen.route) BottomNavigationBarColor
+            else Color.Transparent
 
         SideEffect {
+            systemUiColor.setNavigationBarColor(
+                color = BottomNavigationBarColor,
+                darkIcons = true
+            )
             systemUiColor.setStatusBarColor(
                 color = Color.Transparent,
                 darkIcons = isSystemInDarkMode

@@ -6,6 +6,7 @@ import androidx.paging.LoadState
 import androidx.paging.PagedList
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import androidx.paging.PagingDataAdapter
 import androidx.paging.RxPagedListBuilder
 import androidx.paging.rxjava2.flowable
@@ -14,8 +15,11 @@ import com.example.adapters.event.FavoriteEventPagingAdapter.Companion.withLoadS
 import com.example.util.paginationNew.PagingDataSourceFactory
 import com.example.util.paginationNew.flow.PagingListFlow
 import com.example.util.pagination.observable.PaginationList
+import com.example.util.paginationNew.PagingSourceFactory
+import com.example.util.paginationNew.flow.PagingFlow
 import com.example.util.paginationNew.observable.PagingListObservable
 import io.reactivex.Observable
+import kotlinx.coroutines.flow.Flow
 
 fun <K : Any, V : Any> DataSource.Factory<K, V>.build(
     initialSize: Int = 20,
@@ -55,22 +59,22 @@ fun <K : Any> PagingDataSourceFactory<K>.buildFlow(
     return PagingListFlow(pager, this)
 }
 
-fun <K : Any> PagingDataSourceFactory<K>.buildObservable(
+fun <K : Any> PagingSourceFactory<K>.build(
     initialSize: Int = 20,
     pageSize: Int = initialSize,
     distance: Int = 5,
     enablePlaceholders: Boolean = false
-): PagingListObservable<K> {
+): Flow<PagingData<K>> {
     val config = PagingConfig(
         pageSize = pageSize,
         initialLoadSize = initialSize,
-        //maxSize = pageSize * 3,
         prefetchDistance = distance,
         enablePlaceholders = enablePlaceholders
     )
-    val pager = Pager(config = config, pagingSourceFactory = { this.createDataSource() }).observable
-    return PagingListObservable(pager, this)
+    val pager = Pager(config = config, pagingSourceFactory = { this.createDataSource() }).flow
+    return PagingFlow(pager, this)
 }
+
 
 fun PagingDataAdapter<*, *>.executePlaceholderLoadState(
     loadState: CombinedLoadStates,

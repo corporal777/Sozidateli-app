@@ -4,6 +4,7 @@ import com.example.data.models.*
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
+import kotlinx.coroutines.flow.Flow
 
 interface SocketIOManager {
     fun subscribeNewChatMessage(): Flowable<ApiNewResponse<List<MessageModel>>>
@@ -11,15 +12,15 @@ interface SocketIOManager {
     fun connectToChat(chatId: String): Completable
     fun disconnectFromChat(chatId: String): Completable
     fun disconnectFromSocket()
-    fun connect(): Flowable<SocketConnectionState>
+    fun connect(): Flow<SocketConnectionState>
     fun isConnected(): Single<Boolean>
     fun subscribeToTotalMessagesCount(): Flowable<Int>
     fun subscribeToMessagesCount(): Flowable<RoomUnreadMessageCount>
     fun subscribeToBannedList(chatId: String): Flowable<String>
     fun subscribeToInviteChange(chatId: String): Flowable<String>
     fun subscribeToInvitesCount(): Flowable<Int>
-    fun connectToUpdates(): Completable
-    fun subscribeToTotalNotificationsCount(): Flowable<Int>
+    fun connectToUpdates()
+    fun subscribeToTotalNotificationsCount(): Flow<Int>
 
     fun subscribeTotalNotificationsTypesCount(): Flowable<NotificationsTypesModel>
     fun subscribeNotificationsInvitesCount(): Flowable<NotificationInviteModel>

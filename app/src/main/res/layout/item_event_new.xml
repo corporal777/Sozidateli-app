@@ -108,7 +108,7 @@
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="20dp"
         app:buttonBackground="@drawable/btn_background_white_ghost"
-        app:buttonMinHeight="@dimen/auth_buttons_min_height"
+        app:buttonMinHeight="@dimen/event_detail_action_button_min_height"
         app:buttonPaddingHorizontal="24dp"
         app:buttonTextColor="@color/black"
         app:buttonTextSize="@dimen/common_button_text_size"

@@ -47,7 +47,8 @@ abstract class BaseNotificationTypePresenter<V : BaseNotificationTypeContract.Vi
 
 
     protected fun updateNotification(request: Completable, notificationId: Int) {
-        compositeDisposable += request.andThen(socket.connectToUpdates())
+        compositeDisposable += request
+            //.andThen(socket.connectToUpdates())
             .andThen(userRepository.getNotificationDetail(notificationId.toString(), true))
             .map { NotificationLocal.fromRemoteNotification(it) }
             .performOnBackgroundOutOnMain()
@@ -63,7 +64,7 @@ abstract class BaseNotificationTypePresenter<V : BaseNotificationTypeContract.Vi
 
     override fun onReadAllNotifications(type: NotificationType) {
         compositeDisposable += userRepository.markAllNotificationsAsRead(type)
-            .flatMap { socket.connectToUpdates().andThen(Maybe.just(it)) }
+            .flatMap { Maybe.just(it) }
             .performOnBackgroundOutOnMain()
             .withCustomLoading(viewState)
             .subscribeSimple(

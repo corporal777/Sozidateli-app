@@ -4,6 +4,7 @@ import com.example.data.bodies.*
 import com.example.data.models.*
 import com.example.data.bodies.MessageBodyNew
 import com.example.util.pagination.NotificationsResponse
+import com.example.util.pagination.PaginationResponse
 import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
@@ -190,7 +191,7 @@ interface Api {
 
     //+
     @GET("v1/event/event-list")
-    fun getEventsListNew(@QueryMap map: Map<String, Any>): Maybe<EventNewModel>
+    fun getEventsListNew(@QueryMap map: Map<String, Any>): Deferred<PaginationResponse<EventNew>>
 
     //+
     @GET("v1/event/event-list")

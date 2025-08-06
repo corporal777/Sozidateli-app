@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.TextUnitType
 import com.example.util.TextUtils
 
 @Composable
-fun TextRegular(
+fun TextMedium(
     text: String,
     modifier: Modifier = Modifier,
     color: Color = Color.Unspecified,
@@ -46,7 +46,7 @@ fun TextRegular(
         textDecoration = textDecoration,
         textAlign = textAlign,
         lineHeight = lineHeight,
-        fontWeight = FontWeight.Thin,
+        fontWeight = FontWeight.Medium,
         overflow = overflow,
         softWrap = softWrap,
         maxLines = maxLines,

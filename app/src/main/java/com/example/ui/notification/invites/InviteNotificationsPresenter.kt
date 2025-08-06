@@ -105,7 +105,8 @@ class InviteNotificationsPresenter
     }
 
     private fun updateNotification(request: Completable, notificationId: Int) {
-        compositeDisposable += request.andThen(socket.connectToUpdates())
+        compositeDisposable += request
+            //.andThen(socket.connectToUpdates())
             .andThen(userRepository.getNotificationDetail(notificationId.toString(), true))
             .map { NotificationLocal.fromRemoteNotification(it) }
             .performOnBackgroundOutOnMain()

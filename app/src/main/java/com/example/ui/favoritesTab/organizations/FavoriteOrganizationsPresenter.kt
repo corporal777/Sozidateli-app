@@ -4,7 +4,6 @@ import com.example.data.AppData
 import com.example.data.models.FavoriteModel
 import com.example.data.models.OrganizationNew
 import com.example.extensions.buildFlow
-import com.example.extensions.buildObservable
 import com.example.repository.EventRepository
 import com.example.repository.OrganizationRepository
 import com.example.ui.base.BasePresenter

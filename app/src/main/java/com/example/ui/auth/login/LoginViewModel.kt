@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.data.AppData
 import com.example.data.bodies.AuthBody
 import com.example.data.bodies.LoginModel
+import com.example.data.models.AuthResponse
 import com.example.data.models.SnAuth
 import com.example.extensions.getAppVersion
 import com.example.extensions.getAppVersionCode
@@ -58,6 +59,7 @@ class LoginViewModel
             if (invite != -1) repository.authEmailOrPhoneWithInvite(invite, getLoginBody())
             else if (snAuth != null) repository.authEmailOrPhoneWithSn(getLoginBody(), snAuth!!)
             else repository.authEmailOrPhoneWithResult(getLoginBody())
+                //flowOf(AuthResponse(id = 22197, token = "ca5b1d3386ec1e7f3fc4195e4653bcd7"))
                 .onEach {
                     if (it.token != null) appData.login(it.token)
                     if (it.id != null) appData.saveId(it.id)

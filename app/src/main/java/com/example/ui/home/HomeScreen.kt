@@ -1,8 +1,10 @@
 package com.example.ui.home
 
 import android.os.Parcelable
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -18,8 +20,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
@@ -47,21 +52,34 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.app.R
 import com.example.extensions.clickable
+import com.example.navigation.Route
+import com.example.ui.components.EventCardItem
 import com.example.ui.components.TextNormal
 import com.example.ui.components.TextSemibold
+import com.example.ui.home.components.AuthButtonItem
 import com.example.ui.home.components.CustomToolbar
+import com.example.ui.home.components.SearchItem
 import com.example.ui.home.components.rememberToolbarScrollBehavior
 import com.example.ui.theme.AppBackgroundColor
+import com.example.ui.theme.AuthHorizontalPadding
+import com.example.ui.theme.DefaultHorizontalPadding
 import com.example.ui.theme.HomeSearchContainerColor
 import com.example.ui.theme.InputPlaceholderColor
 import com.example.ui.theme.MainBrownColor
 import kotlinx.parcelize.Parcelize
 
 @Composable
-fun HomeScreen(paddingValues: PaddingValues) {
+fun HomeScreen(
+    paddingValues: PaddingValues,
+    viewModel: HomeViewModel = hiltViewModel(),
+    onAuthClick: (String) -> Unit
+) {
 
+    val events = viewModel.events.collectAsLazyPagingItems()
     val scrollBehavior = rememberToolbarScrollBehavior()
 
     Column(
@@ -76,63 +94,27 @@ fun HomeScreen(paddingValues: PaddingValues) {
             modifier = Modifier,
             collapsingTitle = stringResource(R.string.tab_recommended_title),
             additionalContent = { SearchItem() },
-            rightContent = { AuthButtonItem() },
+            rightContent = { AuthButtonItem() { onAuthClick(Route.AuthorizationScreen.route) } },
             scrollBehavior = scrollBehavior
         )
 
-        LazyColumn() {
-            scrollableItemsForSample()
+
+        LazyColumn(
+            contentPadding = PaddingValues(
+                top = 10.dp,
+                bottom = 50.dp,
+                start = DefaultHorizontalPadding,
+                end = DefaultHorizontalPadding
+            ),
+            verticalArrangement = Arrangement.spacedBy(20.dp)
+        ) {
+            items(items = events.itemSnapshotList, key = { it?.id ?: 0 }) {
+                it?.let { event -> EventCardItem(event, false) }
+            }
         }
     }
 }
 
-@Composable
-private fun AuthButtonItem() {
-    TextSemibold(
-        modifier = Modifier
-            .clip(CircleShape)
-            .wrapContentWidth()
-            .background(MainBrownColor)
-            .clickable(Color.White) {
-
-            }
-            .padding(horizontal = 15.dp, vertical = 6.dp),
-        text = stringResource(R.string.auth_label_login),
-        fontSize = 15.sp,
-        color = Color.White,
-        textAlign = TextAlign.Center
-    )
-}
-
-@Composable
-private fun SearchItem() {
-    Row(
-        modifier = Modifier
-            .clip(RoundedCornerShape(12.dp))
-            .fillMaxWidth()
-            .height(40.dp)
-            .background(HomeSearchContainerColor)
-            .padding(start = 10.dp, end = 15.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Icon(
-            painter = painterResource(R.drawable.ic_search_new),
-            contentDescription = "",
-            tint = Color.Unspecified
-        )
-
-        TextNormal(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 10.dp),
-            text = stringResource(R.string.search_input_hint),
-            fontSize = 17.sp,
-            color = InputPlaceholderColor,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis
-        )
-    }
-}
 
 private fun LazyListScope.scrollableItemsForSample() {
     for (i in 0..100) {

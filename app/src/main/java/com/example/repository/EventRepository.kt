@@ -27,12 +27,14 @@ import com.example.util.pagination.PaginationResponse
 import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
+import kotlinx.coroutines.Deferred
 import okhttp3.RequestBody
 
 interface EventRepository {
 
+    fun getEventsListNew(map: Map<String, Any>): Deferred<PaginationResponse<EventNew>>
+
     fun getEventsList(map: Map<String, Any>): Maybe<PaginationResponse<EventNew?>>
-    fun getEventsListNew(map: Map<String, Any>): Maybe<PaginationResponse<EventNew>>
     fun getSortedEventsList(map: Map<String, Any>): Maybe<PaginationResponse<EventNew>>
     fun getUserCalendarEvents(): Maybe<List<EventNew>?>
 

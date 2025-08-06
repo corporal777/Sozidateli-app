@@ -1,5 +1,7 @@
 package com.example.repository
 
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
 import com.example.api.Api
 import com.example.data.AppData
 import com.example.data.bodies.AddToFavoriteEntityModel
@@ -33,9 +35,11 @@ import com.example.data.models.RegistrationAgreementStatus
 import com.example.data.models.UserProfileFieldsModel
 import com.example.data.models.eventRegister.EventRegisterField
 import com.example.util.pagination.PaginationResponse
+import com.example.util.paginationNew.EventPagingSource
 import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
+import kotlinx.coroutines.Deferred
 import okhttp3.RequestBody
 import javax.inject.Inject
 
@@ -109,9 +113,8 @@ class EventRepositoryImp
         api.getEventsList(map)
             .map { PaginationResponse(it.totalCount, it.data ?: arrayListOf()) }
 
-    override fun getEventsListNew(map: Map<String, Any>): Maybe<PaginationResponse<EventNew>> {
+    override fun getEventsListNew(map: Map<String, Any>): Deferred<PaginationResponse<EventNew>> {
         return api.getEventsListNew(map)
-            .map { PaginationResponse(it.totalCount, it.data ?: emptyList()) }
     }
 
     override fun getSortedEventsList(map: Map<String, Any>): Maybe<PaginationResponse<EventNew>> =

@@ -18,6 +18,18 @@ import io.socket.emitter.Emitter
 import io.socket.engineio.client.transports.Polling
 import io.socket.engineio.client.transports.WebSocket
 import io.socket.parseqs.ParseQS
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.channels.trySendBlocking
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.buffer
+import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.json.JSONObject
@@ -37,18 +49,19 @@ class SocketIOManagerImpl
 
     private var mSocket: Socket? = null
     private var okHttpClient: OkHttpClient
-    private var connectionStatusSubject = PublishSubject.create<SocketConnectionState>()
+    private var connectionStatusFlow = MutableSharedFlow<SocketConnectionState>()
     private var connectionStatus = SocketConnectionState.DISCONNECT
         set(value) {
             field = value
-            connectionStatusSubject.onNext(value)
+            //connectionStatusSubject.onNext(value)
+            connectionStatusFlow.tryEmit(value)
         }
 
     init {
         okHttpClient = getHttpClient()
     }
 
-    override fun connect(): Flowable<SocketConnectionState> {
+    override fun connect() = callbackFlow<SocketConnectionState> {
         try {
             mSocket = IO.socket(URI.create(BuildConfig.SOCKET_URL), IO.Options().apply {
                 query = ParseQS.encode(hashMapOf("token" to "Token ${appData.token}"))
@@ -62,31 +75,36 @@ class SocketIOManagerImpl
                 on(Socket.EVENT_CONNECT_ERROR) {
                     logErrorSocket("Error event: " + it.contentToString())
                     connectionStatus = SocketConnectionState.ERROR
+                    trySendBlocking(SocketConnectionState.ERROR)
                 }
                 on(Socket.EVENT_CONNECT) {
                     logErrorSocket("Connect event: " + it.contentToString())
                     connectionStatus = SocketConnectionState.CONNECTED
+                    trySendBlocking(SocketConnectionState.CONNECTED)
                 }
                 on(Socket.EVENT_DISCONNECT) {
                     logErrorSocket("Disconnect event: " + it.contentToString())
                     connectionStatus = SocketConnectionState.ERROR
+                    trySendBlocking(SocketConnectionState.ERROR)
                 }
                 on(Manager.EVENT_CLOSE) {
                     logErrorSocket("Close event: " + it.contentToString())
                     connectionStatus = SocketConnectionState.ERROR
+                    trySendBlocking(SocketConnectionState.ERROR)
                 }
                 on(Manager.EVENT_ERROR) {
                     logErrorSocket("Close event: " + it.contentToString())
                     connectionStatus = SocketConnectionState.ERROR
+                    trySendBlocking(SocketConnectionState.ERROR)
                     disconnect()
                 }
                 connect()
                 logErrorSocket("Connected")
+                awaitClose()
             }
         } catch (e: URISyntaxException) {
             logErrorSocket("Not connected to socket")
         }
-        return connectionStatusSubject.toFlowable(BackpressureStrategy.BUFFER)
     }
 
     override fun connectToChat(chatId: String): Completable =
@@ -95,11 +113,12 @@ class SocketIOManagerImpl
             Log.i("ChatSocket", "Started listening: $chatId")
         }
 
-    override fun connectToUpdates(): Completable =
-        Completable.fromAction {
+    override fun connectToUpdates() {
+        CoroutineScope(Dispatchers.IO).launch {
             mSocket?.emit("refresh")
             logErrorSocket("Started refresh")
         }
+    }
 
     override fun disconnectFromChat(chatId: String): Completable =
         Completable.fromAction {
@@ -142,16 +161,19 @@ class SocketIOManagerImpl
             }
         }, BackpressureStrategy.LATEST)
 
-    override fun subscribeToTotalNotificationsCount(): Flowable<Int> =
-        Flowable.create({ emitter ->
+    override fun subscribeToTotalNotificationsCount(): Flow<Int> =
+        callbackFlow {
             val listener = Emitter.Listener { args ->
                 if (args == null || args[0] == null) return@Listener
-                emitter.onNext(args[0].toString().toInt())
+                trySendBlocking(args[0].toString().toInt())
+                //send(args[0].toString().toInt())
             }
             mSocket?.on("notification-count", listener)
+
             logErrorSocket("Started listening notification-count event")
-            emitter.setCancellable { mSocket?.off("notification-count", listener) }
-        }, BackpressureStrategy.LATEST)
+            awaitClose { mSocket?.off("notification-count", listener) }
+        }
+
 
     override fun subscribeNotificationsInvitesCount(): Flowable<NotificationInviteModel> {
         return Flowable.create({ emitter ->
@@ -281,7 +303,11 @@ class SocketIOManagerImpl
             logErrorSocket("QrAuthSocket", "Send message to connect")
         }
 
-    override fun confirmAuthWithQrCode(code: String, socketId: String?, isAccept: Boolean): Completable =
+    override fun confirmAuthWithQrCode(
+        code: String,
+        socketId: String?,
+        isAccept: Boolean
+    ): Completable =
         Completable.fromAction {
             val obj = JSONObject().apply {
                 put("socket", socketId)
@@ -318,9 +344,17 @@ class SocketIOManagerImpl
             return@HostnameVerifier true
         }
         val trustAllCerts = arrayOf<TrustManager>(object : X509TrustManager {
-            override fun checkClientTrusted(p0: Array<out java.security.cert.X509Certificate>?, p1: String?) {}
+            override fun checkClientTrusted(
+                p0: Array<out java.security.cert.X509Certificate>?,
+                p1: String?
+            ) {
+            }
 
-            override fun checkServerTrusted(p0: Array<out java.security.cert.X509Certificate>?, p1: String?) {}
+            override fun checkServerTrusted(
+                p0: Array<out java.security.cert.X509Certificate>?,
+                p1: String?
+            ) {
+            }
 
             override fun getAcceptedIssuers(): Array<out java.security.cert.X509Certificate>? {
                 return arrayOf()

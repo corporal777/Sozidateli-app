@@ -1,11 +1,14 @@
 package com.example.ui.main
 
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.viewModelScope
 import com.example.data.AppData
 import com.example.data.models.AuthResponse
 import com.example.data.models.UserProfileFieldsModel
+import com.example.data.socket.SocketConnectionState
+import com.example.data.socket.SocketIOManager
 import com.example.exceptions.InvalidTokenException
 import com.example.extensions.flatMap
 import com.example.navigation.Route
@@ -19,6 +22,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
@@ -34,10 +38,11 @@ class MainViewModel
 @Inject constructor(
     private val appData: AppData,
     private val userRepository: UserRepository,
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
+    private val socket: SocketIOManager,
 ) : BaseViewModel() {
 
-    private val _startDestination = mutableStateOf(Route.Content.route)
+    private val _startDestination = mutableStateOf(Route.HomeScreen.route)
     val startDestination: State<String> = _startDestination
 
     private val _splashCondition = mutableStateOf(true)
@@ -62,14 +67,42 @@ class MainViewModel
 
     private fun getAdditionalData() {
         userRepository.getUserProfileAdditionalData()
+            .catch { it.printStackTrace() }
+            .flowOn(Dispatchers.IO)
+            .launchIn(viewModelScope)
     }
 
-    private fun loadUser(): Flow<UserProfileFieldsModel> {
-        return authRepository.checkUserAuthFlow()
+    private fun loadUser() {
+        authRepository.checkUserAuthFlow()
             .flatMap { userRepository.checkUserProfileFlow() }
+            .flatMap { connectToSocket() }
             .catch {
                 if (it is HttpException && it.code() == 400) { appData.logoutInvalidation() }
                 else it.printStackTrace()
-            }.flowOn(Dispatchers.IO)
+            }
+            .flowOn(Dispatchers.IO)
+            .launchIn(viewModelScope)
+    }
+
+    private fun connectToSocket(): Flow<SocketConnectionState> {
+        return socket.connect()
+            .onEach {
+                val connected = it == SocketConnectionState.CONNECTED
+
+                if (connected) {
+                    subscribeToNotifications()
+                    socket.connectToUpdates()
+                }
+            }
+    }
+
+    private fun subscribeToNotifications() {
+        socket.subscribeToTotalNotificationsCount()
+            .onEach {
+                Log.e("REQUEST INFO NOTIFICATION", it.toString())
+                appData.notificationsCount = it
+            }
+            .catch { appData.notificationsCount = 0 }
+            .launchIn(viewModelScope)
     }
 }

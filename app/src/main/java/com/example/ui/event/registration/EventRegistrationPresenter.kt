@@ -92,7 +92,7 @@ class EventRegistrationPresenter
             compositeDisposable += getRequestBody(0)
                 .flatMap { eventRepository.sendFormToRegister(it) }
                 .flatMapCompletable { eventRepository.registerToEvent(eventId.toInt()) }
-                .andThen(socket.connectToUpdates())
+                //.andThen(socket.connectToUpdates())
                 .andThen(eventRepository.getEvent(eventId))
                 .performOnBackgroundOutOnMain()
                 .withCustomLoading(viewState)

@@ -78,7 +78,7 @@ abstract class EventListPresenter<V : EventListContract.View>(
         return Maybe.defer {
             if (event.isFormEnabled()) Maybe.just(event).withDelay(500)
             else eventRepository.registerToEvent(event.id ?: 0)
-                .andThen(socket.connectToUpdates())
+                //.andThen(socket.connectToUpdates())
                 .andThen(eventRepository.getEvent(event.id.toString()))
                 .doOnSuccess { event.setFieldsForActionButton(it) }.map { event }
         }

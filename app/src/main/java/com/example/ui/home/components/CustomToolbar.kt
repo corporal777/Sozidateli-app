@@ -263,7 +263,7 @@ fun CustomToolbar(
                 //old value
                 val contentY = (layoutHeightPx - value).roundToInt()
                 //new value
-                val expandHeightY = collapsingTitleY + expandedTitlePlaceable!!.height - 30
+                val expandHeightY = collapsingTitleY + expandedTitlePlaceable!!.height - 20
                 val refContentY = if (contentY >= expandHeightY) expandHeightY else contentY
                 additionalContentPlaceable?.placeRelative(0, refContentY)
             }

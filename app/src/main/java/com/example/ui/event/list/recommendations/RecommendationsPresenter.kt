@@ -72,7 +72,7 @@ class RecommendationsPresenter
     }
 
     override fun getPaginationRequest(limit: Int, offset: Int): Maybe<PaginationResponse<EventNew>> {
-        return eventRepository.getEventsListNew(
+        return eventRepository.getEventsList(
             mapOf(
                 EVENT_LIMIT to limit,
                 EVENT_OFFSET to offset,
@@ -82,6 +82,8 @@ class RecommendationsPresenter
                 EVENT_PUBLIC to "true",
                 EVENT_STATUS to "approved,registration,registrationFinished,running"
             )
-        )
+        ).map {
+            PaginationResponse(it.totalCount, it.data.mapNotNull { it })
+        }
     }
 }
