@@ -10,7 +10,7 @@ val Purple40 = Color(0xFF6650a4)
 val PurpleGrey40 = Color(0xFF625b71)
 val Pink40 = Color(0xFF7D5260)
 
-val AppBackgroundColor = Color(0xFF151515)
+val AppBackgroundColor = Color(0xFFFFFFFF)
 val CourseItemColor = Color(0xFF24252A)
 val CourseItemTextColor = Color(0xFFF2F2F3)
 val CourseLessonColor = Color(0x80F2F2F3)
@@ -23,5 +23,21 @@ val BottomBarLineColor = Color(0xFF4D555E)
 val VkColor = Color(0xFF2683ED)
 val OdnoklassnikiColorTop = Color(0xFFF98509)
 val OdnoklassnikiColorBottom = Color(0xFFF95D00)
+
+val AuthTitleShadowColor = Color(0x40000000)
+val AuthPagerIndicatorSelectedColor = Color(0x4DEBEBF5)
+
+val MainBrownColor = Color(0xFFBE9B72)
+val BtnBackgroundBrownColor = Color(0xFFC3996C)
+val VkBtnBackgroundColor = Color(0xFF0077FF)
+val GosUslugiBtnTextColor = Color(0xFF0D4CD3)
+
+val InputTextColor = Color(0xFF000000)
+val InputTitleTextColor = Color(0xFF9A99A2)
+val InputPlaceholderColor = Color(0xFF9A99A2)
+val InputContainerFocusedColor = Color(0x54C3996C)
+val InputContainerUnFocusedColor = Color(0x4DC3996C)
+
+val HomeSearchContainerColor = Color(0x1F767680)
 
 

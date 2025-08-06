@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
+import com.example.data.models.DataState
 import com.example.data.models.SnAuth
 import com.example.data.models.SnType
 import com.example.exceptions.SnAuthError
@@ -14,6 +15,10 @@ import com.vk.id.VKID
 import com.vk.id.VKIDAuthFail
 import com.vk.id.internal.log.LogEngine
 import io.reactivex.subjects.SingleSubject
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.launch
 
 
 class SnAuthActivity : AppCompatActivity() {
@@ -22,15 +27,20 @@ class SnAuthActivity : AppCompatActivity() {
         override fun onSuccess(accessToken: AccessToken) {
             val token = accessToken.token
             val userId = accessToken.userID.toString()
-            authComplete(SnAuth(token, userId, SnType.VK))
+            CoroutineScope(Dispatchers.IO).launch {
+                authComplete(SnAuth(token, userId, SnType.VK))
+            }
+
         }
 
         override fun onFail(fail: VKIDAuthFail) {
-            authError(fail.description)
+            CoroutineScope(Dispatchers.IO).launch {
+                authError(fail.description)
+            }
         }
     }
 
-    private lateinit var authSubject: SingleSubject<SnAuth>
+    private lateinit var authSubject: MutableSharedFlow<DataState<SnAuth>>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,7 +49,7 @@ class SnAuthActivity : AppCompatActivity() {
         if (args.getSerializable(ARG_AUTH_TYPE) == SnType.VK) authVk()
         else finish()
 
-        authSubject = SnAuthCallbackHelper.getRequest()
+        authSubject = SnAuthCallbackHelper.getRequestFlow()
     }
 
     private fun authVk() {
@@ -54,25 +64,25 @@ class SnAuthActivity : AppCompatActivity() {
         }
     }
 
-    private fun authComplete(snAuth: SnAuth) {
+    private suspend fun authComplete(snAuth: SnAuth) {
         finish()
-        authSubject.onSuccess(snAuth)
+        authSubject.emit(DataState.Success(snAuth))
     }
 
-    private fun authError(message: String? = null) {
+    private suspend fun authError(message: String? = null) {
         finish()
-        authSubject.onError(SnAuthError(message ?: ERROR_AUTH_CANCELLED))
+        authSubject.emit(DataState.Error(SnAuthError(message ?: ERROR_AUTH_CANCELLED)))
     }
 
     companion object {
         private const val ARG_AUTH_TYPE = "auth_type"
         private const val ERROR_AUTH_CANCELLED = "Authorization was cancelled"
 
-        internal fun createStartRequest(context: Context, snType: SnType): SingleSubject<SnAuth> {
+        internal fun createStartRequest(context: Context, snType: SnType): MutableSharedFlow<DataState<SnAuth>> {
             context.startActivity(Intent(context, SnAuthActivity::class.java).apply {
                 putExtras(bundleOf(ARG_AUTH_TYPE to snType))
             })
-            return SnAuthCallbackHelper.createRequest()
+            return SnAuthCallbackHelper.createRequestFlow()
         }
     }
 }

@@ -12,6 +12,7 @@ import dagger.Module
 import dagger.Provides
 import io.reactivex.schedulers.Schedulers
 import com.example.extensions.isConnectedToNetwork
+import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import okhttp3.Cache
@@ -89,9 +90,11 @@ class RetrofitModule {
         }
 
         return Retrofit.Builder()
-            .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
+            .baseUrl(BuildConfig.NEW_API_URL)
             .addConverterFactory(converterFactory)
-            .client(clientBuilder.build()).baseUrl(BuildConfig.NEW_API_URL).build().create(Api::class.java)
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
+            .addCallAdapterFactory(CoroutineCallAdapterFactory())
+            .client(clientBuilder.build()).build().create(Api::class.java)
     }
 
 

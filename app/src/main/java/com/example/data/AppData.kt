@@ -7,6 +7,9 @@ import com.example.data.prefs.AppPrefs
 import com.example.util.AUTH_TOKEN_INVALID
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.update
 import java.util.concurrent.TimeUnit
 
 class AppData(private val appPrefs: AppPrefs) {
@@ -62,6 +65,7 @@ class AppData(private val appPrefs: AppPrefs) {
                     appPrefs.userToken = null
                     if (!isLoggedOut) logout()
                     tokenChangeSubject.onNext(Optional())
+                    tokenChangeFlow.update { Optional() }
                 } else if (value == AUTH_TOKEN_INVALID) {
                     field = null
                     appPrefs.userToken = null
@@ -69,6 +73,7 @@ class AppData(private val appPrefs: AppPrefs) {
                     field = value
                     appPrefs.userToken = value
                     tokenChangeSubject.onNext(value.asOptional())
+                    tokenChangeFlow.update { value.asOptional() }
                 }
             }
         }
@@ -157,6 +162,7 @@ class AppData(private val appPrefs: AppPrefs) {
     //token subject
     val userChangeSubject = BehaviorSubject.createDefault(newUser.asOptional())
     val tokenChangeSubject = BehaviorSubject.createDefault(token.asOptional())
+    val tokenChangeFlow = MutableStateFlow(token.asOptional())
 
     //chat subject
     val chatMessageCountSubject = BehaviorSubject.createDefault(chatUnreadMessageCount)

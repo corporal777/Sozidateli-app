@@ -48,10 +48,10 @@ android {
         }
 
         manifestPlaceholders = [
-                VKIDClientID: "",
-                VKIDClientSecret: "",
-                VKIDRedirectHost: "",
-                VKIDRedirectScheme: ""
+                VKIDClientID: "51817061",
+                VKIDClientSecret: "ZPcUM4IDxpFP26ych1qA",
+                VKIDRedirectHost: "vk.com",
+                VKIDRedirectScheme: "vk51817061"
         ]
     }
 
@@ -140,6 +140,9 @@ dependencies {
     implementation(libs.compose.ui.tooling.preview)
     implementation(libs.compose.constraintlayout)
     implementation(libs.compose.navigation)
+    implementation(libs.compose.systemuicontroller)
+
+    implementation(libs.retrofit2.kotlin.coroutines.adapter)
 
     //hilt
     implementation(libs.dagger.hilt.android)

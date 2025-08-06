@@ -3,7 +3,7 @@
     <!--  new auth views margins  -->
     <dimen name="auth_logo_text_height">60dp</dimen>
 
-    <dimen name="auth_buttons_min_height">43dp</dimen>
+    <dimen name="auth_buttons_min_height">45dp</dimen>
     <dimen name="auth_buttons_text_size">15sp</dimen>
 
     <dimen name="auth_buttons_title_text_size">14sp</dimen>
@@ -14,7 +14,7 @@
     <dimen name="common_button_min_height">46dp</dimen>
     <dimen name="common_button_text_size">15sp</dimen>
 
-    <dimen name="common_edit_text_min_height">42dp</dimen>
+    <dimen name="common_edit_text_min_height">45dp</dimen>
     <dimen name="common_edit_text_size">15sp</dimen>
     <dimen name="common_edit_text_title_size">13sp</dimen>
 

@@ -4,3 +4,4 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 val AuthHorizontalPadding = 25.dp
+val DefaultHorizontalPadding = 16.dp

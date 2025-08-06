@@ -7,6 +7,7 @@ import android.app.TimePickerDialog
 import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
+import android.content.res.TypedArray
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.net.ConnectivityManager
@@ -49,6 +50,7 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.appcompat.widget.AppCompatToggleButton
+import androidx.appcompat.widget.TintTypedArray.obtainStyledAttributes
 import androidx.constraintlayout.widget.Group
 import androidx.core.os.BundleCompat
 import androidx.core.text.getSpans

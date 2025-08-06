@@ -60,9 +60,11 @@ class LoginPresenter
 
     override fun onClickLogin(invite: Int) {
         compositeDisposable += Completable.defer {
-            if (invite != -1) authRepository.authEmailOrPhoneWithInvite(invite, getLoginBody())
-            else if (snAuth != null) authRepository.authEmailOrPhoneWithSn(getLoginBody(), snAuth!!)
-            else authRepository.authEmailOrPhone(getLoginBody())
+            //if (invite != -1) authRepository.authEmailOrPhoneWithInvite(invite, getLoginBody())
+            //else
+            //if (snAuth != null) authRepository.authEmailOrPhoneWithSn(getLoginBody(), snAuth!!)
+            //else
+            authRepository.authEmailOrPhone(getLoginBody())
         }
             .performOnBackgroundOutOnMain()
             .withInfinityCustomLoading(viewState)

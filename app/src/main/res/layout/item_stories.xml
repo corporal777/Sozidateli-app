@@ -18,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:lineSpacingExtra="-1dp"
-            android:textColor="@color/white"
+            android:textColor="@color/black"
             android:textSize="@dimen/auth_pager_story_text_size"
             tools:text="Завязывайте новые знакомства и встречайте единомышленников" />
 

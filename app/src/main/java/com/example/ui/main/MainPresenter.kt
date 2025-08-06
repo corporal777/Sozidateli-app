@@ -471,8 +471,8 @@ class MainPresenter
     }
 
     private fun getAdditionalData() {
-        compositeDisposable += userRepository.getUserProfileAdditionalData()
-            .subscribeSimple {}
+//        compositeDisposable += userRepository.getUserProfileAdditionalData()
+//            .subscribeSimple {}
     }
 
     private fun getInAppNotifications() {

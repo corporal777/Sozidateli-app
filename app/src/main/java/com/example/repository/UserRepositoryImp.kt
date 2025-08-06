@@ -15,6 +15,12 @@ import io.reactivex.functions.BiFunction
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import com.example.extensions.toBodyPart
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flatMapMerge
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.merge
+import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
 
@@ -97,6 +103,10 @@ class UserRepositoryImp
         api.checkUserProfileSingle(appData.getId()).doOnSuccess { state ->
             appData.checkUserState(state.fields)
         }
+
+    override fun checkUserProfileFlow(): Flow<UserProfileFieldsModel> {
+        return flow { emit(api.checkUserProfileNew(appData.getId())) }
+    }
 
     override fun updateUserProfile(id: Int, map: Map<String, Any?>): Single<UserDetail> =
         api.updateProfile(id, map).doOnSuccess {
@@ -283,9 +293,29 @@ class UserRepositoryImp
             .doOnSuccess { appData.academicDegrees.addAll(it.data ?: emptyList()) }
     }
 
-    override fun getUserProfileAdditionalData(): Completable {
-        return getEducationLevel().flatMap { getSpeciality() }.flatMap { getAcademicDegrees() }
-            .ignoreElement()
+    override fun getUserProfileAdditionalData(): Flow<EducationLevelModel> {
+        return merge(getAcademicDegreesFlow(), getEducationLevelFlow(), getSpecialityFlow())
+    }
+
+    private fun getEducationLevelFlow(): Flow<EducationLevelModel> {
+        val education = appData.educationLevels
+        return if (education.isNotEmpty()) flowOf(EducationLevelModel(education, 6))
+        else flow { emit(api.getEducationLevelNew()) }
+            .onEach { appData.educationLevels.addAll(it.data ?: emptyList()) }
+    }
+
+    private fun getSpecialityFlow(): Flow<EducationLevelModel> {
+        val speciality = appData.specialities
+        return if (speciality.isNotEmpty()) flowOf(EducationLevelModel(speciality, 23))
+        else flow { emit(api.getSpecialityNew(100)) }
+            .onEach { appData.specialities.addAll(it.data ?: emptyList()) }
+    }
+
+    private fun getAcademicDegreesFlow(): Flow<EducationLevelModel> {
+        val degrees = appData.academicDegrees
+        return if (degrees.isNotEmpty()) flowOf(EducationLevelModel(degrees, 4))
+        else flow { emit(api.getAcademicDegreesNew()) }
+            .onEach { appData.academicDegrees.addAll(it.data ?: emptyList()) }
     }
 
     private fun sendUserEducation(body: EducationBodyModel): Single<EducationBodyModel> =

@@ -26,10 +26,13 @@ compose-material3 = { module = "androidx.compose.material3:material3", version.r
 compose-constraintlayout = { module = "androidx.constraintlayout:constraintlayout-compose", version = "1.0.1" }
 compose-livedata = { module = "androidx.compose.runtime:runtime-livedata", version.ref = "activityCompose" }
 compose-navigation = { module = "androidx.navigation:navigation-compose", version.ref = "navigation" }
+compose-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version = "0.31.4-beta" }
 
 dagger-hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
 dagger-hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hilt" }
 dagger-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version = "1.2.0" }
+
+retrofit2-kotlin-coroutines-adapter = { module = "com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter", version = "0.9.2" }
 
 
 [plugins]

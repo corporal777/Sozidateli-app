@@ -11,6 +11,18 @@ import com.google.firebase.messaging.FirebaseMessaging
 import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flatMap
+import kotlinx.coroutines.flow.flatMapConcat
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.future.asCompletableFuture
+import kotlinx.coroutines.future.await
 import java.lang.NullPointerException
 import javax.inject.Inject
 
@@ -22,15 +34,17 @@ class AuthRepositoryImp
 ) : ApiRepository(appData), AuthRepository {
 
     override fun checkUserAuth(): Completable {
-        return api.getTokenStatus().ignoreElement()
+        return Completable.complete()
+    }
+
+    override fun checkUserAuthFlow(): Flow<AuthResponse> {
+        return flow { emit(api.getTokenStatus()) }
     }
 
     override fun getFcmToken(): Maybe<String> {
         return Maybe.create { emitter ->
             FirebaseMessaging.getInstance().token
-                .addOnSuccessListener { token ->
-                    emitter.onSuccess(token)
-                }
+                .addOnSuccessListener { token -> emitter.onSuccess(token) }
                 .addOnFailureListener { e -> emitter.onError(e) }
         }
     }
@@ -50,15 +64,13 @@ class AuthRepositoryImp
         }.ignoreElement()
     }
 
-    override fun getStories(): Maybe<List<String>> {
-        return Maybe.just(
-            listOf(
-                "Завязывайте новые знакомства и встречайте единомышленников",
-                "Находите интересные события и выступайте на мероприятиях",
-                "Будьте в курсе актуальных событий в вашем городе и во всей стране",
-                "Создавайте интересные страницы своих мероприятий",
-                "Рассказывайте о себе, обменивайтесь опытом и получайте новые знания",
-            )
+    override fun getStories(): List<String> {
+        return listOf(
+            "Завязывайте новые знакомства и встречайте единомышленников",
+            "Находите интересные события и выступайте на мероприятиях",
+            "Будьте в курсе актуальных событий в вашем городе и во всей стране",
+            "Создавайте интересные страницы своих мероприятий",
+            "Рассказывайте о себе, обменивайтесь опытом и получайте новые знания",
         )
     }
 
@@ -66,42 +78,39 @@ class AuthRepositoryImp
         return callAuthCompletable(api.authEmailOrPhone(login))
     }
 
-    override fun authEmailOrPhoneWithResult(login: AuthBody): Single<AuthResponse> =
-        api.authEmailOrPhone(login)
+    override fun authEmailOrPhoneWithResult(login: AuthBody): Flow<AuthResponse> =
+        flow { emit(api.authByEmailOrPhone(login)) }
 
-    override fun authEmailOrPhoneWithInvite(invite: Int, body: AuthBody): Completable {
-        return api.authEmailOrPhone(body)
-            .flatMap { auth ->
-                api.rebaseInvite(invite, RebaseInviteBody(auth.id ?: 0, auth.token ?: ""))
-                    .andThen(Single.just(auth))
-            }.doOnSuccess {
-                if (it.token != null) appData.login(it.token)
-                if (it.id != null) appData.saveId(it.id)
-            }.ignoreElement()
+
+    override fun authEmailOrPhoneWithInvite(invite: Int, body: AuthBody): Flow<AuthResponse> {
+        return flow<AuthResponse> { api.authByEmailOrPhone(body) }
+            .flatMapConcat { auth ->
+                val rebase = RebaseInviteBody(auth.id ?: 0, auth.token ?: "")
+                flowOf(api.rebaseInvite(invite, rebase)).map { auth }
+            }
     }
 
-    override fun authEmailOrPhoneWithSn(body: AuthBody, snAuth: SnAuth): Completable {
-        return api.authEmailOrPhone(body)
-            .flatMap { auth ->
+    override fun authEmailOrPhoneWithSn(body: AuthBody, snAuth: SnAuth): Flow<AuthResponse> {
+        return flow { emit(api.authByEmailOrPhone(body)) }
+            .flatMapConcat { auth ->
                 bindSocialAccount(snAuth.uuid, auth.id, snAuth.snType.code, auth.token)
-                    .andThen(Single.just(auth))
-            }.doOnSuccess {
-                if (it.token != null) appData.login(it.token)
-                if (it.id != null) appData.saveId(it.id)
-            }.ignoreElement()
+                    .map { auth }
+            }
     }
 
-    override fun authWithVk(token: String, uuid: String): Single<SnAuthResponse> {
-        return api.authWithVk(
-            VKAuthBody(
-                token,
-                uuid,
-                appData.deviceId ?: "",
-                getDeviceName(),
-                getAppVersionCode(),
-                getAppVersion()
-            )
-        )
+    override fun authWithVk(token: String, uuid: String): Flow<SnAuthResponse> {
+        return flow {
+            emit(api.authWithVk(
+                VKAuthBody(
+                    token,
+                    uuid,
+                    appData.deviceId ?: "",
+                    getDeviceName(),
+                    getAppVersionCode(),
+                    getAppVersion()
+                )
+            ))
+        }
     }
 
     override fun sendQrCode(body: QrBody): Single<QrAuthResponse> {
@@ -171,17 +180,17 @@ class AuthRepositoryImp
         userId: Int?,
         socialType: String,
         token: String?
-    ): Completable {
-        return if (userId == null || token.isNullOrEmpty()) Completable.error(NullPointerException())
-        else {
-            val oldTempToken = appData.tempToken
-            appData.tempToken = null
+    ): Flow<Unit> {
+        return flow {
+            if (userId == null || token.isNullOrEmpty()) throw NullPointerException()
+            else {
+                val oldTempToken = appData.tempToken
+                appData.tempToken = null
 
-            api.bindSocialAccountWithToken(
-                BindSocialAccountBody(uuid, userId, socialType, false),
-                "Token $token"
-            ).doOnComplete { appData.tempToken = oldTempToken }
-                .doOnError { appData.tempToken = oldTempToken }
+                api.bindSocialAccountWithToken(BindSocialAccountBody(uuid, userId, socialType, false), "Token $token")
+                appData.tempToken = oldTempToken
+                emit(Unit)
+            }
         }
     }
 }

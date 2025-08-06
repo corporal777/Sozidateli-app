@@ -10,6 +10,7 @@ import com.example.ui.auth.snAuth.SnAuthCallbackHelper
 import com.example.data.models.SnType
 import com.example.data.models.SnUser
 import io.reactivex.Completable
+import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -37,7 +38,7 @@ class AuthorizationPresenter
 
     override fun attachView(view: AuthorizationContract.View?) {
         super.attachView(view)
-        compositeDisposable += authRepository.getStories()
+        compositeDisposable += Maybe.just(authRepository.getStories())
             .map { listOf(it.last()) + it + listOf(it.first()) }
             .performOnBackgroundOutOnMain()
             .subscribeSimple {
@@ -71,22 +72,22 @@ class AuthorizationPresenter
     }
 
     override fun onAuthVkClick(context: Context) {
-        compositeDisposable += SnAuthCallbackHelper.start(context, SnType.VK)
-            .performOnBackgroundOutOnMain()
-            .subscribeBy(
-                onError = { it.printStackTrace() },
-                onSuccess = { sn ->
-                    authRepository.authWithVk(sn.token, sn.uuid)
-                        .performOnBackgroundOutOnMain()
-                        .withLoading(1)
-                        .subscribeSimple {
-                            if (it.accessData != null && !it.accessData.token.isNullOrEmpty()){
-                                appData.login(it.accessData.token)
-                                appData.saveId(it.accessData.id)
-                            } else viewState.showSnAuthorization(SnUser(sn, it.personalData))
-                        }
-                }
-            )
+//        compositeDisposable += SnAuthCallbackHelper.start(context, SnType.VK)
+//            .performOnBackgroundOutOnMain()
+//            .subscribeBy(
+//                onError = { it.printStackTrace() },
+//                onSuccess = { sn ->
+//                    authRepository.authWithVk(sn.token, sn.uuid)
+//                        .performOnBackgroundOutOnMain()
+//                        .withLoading(1)
+//                        .subscribeSimple {
+//                            if (it.accessData != null && !it.accessData.token.isNullOrEmpty()){
+//                                appData.login(it.accessData.token)
+//                                appData.saveId(it.accessData.id)
+//                            } else viewState.showSnAuthorization(SnUser(sn, it.personalData))
+//                        }
+//                }
+//            )
     }
 
     private fun <T> Single<T>.withLoading(type: Int): Single<T> {

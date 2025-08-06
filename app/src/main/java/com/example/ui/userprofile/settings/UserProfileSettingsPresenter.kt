@@ -99,21 +99,21 @@ class UserProfileSettingsPresenter @Inject constructor(
 
 
     override fun onBindVkAccount(context: Context, snAuth: SnAuth?) {
-        compositeDisposable += Single.defer {
-            if (snAuth == null) SnAuthCallbackHelper.start(context, SnType.VK)
-            else Single.just(snAuth)
-        }
-            .performOnBackgroundOutOnMain()
-            .subscribeSimple { sn ->
-                userRepository.bindSocialAccount(sn.uuid, sn.snType.code, snAuth != null)
-                    .doOnSuccess { appData.getUser().socialBinds?.vkontakte = it.data }
-                    .performOnBackgroundOutOnMain()
-                    .withProgressLoading()
-                    .subscribeSimple(
-                        onError = { onReceiveSnAuthError(it, sn) },
-                        onSuccess = { viewState.setUserData(user) }
-                    )
-            }
+//        compositeDisposable += Single.defer {
+//            if (snAuth == null) SnAuthCallbackHelper.start(context, SnType.VK)
+//            else Single.just(snAuth)
+//        }
+//            .performOnBackgroundOutOnMain()
+//            .subscribeSimple { sn ->
+//                userRepository.bindSocialAccount(sn.uuid, sn.snType.code, snAuth != null)
+//                    .doOnSuccess { appData.getUser().socialBinds?.vkontakte = it.data }
+//                    .performOnBackgroundOutOnMain()
+//                    .withProgressLoading()
+//                    .subscribeSimple(
+//                        onError = { onReceiveSnAuthError(it, sn) },
+//                        onSuccess = { viewState.setUserData(user) }
+//                    )
+//            }
     }
 
     override fun onUnbindVkAccount() {

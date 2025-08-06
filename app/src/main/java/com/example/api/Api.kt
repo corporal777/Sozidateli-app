@@ -7,15 +7,17 @@ import com.example.util.pagination.NotificationsResponse
 import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
+import kotlinx.coroutines.Deferred
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import retrofit2.Response
 import retrofit2.http.*
 
 @JvmSuppressWildcards
 interface Api {
 
     @GET("v1/user/login/check")
-    fun getTokenStatus(): Maybe<AuthResponse>
+    suspend fun getTokenStatus(): AuthResponse
 
     @GET("v1/user/temp/login")
     fun getTemporaryToken(): Single<TempAuthResponse>
@@ -23,12 +25,15 @@ interface Api {
     @POST("v1/user/login")
     fun authEmailOrPhone(@Body body: AuthBody): Single<AuthResponse>
 
+    @POST("v1/user/login")
+    suspend fun authByEmailOrPhone(@Body body: AuthBody): AuthResponse
+
     @POST("v1/user/accept-qr")
     fun authWithQrCode(@Body body: QrBody): Single<AuthResponse>
 
     //+
     @POST("v1/user/social/login")
-    fun authWithVk(@Body body: VKAuthBody): Single<SnAuthResponse>
+    suspend fun authWithVk(@Body body: VKAuthBody): SnAuthResponse
 
     @POST("v1/user/send-qr")
     fun sendQrCodeToGetDeviceInfo(@Body body: QrBody): Single<QrAuthResponse>
@@ -142,11 +147,20 @@ interface Api {
     @GET("v1/education-level")
     fun getEducationLevel(): Single<EducationLevelModel>
 
+    @GET("v1/education-level")
+    suspend fun getEducationLevelNew(): EducationLevelModel
+
     @GET("v1/speciality")
     fun getSpeciality(@Query("limit") limit: Int): Single<EducationLevelModel>
 
+    @GET("v1/speciality")
+    suspend fun getSpecialityNew(@Query("limit") limit: Int): EducationLevelModel
+
     @GET("v1/academic-degree")
     fun getAcademicDegrees(): Single<EducationLevelModel>
+
+    @GET("v1/academic-degree")
+    suspend fun getAcademicDegreesNew(): EducationLevelModel
 
     //user education
     @GET("v1/user-education")
@@ -211,6 +225,9 @@ interface Api {
 
     @GET("v1/user/{id}/profile-state")
     fun checkUserProfileSingle(@Path("id") id: Int): Single<UserProfileFieldsModel>
+
+    @GET("v1/user/{id}/profile-state")
+    suspend fun checkUserProfileNew(@Path("id") id: Int): UserProfileFieldsModel
 
     //+
     @GET("v1/event/{id}")
@@ -431,7 +448,7 @@ interface Api {
     fun declineEventMember(@Path("id") memberId: String): Completable
 
     @PATCH("v1/user-external-invite/pgrf/{id}/rebase")
-    fun rebaseInvite(@Path("id") id: Int, @Body body: RebaseInviteBody): Completable
+    suspend fun rebaseInvite(@Path("id") id: Int, @Body body: RebaseInviteBody)
 
     @GET("v1/chat-room")
     fun getChats(@QueryMap map: Map<String, Any>): Maybe<ApiNewResponse<List<ChatModel>>>
@@ -529,10 +546,10 @@ interface Api {
 
     //+
     @POST("v1/user/social/bind")
-    fun bindSocialAccountWithToken(
+    suspend fun bindSocialAccountWithToken(
         @Body body: BindSocialAccountBody,
         @Header("Authorization") token: String?
-    ): Completable
+    )
 
     @POST("v1/user/social/bind")
     fun bindSocialAccount(@Body body: BindSocialAccountBody): Maybe<SnBindDataModel>

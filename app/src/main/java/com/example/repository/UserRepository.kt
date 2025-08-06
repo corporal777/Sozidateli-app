@@ -11,6 +11,7 @@ import io.reactivex.Maybe
 import io.reactivex.Single
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import java.util.concurrent.Flow
 
 interface UserRepository {
     fun getUserInternal(): Maybe<UserDetail>
@@ -54,7 +55,7 @@ interface UserRepository {
     fun getEducationLevel(): Single<EducationLevelModel>
     fun getSpeciality(): Single<EducationLevelModel>
     fun getAcademicDegrees(): Single<EducationLevelModel>
-    fun getUserProfileAdditionalData(): Completable
+    fun getUserProfileAdditionalData(): kotlinx.coroutines.flow.Flow<EducationLevelModel>
 
     fun updateUserEducation(educationLevel: ToggleIntModel?, educationsList: List<EducationModel>?, degree: List<AcademicDegreeModel>?): Single<String>
     fun searchAddress(query: String?): Single<SearchAddressModel>
@@ -66,6 +67,7 @@ interface UserRepository {
     fun getUsersFavoritesList(map: Map<String, Any>): Maybe<PaginationResponse<UserDetail>>
     fun getUsersFavoritesWithoutPagination(map: Map<String, Any>): Maybe<List<UserDetail?>>
 
+    fun checkUserProfileFlow(): kotlinx.coroutines.flow.Flow<UserProfileFieldsModel>
     fun checkUserProfileSingle(): Single<UserProfileFieldsModel>
     fun getNotificationDetail(notificationId: String, loadModel: Boolean): Single<NotificationModel>
     fun markAsRead(notificationId: String): Completable

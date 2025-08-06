@@ -5,10 +5,12 @@ import com.example.data.models.*
 import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
+import kotlinx.coroutines.flow.Flow
 
 interface AuthRepository {
 
     fun checkUserAuth(): Completable
+    fun checkUserAuthFlow(): Flow<AuthResponse>
 
     fun getFcmToken(): Maybe<String>
     fun sendFcmToken(): Completable
@@ -16,15 +18,15 @@ interface AuthRepository {
 
     //fun setEmailSocialNetwork(snType: String, email: String, token: String): Completable
     fun getTemporaryToken() : Completable
-    fun getStories() : Maybe<List<String>>
+    fun getStories() : List<String>
     fun authEmailOrPhone(login: AuthBody): Completable
-    fun authEmailOrPhoneWithResult(login: AuthBody):Single<AuthResponse>
+    fun authEmailOrPhoneWithResult(login: AuthBody): Flow<AuthResponse>
 
-    fun authEmailOrPhoneWithInvite(invite: Int, body: AuthBody): Completable
+    fun authEmailOrPhoneWithInvite(invite: Int, body: AuthBody): Flow<AuthResponse>
 
     //auth social
-    fun authWithVk(token : String, uuid : String): Single<SnAuthResponse>
-    fun authEmailOrPhoneWithSn(body: AuthBody, snAuth: SnAuth): Completable
+    fun authWithVk(token : String, uuid : String): Flow<SnAuthResponse>
+    fun authEmailOrPhoneWithSn(body: AuthBody, snAuth: SnAuth): Flow<AuthResponse>
 
     fun sendQrCode(body: QrBody):Single<QrAuthResponse>
     fun authWebWithQrCode(body: QrBody): Single<AuthResponse>
