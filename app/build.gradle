@@ -124,6 +124,9 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(':qrcodegenerator')
     implementation project(':calendarpager')
+    implementation project(':domain')
+    implementation project(':data')
+    implementation project(':common')
 
     //socket
     implementation('io.socket:socket.io-client:1.0.0') {
@@ -147,7 +150,6 @@ dependencies {
 
     implementation(libs.compose.paging)
 
-    implementation(libs.retrofit2.kotlin.coroutines.adapter)
 
     //hilt
     implementation(libs.dagger.hilt.android)
@@ -178,18 +180,6 @@ dependencies {
     // Paging
     implementation "androidx.paging:paging-runtime-ktx:$paging_version"
     implementation "androidx.paging:paging-rxjava2-ktx:$paging_version"
-
-    // rx
-    implementation "io.reactivex.rxjava2:rxandroid:2.1.1"
-    implementation 'io.reactivex.rxjava2:rxjava:2.2.19'
-    implementation 'io.reactivex.rxjava2:rxkotlin:2.3.0'
-
-    // dagger 2
-    //implementation "com.google.dagger:dagger:$dagger_version"
-    //implementation "com.google.dagger:dagger-android:$dagger_version"
-    //implementation "com.google.dagger:dagger-android-support:$dagger_version"
-    //kapt "com.google.dagger:dagger-compiler:$dagger_version"
-    //kapt "com.google.dagger:dagger-android-processor:$dagger_version"
 
     // moxy
     implementation "com.github.moxy-community:moxy:$moxy_version"
@@ -240,10 +230,6 @@ dependencies {
     implementation "io.noties.markwon:inline-parser:$markwon_version"
 
     // network
-    implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
-    implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofit_version"
-    implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
-    implementation 'com.squareup.okhttp3:logging-interceptor:4.11.0'
     implementation 'com.github.pwittchen:reactivenetwork-rx2:3.0.3'
 
     // sn

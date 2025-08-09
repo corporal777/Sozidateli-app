@@ -1,5 +1,6 @@
 package com.example.ui.auth.authorization.components
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -18,8 +19,15 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
@@ -36,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstrainedLayoutReference
 import androidx.constraintlayout.compose.ConstraintLayoutScope
+import androidx.core.view.isVisible
 import com.example.app.R
 import com.example.ui.components.TextBold
 import com.example.ui.components.TextExtraBold
@@ -44,14 +53,39 @@ import com.example.ui.theme.AuthHorizontalPadding
 import com.example.ui.theme.AuthPagerIndicatorSelectedColor
 import com.example.ui.theme.AuthTitleShadowColor
 import com.example.util.TextUtils
+import kotlinx.coroutines.launch
 
 @Composable
 fun ConstraintLayoutScope.PagerItem(
     title: ConstrainedLayoutReference,
     pager: ConstrainedLayoutReference,
     indicator: ConstrainedLayoutReference,
-    stories: List<String>
+    stories: List<String>,
+    timerCount: Long
 ) {
+
+    val pagerState = rememberPagerState(initialPage = 1, pageCount = { stories.size })
+    var seconds by remember { mutableLongStateOf(0) }
+    val coroutineScope = rememberCoroutineScope()
+
+    LaunchedEffect(timerCount) {
+        seconds = timerCount
+
+        coroutineScope.launch {
+            if (seconds > 0) {
+                val nextPage = pagerState.currentPage + 1
+                pagerState.animateScrollToPage(nextPage)
+
+                if (!pagerState.isScrollInProgress){
+                    when (pagerState.currentPage) {
+                        stories.size - 1 -> pagerState.scrollToPage(1)
+                        0 -> pagerState.scrollToPage(stories.size - 2)
+                    }
+                }
+            }
+        }
+    }
+
 
     TextExtraBold(
         text = stringResource(R.string.auth_pager_title_text),
@@ -68,7 +102,6 @@ fun ConstraintLayoutScope.PagerItem(
             }
     )
 
-    val pagerState = rememberPagerState(pageCount = { stories.size - 1 })
     HorizontalPager(
         modifier = Modifier
             .fillMaxWidth()
@@ -101,10 +134,13 @@ fun ConstraintLayoutScope.PagerItem(
         horizontalArrangement = Arrangement.Center
     ) {
         repeat(pagerState.pageCount) { iteration ->
+            val alpha = if (iteration == 0 || iteration == stories.size - 1) 0f else 1f
             val color =
-                if (pagerState.currentPage == iteration) AuthPagerIndicatorSelectedColor else Color.White
+                if (pagerState.currentPage == iteration) AuthPagerIndicatorSelectedColor
+                else Color.White
             Box(
                 modifier = Modifier
+                    .alpha(alpha)
                     .padding(horizontal = 5.dp)
                     .clip(CircleShape)
                     .background(color)

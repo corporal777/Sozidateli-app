@@ -1,0 +1,502 @@
+package com.examle.data.repository
+
+import com.examle.data.AppData
+import com.examle.data.api.Api
+import com.examle.domain.repository.UserRepository
+import javax.inject.Inject
+
+
+class UserRepositoryImp
+@Inject constructor(
+    private val api: Api,
+    private val appData: AppData
+) : ApiRepository(appData), UserRepository {
+
+//    override fun getUserInternal(): Maybe<UserDetail> {
+//        return Maybe.zip(
+//            api.getUserById(appData.getId(), emptyList()),
+//            api.checkUserProfile(appData.getId()).doOnSuccess { appData.checkUserState(it.fields) }
+//        ) { user, state -> user }
+//    }
+//
+//    override fun getUserShortData(): Maybe<UserDetail> {
+//        val binds = arrayListOf(
+//            "education",
+//            "academic-degree",
+//            "work-experience",
+//            "recommendation-file"
+//        )
+//        return api.getUserById(appData.getId(), binds).doOnSuccess { appData.setFullUserInfo(it) }
+//    }
+//
+//
+//    override fun getUserFullData(): Maybe<UserDetail> {
+//        val binds = arrayListOf(
+//            "education",
+//            "academic-degree",
+//            "work-experience",
+//            "recommendation-file",
+//            "sessions-count",
+//            "device-sessions-count"
+//        )
+//        return Maybe.zip(
+//            api.getUserById(appData.getId(), binds).doOnSuccess { appData.setFullUserInfo(it) },
+//            api.checkUserProfile(appData.getId()).doOnSuccess { appData.checkUserState(it.fields) },
+//            BiFunction<UserDetail, UserProfileFieldsModel, UserDetail> { user, _ ->
+//                return@BiFunction user
+//            })
+//    }
+//
+//
+//    override fun getUserById(id: String): Maybe<UserDetail> =
+//        api.getUserById(
+//            id.toInt(),
+//            arrayListOf(
+//                "education",
+//                "academic-degree",
+//                "work-experience",
+//                "recommendation-file",
+//                "organization",
+//                "userFavorite",
+//                "chat-room-with-me",
+//                "is-user-in-ban"
+//            )
+//        )
+//
+//
+//    override fun getUserByShortName(name: String, withData: Boolean): Maybe<UserDetail> {
+//        return api.getUserByShortName(
+//            name,
+//            if (withData) arrayListOf(
+//                "education",
+//                "academic-degree",
+//                "work-experience",
+//                "recommendation-file",
+//                "organization",
+//                "userFavorite",
+//                "chat-room-with-me",
+//                "is-user-in-ban"
+//            )
+//            else emptyList()
+//        )
+//    }
+//
+//    override fun checkUserProfileSingle(): Single<UserProfileFieldsModel> =
+//        api.checkUserProfileSingle(appData.getId()).doOnSuccess { state ->
+//            appData.checkUserState(state.fields)
+//        }
+//
+//    override fun checkUserProfileFlow(): Flow<UserProfileFieldsModel> {
+//        return flow { emit(api.checkUserProfileNew(appData.getId())) }
+//            .onEach { appData.checkUserState(it.fields) }
+//    }
+//
+//    override fun updateUserProfile(id: Int, map: Map<String, Any?>): Single<UserDetail> =
+//        api.updateProfile(id, map).doOnSuccess {
+//            appData.setShortUserInfo(it)
+//        }
+//
+//    override fun updateUserProfileField(map: Map<String, Any?>): Single<UserDetail> {
+//        return api.updateProfile(appData.getId(), map)
+//    }
+//
+//    override fun updateProfile(id: Int, map: Map<String, Any?>): Single<UserDetail> =
+//        Single.zip(
+//            updateUserProfile(id, map),
+//            checkUserProfileSingle(),
+//            BiFunction<UserDetail, UserProfileFieldsModel, UserDetail> { user, _ ->
+//                return@BiFunction user
+//            })
+//
+//
+//    override fun searchAddress(query: String?): Single<SearchAddressModel> =
+//        api.searchAddress(query, 20)
+//
+//
+//    override fun getAllUsersSessions(deviceId: String): Maybe<UserSessions> =
+//        api.getAllUsersSessions()
+//
+//    override fun getAllUsersSessionsFromCurrentDevice(deviceId: String): Maybe<UserSessions> =
+//        api.getAllUsersSessionsFromCurrentDevice(deviceId, "user")
+//
+//    override fun deleteUsersDeviceSession(id: Int): Completable =
+//        api.deleteUsersDeviceSession(id)
+//
+//    override fun killAllUsersOtherSessions(): Completable = api.killAllUsersOtherSessions()
+//
+//    override fun killUsersDeviceSession(id: Int): Completable = api.killUsersDeviceSession(id)
+//
+////    override fun getFcmToken(): Maybe<InstanceIdResult> {
+////        return Maybe.create { emitter ->
+////            RxHandler.assignOnTask(emitter, FirebaseInstanceId.getInstance().instanceId)
+////        }
+////    }
+//
+//    override fun notificationsInviteAccept(id: Int): Completable {
+////        return call(api.notificationsInviteAccept(id)).doOnSuccess {
+////            appData.notificationsCount = it.unreadCount
+////            appData.notificationReadSubject.onNext(id to Notification.AcceptState.ACCEPTED)
+////        }.ignoreElement()
+//        return Completable.complete()
+//    }
+//
+//    override fun notificationsInviteDecline(id: Int): Completable {
+////        return call(api.notificationsInviteDecline(id)).doOnSuccess {
+////            appData.notificationsCount = it.unreadCount
+////            appData.notificationReadSubject.onNext(id to Notification.AcceptState.CANCELED)
+////        }.ignoreElement()
+//        return Completable.complete()
+//    }
+//
+//    /*override fun uploadAvatar(photo: Bitmap?): Single<User> {
+//        return call(api.uploadAvatar(photo?.com.example.extensions.toBodyPart("file", "image.png")))
+//    }*/
+//
+//    override fun changeUserImage(photo: Bitmap?): Single<ImageModel> {
+//        return api.changeUserImage(appData.getId(), photo?.toBodyPart("file", "image.png"))
+//            .map { it.toImageModel() }
+//    }
+//
+//    override fun deleteImage(): Completable {
+//        return api.deleteImage(appData.getId())
+//    }
+//
+//    /*override fun uploadRecommendationFile(file: String, mimeType: String): Single<User> {
+//        return call(api.uploadDocument(
+//                file.let {
+//                    val imageFile = File(it)
+//                    val body = imageFile.asRequestBody(mimeType.toMediaTypeOrNull())
+//                    MultipartBody.Part.createFormData("file[0]", imageFile.name, body)
+//                }))
+//    }*/
+//
+//    override fun uploadRecommendedFile(body: List<MultipartBody.Part?>): Single<ImageModel> {
+//        return api.uploadRecommendedFile(body)
+//    }
+//
+//    override fun changeRecommendedFile(
+//        fileId: Int,
+//        body: List<MultipartBody.Part?>
+//    ): Single<ImageModel> {
+//        return api.changeRecommendedFile(fileId, body)
+//    }
+//
+//    //+
+//    override fun changeRecommendedFiles(body: RequestBody): Single<List<FileModel>> {
+//        return api.changeRecommendedFiles(appData.getId(), body).map { it.data }
+//    }
+//
+//    override fun deleteRecommendedFile(fileId: Int): Completable {
+//        return api.deleteRecommendedFile(fileId)
+//    }
+//
+//    /*override fun getFavoriteUsers(limit: Int, offset: Int): Maybe<PaginationResponse<User?>> {
+//        return usersList(limit, offset, mapOf(FIELD_USER_IS_IN_FAVORITE to true))
+//    }
+//
+//    override fun changeEmailConfirm(email: String, code: String): Single<AuthResponse> {
+//        return call(api.changeEmailConfirm(email, code))
+//    }
+//
+//    override fun getUserById(id: String): Maybe<User> {
+//        return call(api.getUserById(id))
+//    }
+//
+//    override fun addToFavorite(uid: String): Completable = call(api.userAddToFavorite(uid))
+//
+//    override fun removeFromFavorite(uid: String): Completable = call(api.userRemoveFromFavorite(uid))
+//
+//    override fun searchUser(searchMap: Map<String, Any>, limit: Int, offset: Int): Maybe<PaginationResponse<User>> {
+//        return callPagination(api.chatSearch(searchMap, limit, offset))
+//    }
+//
+//    override fun usersList(limit: Int, offset: Int, filter: Map<String, Any>): Maybe<PaginationResponse<User?>> {
+//        return callPagination(api.getUsersList(limit, offset, filter))
+//    }
+//
+//    override fun checkPassword(password: String): Completable {
+//        return call(api.checkPassword(password))
+//    }*/
+//
+//    /*override fun sendStatusPhoneConfirmSms(password: String): Completable {
+//        return call(api.sendStatusPhoneConfirmSms(password))
+//    }
+//
+//    override fun sendStatusPhoneConfirmCode(code: String): Completable {
+//        return call(api.sendStatusPhoneConfirmCode(code))
+//    }*/
+//
+//    override fun deleteProfile(id: Int): Completable {
+//        return api.deleteProfile(id)
+//    }
+//
+//    override fun deleteProfile(): Completable {
+//        return api.deleteProfile(appData.getId())
+//    }
+//
+//    override fun logout(id: Int): Completable = api.logout(id)
+//
+//    override fun changePassword(body: PasswordBody): Completable =
+//        api.changePassword(appData.getId(), body)
+//
+//    override fun checkPassword(password: String): Completable =
+//        api.checkPassword(appData.getId(), password)
+//
+//
+//    override fun updateWorkExperience(body: WorkExperienceServerModel): Single<WorkExperienceServerModel> =
+//        api.updateWorkExperience(appData.getId(), body).doOnSuccess {
+//            appData.updateWorkExperience(it)
+//        }
+//
+//    override fun getInterestsList(ids: List<Int>?): Maybe<InterestsModel> =
+//        api.getInterestsList(200, ids)
+//
+//    override fun getEducationLevel(): Single<EducationLevelModel> {
+//        val education = appData.educationLevels
+//        return if (!education.isNullOrEmpty()) Single.just(EducationLevelModel(education, 6))
+//        else api.getEducationLevel()
+//            .doOnSuccess { appData.educationLevels.addAll(it.data ?: emptyList()) }
+//    }
+//
+//    override fun getSpeciality(): Single<EducationLevelModel> {
+//        val speciality = appData.specialities
+//        return if (!speciality.isNullOrEmpty()) Single.just(EducationLevelModel(speciality, 23))
+//        else api.getSpeciality(100)
+//            .doOnSuccess { appData.specialities.addAll(it.data ?: emptyList()) }
+//    }
+//
+//    override fun getAcademicDegrees(): Single<EducationLevelModel> {
+//        val academicDegrees = appData.academicDegrees
+//        return if (!academicDegrees.isNullOrEmpty())
+//            Single.just(EducationLevelModel(academicDegrees, 4))
+//        else api.getAcademicDegrees()
+//            .doOnSuccess { appData.academicDegrees.addAll(it.data ?: emptyList()) }
+//    }
+//
+//    override fun getUserProfileAdditionalData(): Flow<EducationLevelModel> {
+//        return merge(getAcademicDegreesFlow(), getEducationLevelFlow(), getSpecialityFlow())
+//    }
+//
+//    private fun getEducationLevelFlow(): Flow<EducationLevelModel> {
+//        val education = appData.educationLevels
+//        return if (education.isNotEmpty()) flowOf(EducationLevelModel(education, 6))
+//        else flow { emit(api.getEducationLevelNew()) }
+//            .onEach { appData.educationLevels.addAll(it.data ?: emptyList()) }
+//    }
+//
+//    private fun getSpecialityFlow(): Flow<EducationLevelModel> {
+//        val speciality = appData.specialities
+//        return if (speciality.isNotEmpty()) flowOf(EducationLevelModel(speciality, 23))
+//        else flow { emit(api.getSpecialityNew(100)) }
+//            .onEach { appData.specialities.addAll(it.data ?: emptyList()) }
+//    }
+//
+//    private fun getAcademicDegreesFlow(): Flow<EducationLevelModel> {
+//        val degrees = appData.academicDegrees
+//        return if (degrees.isNotEmpty()) flowOf(EducationLevelModel(degrees, 4))
+//        else flow { emit(api.getAcademicDegreesNew()) }
+//            .onEach { appData.academicDegrees.addAll(it.data ?: emptyList()) }
+//    }
+//
+//    private fun sendUserEducation(body: EducationBodyModel): Single<EducationBodyModel> =
+//        api.updateUserEducation(appData.getId(), body)
+//            .doOnSuccess { appData.updateUserEducation(it.data) }
+//
+//    private fun sendUserAcademicDegree(body: AcademicDegreeBodyModel): Single<AcademicDegreeBodyModel> =
+//        api.updateUserAcademicDegree(appData.getId(), body)
+//            .doOnSuccess { appData.updateUserAcademicDegree(it.data) }
+//
+//    private fun sendUserEducationLevel(educationLevel: ToggleIntModel?): Single<UserDetail> =
+//        updateUserProfile(appData.getId(), mapOf(UserDetail.USER_EDUCATION_LEVEL to educationLevel))
+//
+//    override fun updateUserEducation(
+//        educationLevel: ToggleIntModel?,
+//        educationsList: List<EducationModel>?,
+//        degree: List<AcademicDegreeModel>?
+//    ): Single<String> {
+//        return sendUserEducation(EducationBodyModel(educationsList))
+//            .flatMap { sendUserAcademicDegree(AcademicDegreeBodyModel(degree)) }
+//            .flatMap { sendUserEducationLevel(educationLevel) }.map { "" }
+//    }
+//
+//
+//    override fun getUserNotifications(map: Map<String, Any>): Maybe<NotificationsResponse<NotificationLocal>> {
+//        return api.getNotifications(map).map {
+//            NotificationsResponse(
+//                it.totalCount,
+//                it.data.map { NotificationLocal.fromRemoteNotification(it) },
+//                it.totalUnreadInvites,
+//                it.totalUnread,
+//                it.allUnread,
+//                it.activeInvites,
+//                it.archiveInvites
+//            )
+//        }
+//    }
+//
+//    override fun getNotificationsList(map: Map<String, Any>): Maybe<PaginationResponse<NotificationLocal>> {
+//        return api.getNotifications(map).map {
+//            PaginationResponse(
+//                it.totalCount,
+//                it.data.map { NotificationLocal.fromRemoteNotification(it) },
+//            )
+//        }
+//    }
+//
+//    override fun getInAppList(): Maybe<List<NotificationModel>> {
+//        return api.getNotifications(
+//            mapOf(
+//                NotificationModel.NOTIFICATION_LIMIT to 50,
+//                NotificationModel.NOTIFICATION_USER to appData.getId(),
+//                NotificationModel.NOTIFICATION_IS_IN_APP to true,
+//                NotificationModel.NOTIFICATION_ACKNOWLEDGED to false
+//            )
+//        ).map { it.data }
+//    }
+//
+//    override fun getUsers(map: Map<String, Any>): Maybe<PaginationResponse<UserDetail>> {
+//        return api.getUsers(map)
+//            .map {
+//                PaginationResponse(
+//                    it.totalCount,
+//                    it.data ?: arrayListOf()
+//                )
+//            }
+//    }
+//
+//    override fun getUsersWithoutPagination(map: Map<String, Any>): Maybe<List<UserDetail>> {
+//        return api.getUsers(map)
+//            .map { it.data }
+//    }
+//
+//    override fun getUsersFavoritesList(map: Map<String, Any>): Maybe<PaginationResponse<UserDetail>> {
+//        return api.getUsersFavoritesList(map)
+//            .map {
+//                it.data.forEach { org ->
+//                    org.entity?.model?.binds =
+//                        UserBinds(userFavorite = EventUserFavorite(org.id?.toLong(), org.user))
+//                }
+//                PaginationResponse(
+//                    it.totalCount,
+//                    it.data.mapNotNull { org -> org.entity?.model })
+//            }
+//    }
+//
+//    override fun getUsersFavoritesWithoutPagination(map: Map<String, Any>): Maybe<List<UserDetail?>> {
+//        return api.getUsersFavoritesList(map)
+//            .map {
+//                it.data.forEach { org ->
+//                    org.entity?.model?.binds =
+//                        UserBinds(userFavorite = EventUserFavorite(org.id?.toLong(), org.user))
+//                }
+//                it.data.map { org -> org.entity?.model }
+//            }
+//    }
+//
+//    override fun getNotificationDetail(
+//        notificationId: String,
+//        loadModel: Boolean
+//    ): Single<NotificationModel> = api.getNotificationDetail(notificationId, loadModel)
+//
+//    override fun markAsRead(notificationId: String): Completable = api.markAsRead(notificationId)
+//
+//
+//
+//
+//    override fun approveOrgMember(orgMemberId: String): Completable =
+//        api.approveOrgMember(orgMemberId, com.examle.data.bodies.ApproveBody(appData.getId()))
+//
+//    override fun declineOrgMember(orgMemberId: String): Completable =
+//        api.declineOrgMember(orgMemberId, com.examle.data.bodies.DeclineBody(appData.getId()))
+//
+//    override fun approvePgrf(pgrfId: String): Completable =
+//        api.approvePgrf(pgrfId)
+//
+//    override fun declinePgrf(pgrfId: String): Completable =
+//        api.declinePgrf(pgrfId)
+//
+//    override fun approveAssistance(assistanceId: String): Completable =
+//        api.approveAssistance(assistanceId)
+//
+//    override fun declineAssistance(assistanceId: String): Completable =
+//        api.declineAssistance(assistanceId)
+//
+//    override fun getAssistanceInviteDetail(assistanceId: String): Single<InviteDetail> =
+//        api.getInviteAssistanceDetail(assistanceId)
+//
+//    override fun cancelEventMember(evMemberId: String, body: com.examle.data.bodies.CancelBody): Completable =
+//        api.cancelEvMember(evMemberId, body)
+//
+//    override fun approveEventMember(memberId: String): Completable {
+//        return api.approveEventMember(memberId)
+//    }
+//
+//    override fun declineEventMember(memberId: String): Completable {
+//        return api.declineEventMember(memberId)
+//    }
+//
+//    override fun checkEmailPhone(email: String?, phone: String?): Completable =
+//        api.checkEmailPhone(email, phone)
+//
+//
+//    override fun searchUsers(map: Map<String, Any>): Maybe<PaginationResponse<UserDetail>> {
+//        return api.searchGlobal(map)
+//            .map { PaginationResponse(it.users.count, it.users.data) }
+//        //.map { it.users }
+//    }
+//
+//    override fun bindSocialAccount(
+//        uuid: String,
+//        socialType: String,
+//        isRebind: Boolean
+//    ): Maybe<SnBindDataModel> {
+//        return api.bindSocialAccount(
+//            com.examle.data.bodies.BindSocialAccountBody(
+//                uuid,
+//                appData.getId(),
+//                socialType,
+//                isRebind
+//            )
+//        )
+//    }
+//
+//    override fun unbindSocialAccount(uuid: String, socialType: String): Completable {
+//        return api.unBindSocialAccount(mapOf("uuid" to uuid, "socialNetwork" to socialType))
+//    }
+//
+//    override fun addOrRemoveUserFavorite(user: UserDetail): Single<Optional<EventUserFavorite>> {
+//        return Single.defer {
+//            if (user.binds == null || user.binds?.userFavorite == null){
+//                addUserToFavorites(user.id.toString())
+//                    .map { Optional(EventUserFavorite(it.id, it.user)) }
+//            } else deleteFromFavorites(user.binds?.userFavorite?.id.toString())
+//                .andThen(Single.just(Optional(null)))
+//        }
+//    }
+//
+//    private fun addUserToFavorites(speakerId: String): Single<AddFavoriteModel> {
+//        return if (appData.isTemporaryUser()) api.addToTempFavorite(
+//            com.examle.data.bodies.AddToFavoriteModel(
+//                appData.getTempId(),
+//                com.examle.data.bodies.AddToFavoriteEntityModel(
+//                    com.examle.data.bodies.AddToFavoriteEntityModel.FAVORITE_SPEAKER,
+//                    speakerId.toInt()
+//                )
+//            )
+//        ).map { AddFavoriteModel(it.id, it.tempUser) }
+//        else api.addToFavorite(
+//            com.examle.data.bodies.AddToFavoriteModel(
+//                appData.getId(),
+//                com.examle.data.bodies.AddToFavoriteEntityModel(
+//                    com.examle.data.bodies.AddToFavoriteEntityModel.FAVORITE_SPEAKER,
+//                    speakerId.toInt()
+//                )
+//            )
+//        )
+//    }
+//
+//    private fun deleteFromFavorites(id: String): Completable {
+//        return if (appData.isTemporaryUser()) api.deleteFromTempFavorite(id)
+//        else api.deleteFromFavorite(id)
+//    }
+}

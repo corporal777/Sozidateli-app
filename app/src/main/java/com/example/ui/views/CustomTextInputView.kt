@@ -6,19 +6,15 @@ import android.text.InputType
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.LayoutInflater
-import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.LinearLayout
 import androidx.core.view.isVisible
 import com.example.app.R
 import com.example.app.databinding.LayoutCustomTextInputViewBinding
-import com.example.extensions.dp
-import com.example.util.getColor
-import com.example.extensions.onFocusChanged
-import com.example.extensions.onTextChanged
-import com.example.extensions.showHidePasswordText
-import com.example.extensions.textColor
+import com.example.common.dp
+import com.example.common.extensions.showHidePasswordText
+import com.example.common.extensions.textColor
 
 class CustomTextInputView : LinearLayout {
 

@@ -37,6 +37,12 @@ abstract class BaseViewModel : ViewModel() {
             .onCompletion { _loading.value = false }
     }
 
+    fun <T> Flow<T>.withProgressLoading(progressLoading : MutableStateFlow<Boolean>): Flow<T> {
+        return this
+            .onStart { progressLoading.value = true }
+            .onCompletion { progressLoading.value = false }
+    }
+
     fun showLoading(){
         _loading.value = true
     }

@@ -7,12 +7,11 @@ import com.example.app.R
 import com.example.app.databinding.ItemRegisterEventPassportBinding
 import com.example.data.models.EventPassport
 import com.example.data.models.eventRegister.EventRegisterField
-import com.example.extensions.defaultDateFormatter
-import com.example.extensions.defaultServerDateFormatter
-import com.example.extensions.formatToDefaultServerDate
-import com.example.extensions.initAsDatePicker
-import com.example.extensions.onTextChanged
-import com.example.util.DATE_STRING_FORMAT_SHORT_MONTH_FULL_YEAR
+import com.example.common.defaultDateFormatter
+import com.example.common.defaultServerDateFormatter
+import com.example.common.formatToDefaultServerDate
+import com.example.common.extensions.initAsDatePicker
+import com.example.common.DATE_STRING_FORMAT_SHORT_MONTH_FULL_YEAR
 import com.example.util.getColorStateList
 import com.xwray.groupie.viewbinding.GroupieViewHolder
 import java.util.Date

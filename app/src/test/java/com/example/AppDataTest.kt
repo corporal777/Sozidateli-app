@@ -1,7 +1,6 @@
 package com.example
 
-import com.example.data.AppData
-import com.example.data.prefs.AppPrefs
+import com.examle.data.AppData
 import org.junit.Assert
 import org.junit.Test
 

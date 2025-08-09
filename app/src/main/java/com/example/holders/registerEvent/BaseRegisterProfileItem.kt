@@ -6,8 +6,7 @@ import androidx.annotation.CallSuper
 import androidx.core.view.isVisible
 import androidx.viewbinding.ViewBinding
 import com.example.app.R
-import com.example.extensions.textColor
-import com.example.util.getColor
+import com.example.common.extensions.textColor
 import com.xwray.groupie.viewbinding.BindableItem
 
 abstract class BaseRegisterProfileItem<T : ViewBinding>(itemId: Long) : BindableItem<T>(itemId) {

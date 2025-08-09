@@ -27,3 +27,6 @@ rootProject.name = "Созидатели"
 include ':app'
 include ':qrcodegenerator'
 include ':calendarpager'
+include ':domain'
+include ':data'
+include ':common'

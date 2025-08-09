@@ -4,8 +4,7 @@ import android.os.Handler
 import android.os.Looper
 import androidx.paging.PagingState
 import androidx.paging.rxjava2.RxPagingSource
-import com.example.exceptions.EmptyDataException
-import com.example.util.pagination.PaginationResponse
+import com.examle.domain.model.PaginationResponse
 import io.reactivex.Maybe
 import io.reactivex.Single
 

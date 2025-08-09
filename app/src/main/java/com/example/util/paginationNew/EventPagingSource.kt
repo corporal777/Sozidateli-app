@@ -2,14 +2,11 @@ package com.example.util.paginationNew
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.example.util.pagination.PaginationResponse
-import io.reactivex.Maybe
-import io.reactivex.Single
-import kotlinx.coroutines.Deferred
+import com.examle.domain.model.PaginationResponse
 
 open class EventPagingSource<I : Any>() : PagingSource<Int, I>() {
 
-    lateinit var request: (limit: Int, offset: Int) -> Deferred<PaginationResponse<I>>
+    lateinit var request: suspend (limit: Int, offset: Int) -> PaginationResponse<I>
 
     private var loadFromStart = false
     private var lastRequestedDataSize = 0
@@ -26,7 +23,7 @@ open class EventPagingSource<I : Any>() : PagingSource<Int, I>() {
             } else params.loadSize
             val offset = if (loadFromStart) 0 else (params.key ?: 0) * limit
 
-            val response = request.invoke(limit, offset).await()
+            val response = request.invoke(limit, offset)
 
             if (response.isEmptyData()) {
                 LoadResult.Page(response.data, null, null)

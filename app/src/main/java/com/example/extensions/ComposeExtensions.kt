@@ -126,16 +126,16 @@ fun NavGraphBuilder.animComposable(
 
 val enterTransition: AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition = {
     scaleIn(
-        initialScale = 0.94f,
-        animationSpec = tween(durationMillis = 250, easing = LinearOutSlowInEasing)
-    ) + fadeIn(animationSpec = tween(200))
+        initialScale = 0.92f,
+        animationSpec = tween(durationMillis = 300, easing = LinearOutSlowInEasing)
+    ) + fadeIn(animationSpec = tween(230))
 }
 
 val popExitTransition: AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition = {
     scaleOut(
-        targetScale = 0.94f,
-        animationSpec = tween(durationMillis = 250, easing = LinearOutSlowInEasing)
-    ) + fadeOut(animationSpec = tween(150))
+        targetScale = 0.9f,
+        animationSpec = tween(durationMillis = 300, easing = LinearOutSlowInEasing)
+    ) + fadeOut(animationSpec = tween(200))
 }
 
 val exitTransition: AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition = {

@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import androidx.core.content.ContextCompat
 import com.example.app.R
 import com.example.app.databinding.BottomSheetDialogEventAgreementBinding
+import com.example.ui.home.HomeViewModel
 import com.example.ui.views.CustomSpannableString
 import com.example.util.ClickableSpanNew
 import com.example.util.showCustomTabsBrowser
@@ -22,6 +23,7 @@ class EventAgreementBottomSheet (
 
     private val mBinding = BottomSheetDialogEventAgreementBinding.inflate(LayoutInflater.from(context))
     private var onSelect: (isAccept : Boolean) -> Unit = {}
+
 
     init {
         setContentView(mBinding.root)

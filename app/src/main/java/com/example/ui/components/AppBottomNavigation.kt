@@ -1,6 +1,8 @@
 package com.example.ui.components
 
 import android.util.Log
+import androidx.compose.animation.core.animate
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -25,6 +27,8 @@ import androidx.compose.material3.NavigationBarItemColors
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -58,22 +62,7 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
 fun AppBottomNavigation(navController: NavController) {
-    val listItems = listOf(
-        BottomNavigationItem(R.drawable.ic_main_tab, stringResource(R.string.label_main_tab)),
-        BottomNavigationItem(
-            R.drawable.ic_my_events_tab,
-            stringResource(R.string.label_my_events_tab)
-        ),
-        BottomNavigationItem(R.drawable.ic_chats_tab, stringResource(R.string.chat_list)),
-        BottomNavigationItem(
-            R.drawable.ic_notifications_tab,
-            stringResource(R.string.notifications_tab_label)
-        ),
-        BottomNavigationItem(
-            R.drawable.ic_profile_tab,
-            stringResource(R.string.profile_current_user_label)
-        ),
-    )
+    val listItems = BottomBarItems()
 
     val backStackEntry by navController.currentBackStackEntryAsState()
     var selectedItem by rememberSaveable { mutableStateOf(0) }
@@ -84,53 +73,25 @@ fun AppBottomNavigation(navController: NavController) {
         else -> 4
     }
 
-    var isBottomBarVisible by rememberSaveable { mutableStateOf(false) }
+    var isBottomBarVisible by rememberSaveable { mutableStateOf(true) }
 
     LaunchedEffect(currentRoute) {
         isBottomBarVisible = currentRoute == Route.HomeScreen.route
     }
 
     if (isBottomBarVisible) {
-        CustomNavigationBar() {
+        CustomNavigationBar(Modifier) {
             listItems.forEachIndexed { index, item ->
-                NavigationBarItem(
-                    selected = index == selectedItem,
-                    onClick = { },
-                    icon = {
-                        Icon(
-                            modifier = Modifier.size(24.dp),
-                            painter = painterResource(item.icon),
-                            contentDescription = ""
-                        )
-                    },
-                    label = {
-                        TextMedium(
-                            text = item.label,
-                            fontSize = 10.sp,
-                            textAlign = TextAlign.Center,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
-                        )
-                    },
-                    colors = NavigationBarItemColors(
-                        selectedTextColor = BottomNavigationSelectedColor,
-                        selectedIconColor = BottomNavigationSelectedColor,
-                        unselectedTextColor = BottomNavigationNormalColor,
-                        unselectedIconColor = BottomNavigationNormalColor,
-                        selectedIndicatorColor = Color.Transparent,
-                        disabledIconColor = BottomNavigationNormalColor,
-                        disabledTextColor = BottomNavigationNormalColor
-                    )
-                )
+                CustomNavigationBarItem(index, item, selectedItem)
             }
         }
     }
 }
 
 @Composable
-private fun CustomNavigationBar(content: @Composable RowScope.() -> Unit) {
+private fun CustomNavigationBar(modifier: Modifier, content: @Composable RowScope.() -> Unit) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .background(BottomNavigationBarColor)
             .fillMaxWidth()
             .windowInsetsPadding(NavigationBarDefaults.windowInsets)
@@ -141,5 +102,59 @@ private fun CustomNavigationBar(content: @Composable RowScope.() -> Unit) {
         verticalAlignment = Alignment.CenterVertically,
         content = content
     )
-
 }
+
+@Composable
+private fun RowScope.CustomNavigationBarItem(
+    index: Int,
+    item: BottomNavigationItem,
+    selectedItem: Int
+) {
+    NavigationBarItem(
+        selected = index == selectedItem,
+        onClick = { },
+        icon = {
+            Icon(
+                modifier = Modifier.size(24.dp),
+                painter = painterResource(item.icon),
+                contentDescription = ""
+            )
+        },
+        label = {
+            TextMedium(
+                text = item.label,
+                fontSize = 10.sp,
+                textAlign = TextAlign.Center,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+        },
+        colors = NavigationBarItemColors(
+            selectedTextColor = BottomNavigationSelectedColor,
+            selectedIconColor = BottomNavigationSelectedColor,
+            unselectedTextColor = BottomNavigationNormalColor,
+            unselectedIconColor = BottomNavigationNormalColor,
+            selectedIndicatorColor = Color.Transparent,
+            disabledIconColor = BottomNavigationNormalColor,
+            disabledTextColor = BottomNavigationNormalColor
+        )
+    )
+}
+
+@Composable
+private fun BottomBarItems() = listOf(
+    BottomNavigationItem(R.drawable.ic_main_tab, stringResource(R.string.label_main_tab)),
+    BottomNavigationItem(
+        R.drawable.ic_my_events_tab,
+        stringResource(R.string.label_my_events_tab)
+    ),
+    BottomNavigationItem(R.drawable.ic_chats_tab, stringResource(R.string.chat_list)),
+    BottomNavigationItem(
+        R.drawable.ic_notifications_tab,
+        stringResource(R.string.notifications_tab_label)
+    ),
+    BottomNavigationItem(
+        R.drawable.ic_profile_tab,
+        stringResource(R.string.profile_current_user_label)
+    ),
+)

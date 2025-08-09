@@ -4,16 +4,12 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
-import android.widget.ScrollView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.core.view.allViews
 import androidx.core.view.isVisible
 import androidx.core.widget.NestedScrollView
-import androidx.fragment.app.FragmentContainerView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.ui.main.MainActivity
 import com.google.android.material.appbar.AppBarLayout
-import com.example.extensions.onScrolled
+import com.example.common.extensions.onScrolled
 
 class CustomAppBarLayoutBehavior : AppBarLayout.ScrollingViewBehavior {
 

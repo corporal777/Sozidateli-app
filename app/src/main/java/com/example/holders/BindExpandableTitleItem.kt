@@ -8,7 +8,6 @@ import androidx.core.view.isVisible
 import androidx.databinding.ViewDataBinding
 import com.example.app.R
 import com.example.data.models.Notification
-import com.example.ui.support.items.SupportQuestionExpandableTitleItem
 import com.xwray.groupie.ExpandableGroup
 import com.xwray.groupie.ExpandableItem
 import com.xwray.groupie.OnItemClickListener

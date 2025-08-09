@@ -10,12 +10,12 @@ import androidx.core.view.isVisible
 import com.example.app.R
 import com.example.app.databinding.ItemRegisterEventHeaderBinding
 import com.example.data.models.EventRegistration
-import com.example.extensions.calendar
-import com.example.extensions.defaultServerDateFormatter
-import com.example.extensions.formatToDefaultDate
-import com.example.extensions.isSameDay
+import com.example.common.calendar
+import com.example.common.defaultServerDateFormatter
+import com.example.common.formatToDefaultDate
+import com.example.common.isSameDay
 import com.example.extensions.markWon
-import com.example.extensions.parseToDate
+import com.example.common.parseToDate
 import com.example.util.URLSpanNoUnderline
 import com.xwray.groupie.viewbinding.BindableItem
 

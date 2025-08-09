@@ -76,27 +76,7 @@ class NotificationPagerAdapter(private val listener: OnNotificationActionListene
     }
 
     companion object {
-        fun NotificationPagerAdapter.withLoadStateAdapters(
-            tagsAdapter: NotificationTagsAdapter?,
-            header: CustomLoadStateAdapter<*>,
-            footer: CustomLoadStateAdapter<*>,
-            onEmpty: (show: Boolean) -> Unit
-        ): ConcatAdapter {
-            addLoadStateListener { loadState ->
 
-                header.loadState = if (itemCount > 0) header.notRefresh else loadState.refresh
-                footer.loadState = loadState.append
-
-                if (tagsAdapter != null) {
-                    tagsAdapter.loadState = header.loadState
-                    tagsAdapter.canShowContent = true
-                }
-
-                executePlaceholderLoadState(loadState){ onEmpty.invoke(it) }
-            }
-            return if (tagsAdapter != null) ConcatAdapter(tagsAdapter, header, this, footer)
-            else ConcatAdapter(header, this, footer)
-        }
     }
 
     private object AsyncDiffCallback : DiffUtil.ItemCallback<NotificationLocal>() {

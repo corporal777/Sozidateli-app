@@ -1,30 +1,18 @@
 package com.example.ui.views.loading
 
 import android.content.Context
-import android.content.res.Resources
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
-import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.widget.FrameLayout
-import android.widget.LinearLayout
-import androidx.annotation.DrawableRes
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import com.example.app.R
 import com.example.app.databinding.LayoutLoadingButtonBinding
-import com.example.extensions.dp
-import com.example.extensions.inverseSp
-import com.example.extensions.px
-import com.example.extensions.setTextCustomSize
-import com.example.extensions.sp
-import com.example.extensions.textColor
-import com.example.ui.views.UserSubscribeButton
+import com.example.common.dp
 import com.example.util.getDrawable
-import io.github.inflationx.calligraphy3.CalligraphyUtils
 
 class CustomLoadingButton : FrameLayout {
 

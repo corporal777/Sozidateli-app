@@ -1,11 +1,9 @@
 package com.example.util
 
-import android.util.Log
-import com.example.extensions.calendar
-import com.example.extensions.defaultServerDateFormatter
+import com.example.common.DATE_FORMAT_FULL_MONTH_FULL_YEAR_NO_DATE_NUMBERS
+import com.example.common.DATE_FORMAT_SERVER_TIMESTAMP
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 fun validateEndDate(mStart: String?, mFinish: String?): Boolean {
     return if (!mStart.isNullOrBlank() && !mFinish.isNullOrBlank()) {

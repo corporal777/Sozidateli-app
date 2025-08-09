@@ -64,7 +64,7 @@ fun <K : Any> PagingSourceFactory<K>.build(
     pageSize: Int = initialSize,
     distance: Int = 5,
     enablePlaceholders: Boolean = false
-): Flow<PagingData<K>> {
+): PagingFlow<K> {
     val config = PagingConfig(
         pageSize = pageSize,
         initialLoadSize = initialSize,

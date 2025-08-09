@@ -4,9 +4,9 @@ import android.content.Context
 import android.view.View
 import com.example.app.R
 import com.example.app.databinding.ItemChatDateBinding
-import com.example.extensions.calendar
-import com.example.extensions.isSameDay
-import com.example.extensions.isYesterday
+import com.example.common.calendar
+import com.example.common.isSameDay
+import com.example.common.isYesterday
 import com.xwray.groupie.viewbinding.BindableItem
 import java.text.SimpleDateFormat
 import java.util.Calendar

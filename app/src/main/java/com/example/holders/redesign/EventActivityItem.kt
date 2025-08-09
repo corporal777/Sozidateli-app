@@ -13,8 +13,8 @@ import com.example.app.R
 import com.example.app.databinding.ItemLectureBinding
 import com.example.data.models.EventActivityModel
 import com.example.data.models.Tag
-import com.example.extensions.defaultServerDateTimeFormatter
-import com.example.extensions.formatTimeIntervalFromTo
+import com.example.common.defaultServerDateTimeFormatter
+import com.example.common.formatTimeIntervalFromTo
 import com.example.extensions.markWon
 import com.example.ui.views.TagChipNew
 import com.example.util.URLSpanNoUnderline

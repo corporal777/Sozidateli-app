@@ -5,9 +5,8 @@ import android.view.View
 import com.example.app.R
 import com.example.data.models.FileModel
 import com.example.app.databinding.ItemProfileDataEditableFileBinding
-import com.example.util.initSwitch
 import com.xwray.groupie.Item
-import com.example.extensions.onTextChanged
+import com.example.common.extensions.onTextChanged
 import com.xwray.groupie.viewbinding.BindableItem
 import com.xwray.groupie.viewbinding.GroupieViewHolder
 

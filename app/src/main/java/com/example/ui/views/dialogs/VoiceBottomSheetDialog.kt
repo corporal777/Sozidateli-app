@@ -8,7 +8,6 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentManager
 import com.example.app.databinding.BottomSheetRecordVoiceBinding
 import com.example.app.databinding.BottomSheetUpdateAppBinding
-import com.example.ui.support.newQuestion.SupportQuestionContract
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 

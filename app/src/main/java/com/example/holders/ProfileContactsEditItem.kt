@@ -22,10 +22,9 @@ import com.example.data.models.UserDataSocialLink
 import com.example.data.models.UserDetail
 import com.example.data.models.UserEmailsData
 import com.example.extensions.phoneToServer
-import com.example.extensions.setOnClickListener
 import com.example.util.AuthValidateUtil
-import com.example.util.PHONE_PERSONAL
-import com.example.util.PHONE_WORK
+import com.example.common.PHONE_PERSONAL
+import com.example.common.PHONE_WORK
 import com.example.util.Utils.isPhoneNumberValid
 import com.example.util.Utils.validatePhoneBeforeSend
 import com.example.util.getPhoneFilter

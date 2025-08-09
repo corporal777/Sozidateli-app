@@ -2,11 +2,10 @@ package com.example.ui.views.phoneText
 
 import android.content.Context
 import android.util.AttributeSet
-import android.util.Log
 import androidx.core.widget.doAfterTextChanged
 import androidx.core.widget.doOnTextChanged
 import com.example.app.R
-import com.example.extensions.onFocusChanged
+import com.example.common.extensions.onFocusChanged
 import com.example.util.Utils.isContainsNumbers
 import com.google.android.material.textfield.TextInputEditText
 

@@ -2,20 +2,16 @@ package com.example.ui.views
 
 import android.content.Context
 import android.graphics.Canvas
-import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.RectF
-import android.text.InputType
 import android.util.AttributeSet
 import android.view.View
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import androidx.annotation.Keep
 import androidx.core.content.ContextCompat
-import androidx.core.view.isVisible
 import com.example.app.R
-import com.example.extensions.dp
-import com.example.extensions.showHidePasswordText
+import com.example.common.dp
 import com.example.util.getColor
 
 class CustomProgressBar : View {

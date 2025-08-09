@@ -1,16 +1,12 @@
 package com.example.ui.auth.login
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
-import com.example.data.AppData
-import com.example.data.bodies.AuthBody
-import com.example.data.bodies.LoginModel
-import com.example.data.models.AuthResponse
+import com.examle.data.AppData
 import com.example.data.models.SnAuth
 import com.example.extensions.getAppVersion
 import com.example.extensions.getAppVersionCode
 import com.example.extensions.getDeviceName
-import com.example.repository.AuthRepository
+import com.examle.domain.repository.AuthRepository
 import com.example.ui.base.BaseViewModel
 import com.example.util.AuthValidateUtil
 import com.example.util.Utils.isContainLetters
@@ -18,20 +14,10 @@ import com.example.util.Utils.isPhone
 import com.example.util.Utils.isPhoneNumberValid
 import com.example.util.Utils.validatePhoneBeforeSend
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.async
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.delayEach
-import kotlinx.coroutines.flow.delayFlow
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.flow.takeWhile
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -90,11 +76,11 @@ class LoginViewModel
         }
     }
 
-    private fun getLoginBody(): AuthBody {
+    private fun getLoginBody(): com.examle.data.bodies.AuthBody {
         val validatedLogin = if (loginType == "phone") validatePhoneBeforeSend(login) else login
-        return AuthBody(
-            LoginModel(loginType, validatedLogin),
-            LoginModel("common", password),
+        return com.examle.data.bodies.AuthBody(
+            com.examle.data.bodies.LoginModel(loginType, validatedLogin),
+            com.examle.data.bodies.LoginModel("common", password),
             "",
             getDeviceName(),
             getAppVersionCode(),

@@ -8,7 +8,7 @@ import android.widget.TextView
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import com.example.app.R
-import com.example.extensions.dp
+import com.example.common.dp
 import java.lang.ref.WeakReference
 
 class ToolbarContentActionBar(

@@ -2,9 +2,8 @@ package com.example.util.pagination.observable
 
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import androidx.paging.PositionalDataSource
-import com.example.util.pagination.PaginationResponse
+import com.examle.domain.model.PaginationResponse
 import io.reactivex.Maybe
 import kotlin.math.min
 

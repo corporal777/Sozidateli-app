@@ -1,8 +1,8 @@
 package com.example.ui.views.chatView
 
-import com.example.data.AppData
-import com.example.util.BADGE_COUNT_MAX
-import com.example.util.BADGE_TEXT_IF_MORE_THAN_MAX
+import com.examle.data.AppData
+import com.example.common.BADGE_COUNT_MAX
+import com.example.common.BADGE_TEXT_IF_MORE_THAN_MAX
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import moxy.InjectViewState

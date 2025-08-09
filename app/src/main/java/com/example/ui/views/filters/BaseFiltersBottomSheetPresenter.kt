@@ -2,9 +2,9 @@ package com.example.ui.views.filters
 
 import com.example.data.models.EventNew
 import com.example.data.models.InterestNew
-import com.example.extensions.groupByNotNull
-import com.example.repository.CommonRepository
-import com.example.repository.EventRepository
+import com.example.common.groupByNotNull
+import com.examle.domain.repository.CommonRepository
+import com.examle.domain.repository.EventRepository
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.rxkotlin.subscribeBy

@@ -14,9 +14,9 @@ import com.example.app.R
 import com.example.app.databinding.ItemRegisterEventInputBinding
 import com.example.data.models.EventFormFieldModel
 import com.example.data.models.eventRegister.EventRegisterField
-import com.example.extensions.onTextChanged
-import com.example.extensions.setMaxLength
-import com.example.extensions.setMinMaxLines
+import com.example.common.extensions.onTextChanged
+import com.example.common.extensions.setMaxLength
+import com.example.common.extensions.setMinMaxLines
 import com.example.util.AuthValidateUtil
 import com.xwray.groupie.viewbinding.GroupieViewHolder
 

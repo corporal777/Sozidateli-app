@@ -1,6 +1,5 @@
 package com.example.ui.views.dialogs
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.Intent.ACTION_SENDTO
@@ -15,14 +14,10 @@ import androidx.core.text.getSpans
 import androidx.core.text.set
 import androidx.core.view.isVisible
 import com.example.app.R
-import com.example.data.models.EventNew
-import com.example.data.models.createMapInfo
 import com.example.app.databinding.BottomSheetEventDetailInformationBinding
+import com.example.data.models.EventNew
 import com.example.extensions.markWon
 import com.example.extensions.parsePhone
-import com.example.ui.event.location.map.MapFragment
-import com.example.ui.main.MainActivity
-import com.example.ui.page.PageFragment
 import com.example.ui.views.CustomSpannableString
 import com.example.util.URLSpanNoUnderline
 import com.example.util.getColor
@@ -196,17 +191,11 @@ class EventDetailInformationBottomSheetDialog(
     }
 
     private fun openMap(){
-        if (event.address?.lat != null && event.address.lon != null){
-            val mapInfo = event.createMapInfo()
-            if (mapInfo != null)
-                MapFragment(mapInfo).show((activity as MainActivity).supportFragmentManager)
-        }
+
     }
 
     private fun openPage(id : Int?){
-        if (event.id == null || id == null) return
-        PageFragment(event.id.toString(), id.toString())
-            .show((activity as MainActivity).supportFragmentManager)
+
     }
 
     private fun getMarkdownText(message: String?): SpannableStringBuilder? {

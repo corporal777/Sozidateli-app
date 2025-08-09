@@ -1,10 +1,6 @@
 package com.example.di
 
-import android.app.Application
 import com.example.App
-import com.example.di.module.AppModule
-import com.example.ui.event.my.schedule.calendar.CalendarBottomSheet
-import com.example.ui.support.newQuestion.SupportQuestionBottomSheet
 import com.example.ui.views.accountView.AccountView
 import com.example.ui.views.chatView.ChatView
 import com.example.ui.views.filters.chat.ChatFiltersBottomSheetDialog
@@ -19,12 +15,9 @@ import com.example.ui.views.suggestFieldView.organization.EventOrgBottomSheet
 import com.example.ui.views.suggestFieldView.region.SearchRegionBottomSheet
 import com.example.ui.views.suggestFieldView.settlement.SearchSettlementBottomSheet
 import com.example.ui.views.suggestFieldView.town.SearchTownBottomSheet
-import dagger.BindsInstance
-import dagger.Component
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
 @EntryPoint
@@ -49,11 +42,7 @@ interface AppComponent {
     fun inject(view: SearchTownBottomSheet)
 
     fun inject(view: NotificationsView)
-
-    fun inject(dialog : CalendarBottomSheet)
-
-    fun inject(dialog : SupportQuestionBottomSheet)
-
+    
     fun inject(dialog : MyEventsFiltersBottomSheetDialog)
 
     fun inject(dialog : EventFiltersBottomSheetDialog)

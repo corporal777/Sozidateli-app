@@ -20,10 +20,9 @@ import com.example.data.models.ToggleStringModel
 import com.example.data.models.UserDataSite
 import com.example.data.models.UserDataSocialLink
 import com.example.data.models.UserDetail
-import com.example.extensions.onTextChanged
 import com.example.extensions.phoneToServer
-import com.example.util.PHONE_PERSONAL
-import com.example.util.PHONE_WORK
+import com.example.common.PHONE_PERSONAL
+import com.example.common.PHONE_WORK
 import com.example.util.Utils
 import com.example.util.Utils.validatePhoneBeforeSend
 import com.example.util.initInput

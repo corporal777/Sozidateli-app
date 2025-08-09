@@ -3,20 +3,16 @@ package com.example.ui.base
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.ScrollingView
 import androidx.core.view.isVisible
 import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
-import com.example.app.R
-import com.example.extensions.onScrolled
+import com.example.common.extensions.onScrolled
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.main.MainActivity
 import com.example.ui.views.loading.CustomCircleLoadingButton
 import com.example.ui.views.toolbar.ToolbarContent
 import com.example.ui.views.toolbar.ToolbarIconView
-import com.example.util.weak
-import java.lang.ref.WeakReference
 import kotlin.math.abs
 
 abstract class BaseToolbarFragment<VB : ViewBinding> : BaseVBFragment<VB>(), ToolbarFragment {

@@ -7,7 +7,7 @@ import android.widget.LinearLayout
 import com.example.app.R
 import com.example.data.models.EventScheduleDay
 import com.example.app.databinding.ItemDayBinding
-import com.example.extensions.textColor
+import com.example.common.extensions.textColor
 
 class CalendarDayView : LinearLayout {
 

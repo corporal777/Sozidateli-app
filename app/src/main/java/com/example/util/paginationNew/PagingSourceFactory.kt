@@ -1,11 +1,9 @@
 package com.example.util.paginationNew
 
-import com.example.util.pagination.PaginationResponse
-import io.reactivex.Maybe
-import kotlinx.coroutines.Deferred
+import com.examle.domain.model.PaginationResponse
 
 open class PagingSourceFactory<I : Any>(
-    private val paginationRequest: (limit: Int, offset: Int) -> Deferred<PaginationResponse<I>>
+    private val paginationRequest: suspend (limit: Int, offset: Int) -> PaginationResponse<I>
 ) {
 
     var source: EventPagingSource<I>? = null

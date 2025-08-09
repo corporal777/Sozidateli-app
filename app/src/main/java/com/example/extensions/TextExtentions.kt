@@ -6,7 +6,6 @@ import android.text.Html
 import android.text.InputFilter
 import android.text.Spannable
 import android.text.SpannableString
-import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.TextPaint
 import android.text.TextUtils
@@ -14,13 +13,13 @@ import android.text.style.AbsoluteSizeSpan
 import android.text.style.ForegroundColorSpan
 import android.text.style.URLSpan
 import android.text.style.UnderlineSpan
-import android.util.Base64
 import androidx.core.content.ContextCompat
 import androidx.core.text.getSpans
 import androidx.core.text.set
 import androidx.core.text.toSpannable
 import com.example.app.BuildConfig
 import com.example.app.R
+import com.example.common.getCurrentYear
 import com.example.util.ClickableSpan
 import com.example.util.URLSpanNoUnderline
 import com.example.util.showCustomTabsBrowser
@@ -31,8 +30,6 @@ import io.noties.markwon.SoftBreakAddsNewLinePlugin
 import io.noties.markwon.html.HtmlPlugin
 import io.noties.markwon.inlineparser.MarkwonInlineParserPlugin
 import io.noties.markwon.linkify.LinkifyPlugin
-import org.json.JSONObject
-import java.nio.charset.StandardCharsets
 import java.util.*
 
 

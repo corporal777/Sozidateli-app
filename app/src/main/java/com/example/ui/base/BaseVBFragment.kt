@@ -181,12 +181,7 @@ abstract class BaseVBFragment<VB : ViewBinding> : MvpAppCompatFragment(), BaseCo
         FADE, AXIS, NONE
     }
 
-    fun isPreviousDestination(id: Int): Boolean {
-        val navHostFragment =
-            requireActivity().supportFragmentManager.findFragmentById(R.id.navHostFragment) as NavHostFragment
-        val prevId = navHostFragment.navController.previousBackStackEntry?.destination?.id
-        return prevId == id
-    }
+
 
     private fun setAppBarViewsState(){
         when (collapseState?.first) {

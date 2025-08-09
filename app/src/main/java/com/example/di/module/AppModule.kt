@@ -5,14 +5,17 @@ import android.app.NotificationManager
 import android.content.ContentResolver
 import android.content.Context
 import android.net.NetworkInfo
+import com.examle.data.di.RetrofitModule
+import com.examle.domain.di.InteractorModule
 import com.example.app.R
-import com.example.data.AppData
+import com.examle.data.AppData
+import com.examle.data.di.AppDataModule
+import com.examle.data.di.RepositoryModule
+import com.example.data.StatesData
 import com.example.data.UserEventData
 import com.example.data.database.Db
-import com.example.data.prefs.AppPrefs
-import com.example.data.prefs.AppPrefsImpl
 import com.example.di.Connectivity
-import com.example.repository.EventRepository
+import com.examle.domain.repository.EventRepository
 import com.example.util.SnAuthManager
 import com.example.util.ChatHelper
 import com.example.util.ConnectivityProvider
@@ -28,20 +31,17 @@ import io.github.inflationx.calligraphy3.CalligraphyConfig
 import io.reactivex.Observable
 import javax.inject.Singleton
 
-@Module(includes = [RepositoryModule::class, RetrofitModule::class])
+@Module(includes = [RepositoryModule::class, RetrofitModule::class, AppDataModule::class, InteractorModule::class])
 @InstallIn(SingletonComponent::class)
 class AppModule {
 
     @Provides
     fun provideContext(app: Application): Context = app
 
-    @Provides
-    @Singleton
-    fun provideAppPrefs(context: Context): AppPrefs = AppPrefsImpl(context)
 
     @Provides
     @Singleton
-    fun provideAppData(appPrefs: AppPrefs): AppData = AppData(appPrefs)
+    fun provideStatesData(): StatesData = StatesData()
 
     @Provides
     @Singleton
@@ -49,30 +49,33 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun provideUserEventData(eventRepository: EventRepository, db: Db): UserEventData = UserEventData(eventRepository, db.userEventDao(), db.eventMemberDao(), db.userQrImageDao())
+    fun provideUserEventData(eventRepository: EventRepository, db: Db): UserEventData =
+        UserEventData(eventRepository, db.userEventDao(), db.eventMemberDao(), db.userQrImageDao())
 
     @Provides
     @Singleton
-    fun provideChatData(context: Context, notificationUtil: NotificationUtil): ChatHelper = ChatHelper(context, notificationUtil)
+    fun provideChatData(context: Context, notificationUtil: NotificationUtil): ChatHelper =
+        ChatHelper(context, notificationUtil)
 
     @Provides
     @Singleton
     fun provideCalligraphyDefaultConfig(): CalligraphyConfig {
         return CalligraphyConfig.Builder()
-                .setDefaultFontPath("fonts/Roboto-Regular.ttf")
-                .setFontAttrId(R.attr.fontPath)
-                .build()
+            .setDefaultFontPath("fonts/Roboto-Regular.ttf")
+            .setFontAttrId(R.attr.fontPath)
+            .build()
     }
 
     @Provides
     @Connectivity
     fun provideConnectivityObservable(context: Context): Observable<Boolean> =
-            ReactiveNetwork.observeNetworkConnectivity(context)
-                    .map { it.state() == NetworkInfo.State.CONNECTED }
-                    .share()
+        ReactiveNetwork.observeNetworkConnectivity(context)
+            .map { it.state() == NetworkInfo.State.CONNECTED }
+            .share()
 
     @Provides
-    fun provideConnectivityProvider(context: Context): ConnectivityProvider = ConnectivityProvider(context)
+    fun provideConnectivityProvider(context: Context): ConnectivityProvider =
+        ConnectivityProvider(context)
 
     @Singleton
     @Provides
@@ -82,8 +85,10 @@ class AppModule {
     fun providesContentResolver(context: Context): ContentResolver = context.contentResolver
 
     @Provides
-    fun providesNotificationManager(context: Context): NotificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+    fun providesNotificationManager(context: Context): NotificationManager =
+        context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
     @Provides
-    fun providesEventLocationAlarmHelper(context: Context): FusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context)
+    fun providesEventLocationAlarmHelper(context: Context): FusedLocationProviderClient =
+        LocationServices.getFusedLocationProviderClient(context)
 }

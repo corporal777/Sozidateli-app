@@ -31,7 +31,6 @@ fun ConstraintLayoutScope.ButtonsItem(
     text: ConstrainedLayoutReference,
     vk: ConstrainedLayoutReference,
     gos: ConstrainedLayoutReference,
-    padding: PaddingValues,
     onLogin: () -> Unit,
     onVk: () -> Unit
 ) {
@@ -96,7 +95,7 @@ fun ConstraintLayoutScope.ButtonsItem(
         modifier = Modifier
             .padding(horizontal = AuthHorizontalPadding)
             .constrainAs(gos) {
-                bottom.linkTo(parent.bottom, padding.calculateBottomPadding() + 20.dp)
+                bottom.linkTo(parent.bottom, 20.dp)
             }
     ) { }
 }

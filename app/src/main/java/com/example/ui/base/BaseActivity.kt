@@ -8,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.annotation.StringRes
@@ -19,18 +18,11 @@ import androidx.navigation.fragment.NavHostFragment
 import com.example.app.R
 import com.example.app.databinding.ActivityMainBinding
 import com.example.app.databinding.LayoutBottomNavBadgeBinding
-import com.example.extensions.statusBarColorValue
+import com.example.common.extensions.statusBarColorValue
 import com.example.interfaces.BackgroundImageFragment
-import com.example.ui.event.about.AboutEventFragment
-import com.example.ui.event.my.MyEventsFragment
-import com.example.ui.event.my.schedule.MyScheduleEventsFragment
-import com.example.ui.stories.StoriesFragment
 import com.example.ui.views.dialogs.CustomProgressDialog
 import com.example.ui.views.dialogs.EventAddedToFavoriteDialog
-import com.example.util.SYSTEM_UI_LIGHT_STATUS_BAR
-import com.example.util.cancelWindowTransparency
-import com.example.util.doEdgeWindow
-import com.example.util.setWindowTransparency
+import com.example.common.SYSTEM_UI_LIGHT_STATUS_BAR
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
 import io.reactivex.exceptions.UndeliverableException
@@ -162,7 +154,7 @@ abstract class BaseActivity : MvpAppCompatActivity(), BaseContract.View {
     }
 
     fun getNavHostFragment(): NavHostFragment {
-        return supportFragmentManager.findFragmentById(R.id.navHostFragment) as NavHostFragment
+        return supportFragmentManager.findFragmentById(R.id.clBadge) as NavHostFragment
     }
 
     fun NavHostFragment.primaryNavFragment(): Fragment? {
@@ -170,7 +162,7 @@ abstract class BaseActivity : MvpAppCompatActivity(), BaseContract.View {
     }
 
     fun isCurrentDestination(frag : Int): Boolean {
-        return findNavController(R.id.navHostFragment).currentDestination?.id == frag
+        return findNavController(R.id.clBadge).currentDestination?.id == frag
     }
 
     fun isPreviousDestination(id : Int) : Boolean {
@@ -194,13 +186,7 @@ abstract class BaseActivity : MvpAppCompatActivity(), BaseContract.View {
 
 
     fun setupBackgroundTransparency(f : Fragment){
-        if (f is MyEventsFragment || f is MyScheduleEventsFragment)
-            window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
-        else window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
 
-        if (f is AboutEventFragment) setWindowTransparency { f.setupToolbarTopMargin(it) }
-        else if (f is StoriesFragment) doEdgeWindow()
-        else cancelWindowTransparency()
     }
 
     abstract fun showProgressView()

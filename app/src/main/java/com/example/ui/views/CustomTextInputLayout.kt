@@ -13,9 +13,8 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.getDrawableOrThrow
 import com.example.app.R
-import com.example.extensions.dp
+import com.example.common.dp
 import com.example.util.getColorStateList
-import com.example.util.getDrawable
 import com.google.android.material.textfield.TextInputLayout
 
 class CustomTextInputLayout : TextInputLayout {

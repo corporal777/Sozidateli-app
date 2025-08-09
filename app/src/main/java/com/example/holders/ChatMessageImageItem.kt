@@ -7,7 +7,7 @@ import androidx.constraintlayout.widget.Guideline
 import com.example.app.R
 import com.example.app.databinding.ItemChatMessageImageBinding
 import com.example.data.models.ChatMessage
-import com.example.extensions.dp
+import com.example.common.dp
 import com.example.util.RoundedCornersTransformation
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso

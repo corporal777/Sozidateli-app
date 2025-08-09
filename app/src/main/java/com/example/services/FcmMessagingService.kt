@@ -7,17 +7,16 @@ import android.os.Handler
 import androidx.core.app.NotificationCompat
 import androidx.core.os.bundleOf
 import com.example.app.R
-import com.example.data.AppData
+import com.examle.data.AppData
 import com.example.data.models.RemoteNotification
 import com.example.data.models.RemoteNotification.Companion.TYPE_INVITE
 import com.example.receivers.NotificationClickBroadcastReceiver
-import com.example.repository.ChatRepository
 import com.example.util.ChatHelper
 import com.example.util.CropCircleTransformation
-import com.example.util.FIELD_ACTION
-import com.example.util.FIELD_EVENT
-import com.example.util.FIELD_NOTIFICATION
-import com.example.util.FIELD_NOTIFICATION_ID
+import com.example.common.FIELD_ACTION
+import com.example.common.FIELD_EVENT
+import com.example.common.FIELD_NOTIFICATION
+import com.example.common.FIELD_NOTIFICATION_ID
 import com.example.util.NotificationUtil
 import com.example.util.loadBitmap
 import com.google.firebase.messaging.FirebaseMessagingService
@@ -33,8 +32,8 @@ class FcmMessagingService : FirebaseMessagingService() {
     @Inject
     lateinit var notificationUtil: NotificationUtil
 
-    @Inject
-    lateinit var chatRepository: ChatRepository
+//    @Inject
+//    lateinit var chatRepository: ChatRepository
 
     @Inject
     lateinit var appData: AppData
@@ -155,7 +154,7 @@ class FcmMessagingService : FirebaseMessagingService() {
                                     FIELD_ACTION to NotificationClickJobService.ACTION_ACCEPT
                             ))
                         },
-                        PendingIntent.FLAG_CANCEL_CURRENT
+                    PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE
                 )
                 addAction(0, getString(R.string.notifications_accept), actionAcceptIntent)
 
@@ -168,7 +167,7 @@ class FcmMessagingService : FirebaseMessagingService() {
                                     FIELD_ACTION to NotificationClickJobService.ACTION_DECLINE
                             ))
                         },
-                        PendingIntent.FLAG_CANCEL_CURRENT
+                    PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE
                 )
                 addAction(0, getString(R.string.notifications_cancel), actionDeclineIntent)
             }

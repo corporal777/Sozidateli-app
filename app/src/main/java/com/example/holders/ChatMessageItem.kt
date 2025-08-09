@@ -10,12 +10,11 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Guideline
 import androidx.core.content.ContextCompat
 import androidx.core.view.updateLayoutParams
-import androidx.databinding.ViewDataBinding
 import androidx.viewbinding.ViewBinding
 import com.example.app.R
 import com.example.data.models.ChatMessage
-import com.example.extensions.defaultTimeFormatter
-import com.example.extensions.dp
+import com.example.common.defaultTimeFormatter
+import com.example.common.dp
 import com.xwray.groupie.viewbinding.BindableItem
 
 abstract class ChatMessageItem<T : ViewBinding>(

@@ -8,6 +8,10 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.os.bundleOf
 import com.example.app.R
+import com.example.common.FIELD_CHAT
+import com.example.common.FIELD_CHAT_ID
+import com.example.common.FIELD_LABEL
+import com.example.common.FIELD_NOTIFICATION_ID
 import com.example.data.models.MessageModel
 import javax.inject.Inject
 
@@ -31,7 +35,8 @@ class ChatHelper @Inject constructor(
             icon: String?
     ) {
         if (isCanSendMessage(chatId, messageId)) {
-            val intent = NotificationUtil.createNotificationIntent(context, bundleOf(FIELD_CHAT to bundleOf(
+            val intent = NotificationUtil.createNotificationIntent(context, bundleOf(
+                FIELD_CHAT to bundleOf(
                     FIELD_CHAT_ID to chatId,
                     FIELD_LABEL to label,
                     FIELD_NOTIFICATION_ID to messageId

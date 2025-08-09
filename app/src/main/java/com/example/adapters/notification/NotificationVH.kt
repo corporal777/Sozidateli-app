@@ -13,10 +13,10 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import com.example.app.R
 import com.example.data.models.NotificationLocal
-import com.example.extensions.dateFormatterFullMothFullYear
-import com.example.extensions.defaultServerDateFormatter
+import com.example.common.dateFormatterFullMothFullYear
+import com.example.common.defaultServerDateFormatter
 import com.example.extensions.markWon
-import com.example.extensions.parseAndFormat
+import com.example.common.parseAndFormat
 import com.example.ui.views.CustomSpannableString
 import com.example.ui.views.expandableTextView.CustomExpandableTextView
 import com.example.util.URLSpanNoUnderline

@@ -7,17 +7,16 @@ import com.example.app.R
 import com.example.app.databinding.ItemRegisterEventDateBinding
 import com.example.data.models.EventFormFieldModel
 import com.example.data.models.eventRegister.EventRegisterField
-import com.example.extensions.defaultDateTimeFormatter
-import com.example.extensions.defaultServerDateFormatter
-import com.example.extensions.defaultServerDateTimeFormatter
-import com.example.extensions.formatToDefaultDate
-import com.example.extensions.formatToDefaultServerDate
-import com.example.extensions.initAsDatePicker
-import com.example.extensions.initAsDateTimePicker
-import com.example.extensions.onTextChanged
-import com.example.extensions.parseAndFormat
-import com.example.util.DATE_STRING_FORMAT_SHORT_MONTH_FULL_YEAR
-import com.example.util.DATE_TIME_STRING_FORMAT_SHORT_MONTH_FULL_YEAR
+import com.example.common.defaultDateTimeFormatter
+import com.example.common.defaultServerDateFormatter
+import com.example.common.defaultServerDateTimeFormatter
+import com.example.common.formatToDefaultDate
+import com.example.common.formatToDefaultServerDate
+import com.example.common.extensions.initAsDatePicker
+import com.example.common.extensions.initAsDateTimePicker
+import com.example.common.parseAndFormat
+import com.example.common.DATE_STRING_FORMAT_SHORT_MONTH_FULL_YEAR
+import com.example.common.DATE_TIME_STRING_FORMAT_SHORT_MONTH_FULL_YEAR
 import com.xwray.groupie.viewbinding.GroupieViewHolder
 import java.util.Calendar
 

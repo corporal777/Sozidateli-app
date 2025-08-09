@@ -11,7 +11,9 @@ import androidx.core.text.toSpannable
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import com.example.app.R
+import com.example.data.models.EventNew
 import com.example.data.models.SearchRegion
+import com.example.ui.views.dialogs.EventAgreementBottomSheet
 import com.example.ui.views.suggestFieldView.region.SearchRegionBottomSheet
 import com.example.ui.views.suggestFieldView.settlement.SearchSettlementBottomSheet
 import com.example.util.AuthValidateUtil
@@ -62,5 +64,14 @@ fun View.showSearchSettlementDialog(region : String?, onSelected : (region : Sea
         .setSettlementSelectedCallback {
             onSelected.invoke(it)
         }.show()
+}
+
+fun showEventAgreementDialog(context: Context, event: EventNew, onAccepted: (accept: Boolean) -> Unit) {
+    //if (event.userAgreement?.uri.isNullOrEmpty()) onAccepted.invoke(false)
+    //else if (event.state?.isAgreementAccepted() == true) onAccepted.invoke(false)
+    if (event.state?.isAgreementAccepted() == true) onAccepted.invoke(false)
+    else EventAgreementBottomSheet(context, event.userAgreement?.uri ?: "")
+        .setSelectCallback { if (it) onAccepted.invoke(true) }
+        .show()
 }
 

@@ -7,7 +7,7 @@ import androidx.core.view.isVisible
 import com.example.app.R
 import com.example.app.databinding.ItemDocumentBinding
 import com.example.data.models.FileModel
-import com.example.extensions.formatToDefaultDate
+import com.example.common.formatToDefaultDate
 import com.xwray.groupie.viewbinding.BindableItem
 import java.text.DecimalFormat
 import kotlin.math.log10

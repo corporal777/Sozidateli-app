@@ -1,6 +1,6 @@
 package com.example
 
-import com.example.extensions.formatToEventDatesInterval
+import com.example.common.formatToEventDatesInterval
 import org.junit.Assert.assertEquals
 import org.junit.Test
 

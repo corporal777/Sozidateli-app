@@ -1,7 +1,7 @@
 package com.example.ui.views.suggestFieldView.address
 
 import com.example.data.models.NewUserAddress
-import com.example.repository.DaDataRepository
+import com.examle.domain.repository.DaDataRepository
 import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign

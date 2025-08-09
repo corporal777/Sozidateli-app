@@ -5,8 +5,8 @@ import android.content.Context
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.core.view.setPadding
-import com.example.extensions.dp
-import com.example.extensions.setSelectableItemBackgroundBorderless
+import com.example.common.dp
+import com.example.common.extensions.setSelectableItemBackgroundBorderless
 
 @SuppressLint("ViewConstructor")
 class ToolbarButton : AppCompatImageButton {

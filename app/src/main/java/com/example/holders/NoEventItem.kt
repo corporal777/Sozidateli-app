@@ -6,7 +6,7 @@ import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import com.example.app.R
 import com.example.app.databinding.ItemNoEventBinding
-import com.example.extensions.dp
+import com.example.common.dp
 import com.xwray.groupie.viewbinding.BindableItem
 
 class NoEventItem(

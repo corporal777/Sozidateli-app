@@ -5,7 +5,6 @@ import android.graphics.ColorMatrix
 import android.graphics.ColorMatrixColorFilter
 import android.graphics.drawable.ColorDrawable
 import android.view.View
-import android.widget.Button
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
@@ -14,15 +13,14 @@ import com.example.app.databinding.ItemEventNewBinding
 import com.example.data.models.Event
 import com.example.data.models.EventNew
 import com.example.data.models.EventRegistrationStateModel
-import com.example.extensions.calendar
-import com.example.extensions.defaultServerDateFormatter
-import com.example.extensions.formatToDefaultDate
-import com.example.extensions.isSameDay
-import com.example.extensions.parseColor
-import com.example.extensions.parseToDate
+import com.example.common.calendar
+import com.example.common.defaultServerDateFormatter
+import com.example.common.formatToDefaultDate
+import com.example.common.isSameDay
+import com.example.common.parseColor
+import com.example.common.parseToDate
 import com.example.ui.views.loading.CustomLoadingButton
 import com.example.util.setImage
-import com.xwray.groupie.viewbinding.BindableItem
 
 class EventListItem(
     private val eventData: EventNew,

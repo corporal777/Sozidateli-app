@@ -1,6 +1,6 @@
 package com.example.util.paginationNew
 
-import com.example.util.pagination.PaginationResponse
+import com.examle.domain.model.PaginationResponse
 import io.reactivex.Maybe
 
 

@@ -103,7 +103,7 @@
             <objectAnimator
                 android:propertyName="fillAlpha"
                 android:startOffset="375"
-                android:duration="100"
+                android:duration="40"
                 android:valueFrom="0"
                 android:valueTo="1"
                 android:valueType="floatType"
@@ -115,7 +115,7 @@
             <objectAnimator
                 android:propertyName="translateX"
                 android:startOffset="200"
-                android:duration="800"
+                android:duration="350"
                 android:valueFrom="50"
                 android:valueTo="0"
                 android:valueType="floatType"
@@ -127,7 +127,7 @@
             <objectAnimator
                 android:propertyName="fillAlpha"
                 android:startOffset="375"
-                android:duration="100"
+                android:duration="40"
                 android:valueFrom="0"
                 android:valueTo="1"
                 android:valueType="floatType"
@@ -139,7 +139,7 @@
             <objectAnimator
                 android:propertyName="fillAlpha"
                 android:startOffset="375"
-                android:duration="100"
+                android:duration="40"
                 android:valueFrom="0"
                 android:valueTo="1"
                 android:valueType="floatType"
@@ -151,7 +151,7 @@
             <objectAnimator
                 android:propertyName="fillAlpha"
                 android:startOffset="375"
-                android:duration="100"
+                android:duration="40"
                 android:valueFrom="0"
                 android:valueTo="1"
                 android:valueType="floatType"
@@ -163,7 +163,7 @@
             <objectAnimator
                 android:propertyName="fillAlpha"
                 android:startOffset="375"
-                android:duration="100"
+                android:duration="40"
                 android:valueFrom="0"
                 android:valueTo="1"
                 android:valueType="floatType"
@@ -175,7 +175,7 @@
             <objectAnimator
                 android:propertyName="fillAlpha"
                 android:startOffset="349"
-                android:duration="100"
+                android:duration="40"
                 android:valueFrom="0"
                 android:valueTo="1"
                 android:valueType="floatType"
@@ -187,7 +187,7 @@
             <objectAnimator
                 android:propertyName="fillAlpha"
                 android:startOffset="426"
-                android:duration="100"
+                android:duration="40"
                 android:valueFrom="0"
                 android:valueTo="1"
                 android:valueType="floatType"
@@ -199,7 +199,7 @@
             <objectAnimator
                 android:propertyName="fillAlpha"
                 android:startOffset="484"
-                android:duration="100"
+                android:duration="40"
                 android:valueFrom="0"
                 android:valueTo="1"
                 android:valueType="floatType"
@@ -211,7 +211,7 @@
             <objectAnimator
                 android:propertyName="fillAlpha"
                 android:startOffset="555"
-                android:duration="100"
+                android:duration="30"
                 android:valueFrom="0"
                 android:valueTo="1"
                 android:valueType="floatType"
@@ -223,7 +223,7 @@
             <objectAnimator
                 android:propertyName="fillAlpha"
                 android:startOffset="681"
-                android:duration="100"
+                android:duration="20"
                 android:valueFrom="0"
                 android:valueTo="1"
                 android:valueType="floatType"

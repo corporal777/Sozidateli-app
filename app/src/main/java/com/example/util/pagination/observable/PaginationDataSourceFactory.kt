@@ -1,9 +1,8 @@
 package com.example.util.pagination.observable
 
-import android.util.Log
 import androidx.paging.DataSource
 import com.example.util.pagination.DataSourceFactory
-import com.example.util.pagination.PaginationResponse
+import com.examle.domain.model.PaginationResponse
 import io.reactivex.Maybe
 
 open class PaginationDataSourceFactory<I : Any>(

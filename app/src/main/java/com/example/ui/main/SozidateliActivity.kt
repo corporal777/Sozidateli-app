@@ -1,6 +1,7 @@
 package com.example.ui.main
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -21,15 +22,26 @@ import dagger.hilt.android.AndroidEntryPoint
 import androidx.activity.viewModels
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.LocalOverscrollConfiguration
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.material3.ScaffoldDefaults
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.example.ui.components.AppBottomNavigation
 import com.example.ui.theme.BottomNavigationBarColor
+import com.example.ui.views.dialogs.ProgressDialog
+import com.google.accompanist.systemuicontroller.SystemUiController
 
 @AndroidEntryPoint
 class SozidateliActivity : ComponentActivity() {
 
     private val viewModel by viewModels<MainViewModel>()
+
 
     @OptIn(ExperimentalFoundationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,8 +52,12 @@ class SozidateliActivity : ComponentActivity() {
         setContent {
             SozidateliTheme(dynamicColor = false) {
                 val navController = rememberNavController()
+                val systemUiColor = rememberSystemUiController()
 
-                SetSystemBarsColor(navController)
+                SetStatusBarColor(navController, systemUiColor)
+                SetNavigationBarColor(systemUiColor)
+
+                SetProgressLoading()
 
                 CompositionLocalProvider(LocalOverscrollConfiguration provides null) {
                     Scaffold(
@@ -50,35 +66,32 @@ class SozidateliActivity : ComponentActivity() {
                         NavigationGraph(navController, padding, viewModel.startDestination.value)
                     }
                 }
-
-
             }
 
         }
 
     }
 
+
     @Composable
-    private fun SetSystemBarsColor(navController: NavController) {
+    private fun SetProgressLoading() {
+        val isLoadingState by viewModel.progressLoading.collectAsState()
+        var isLoading by remember { mutableStateOf(false) }
+        LaunchedEffect(isLoadingState) { isLoading = isLoadingState }
+        ProgressDialog(isLoading)
+    }
+
+    @Composable
+    private fun SetStatusBarColor(navController: NavController, uiController: SystemUiController) {
         val backStackEntry by navController.currentBackStackEntryAsState()
         val currentRoute = backStackEntry?.destination?.route ?: ""
-
         val isSystemInDarkMode = currentRoute != Route.AuthorizationScreen.route
-        val systemUiColor = rememberSystemUiController()
-        val navBarColor =
-            if (currentRoute != Route.AuthorizationScreen.route) BottomNavigationBarColor
-            else Color.Transparent
+        SideEffect { uiController.setStatusBarColor(Color.Transparent, isSystemInDarkMode) }
+    }
 
-        SideEffect {
-            systemUiColor.setNavigationBarColor(
-                color = BottomNavigationBarColor,
-                darkIcons = true
-            )
-            systemUiColor.setStatusBarColor(
-                color = Color.Transparent,
-                darkIcons = isSystemInDarkMode
-            )
-        }
+    @Composable
+    private fun SetNavigationBarColor(uiController: SystemUiController) {
+        SideEffect { uiController.setNavigationBarColor(BottomNavigationBarColor, true) }
     }
 
     private fun showSplashScreen() {

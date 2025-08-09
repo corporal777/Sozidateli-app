@@ -5,9 +5,9 @@ import androidx.core.view.isVisible
 import com.example.app.R
 import com.example.app.databinding.ItemProfileDataEducationBinding
 import com.example.data.models.EducationModel
-import com.example.extensions.defaultServerDateFormatter
-import com.example.extensions.parseAndFormatOrDefault
-import com.example.util.DATE_FORMAT_FULL_MONTH_FULL_YEAR_NO_DATE_NUMBERS
+import com.example.common.defaultServerDateFormatter
+import com.example.common.parseAndFormatOrDefault
+import com.example.common.DATE_FORMAT_FULL_MONTH_FULL_YEAR_NO_DATE_NUMBERS
 import com.xwray.groupie.viewbinding.BindableItem
 import java.text.SimpleDateFormat
 import java.util.Locale

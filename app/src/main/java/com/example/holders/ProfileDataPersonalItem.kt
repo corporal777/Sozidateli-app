@@ -11,11 +11,11 @@ import com.example.data.models.FieldDetails
 import com.example.data.models.LinksModel
 import com.example.data.models.OrganizationNew
 import com.example.data.models.ToggleStringModel
-import com.example.extensions.additionalNumber
-import com.example.extensions.formatToDefaultDate
+import com.example.common.extensions.additionalNumber
+import com.example.common.formatToDefaultDate
 import com.example.extensions.parsePhone
-import com.example.extensions.removeUrlUnderline
-import com.example.extensions.setTextDataOrHide
+import com.example.common.extensions.removeUrlUnderline
+import com.example.common.extensions.setTextDataOrHide
 import com.example.ui.views.CustomSpannableString
 import com.xwray.groupie.viewbinding.BindableItem
 

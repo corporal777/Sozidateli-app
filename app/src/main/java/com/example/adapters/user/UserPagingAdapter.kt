@@ -3,10 +3,8 @@ package com.example.adapters.user
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
-import androidx.paging.LoadState
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.DiffUtil
@@ -16,7 +14,6 @@ import com.example.app.databinding.ItemUserBinding
 import com.example.data.models.UserDetail
 import dev.androidbroadcast.vbpd.viewBinding
 import com.example.app.R
-import com.example.extensions.dp
 import com.example.extensions.executePlaceholderLoadState
 import com.example.ui.views.UserSubscribeButton
 import com.example.util.setCircleAvatar

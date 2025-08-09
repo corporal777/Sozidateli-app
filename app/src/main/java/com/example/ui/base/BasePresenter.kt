@@ -1,10 +1,10 @@
 package com.example.ui.base
 
-import com.example.data.AppData
+import com.examle.data.AppData
 import com.example.data.models.ApiError
 import com.example.data.models.EventNew
 import com.example.exceptions.EmptyDataException
-import com.example.exceptions.NoInternetConnectionException
+import com.example.common.exceptions.NoInternetConnectionException
 import com.example.ui.views.dialogs.StateType
 import com.google.gson.Gson
 import io.reactivex.*

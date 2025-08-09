@@ -6,11 +6,10 @@ import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.InsetDrawable
 import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
-import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getColor
 import com.example.app.R
 import com.example.app.databinding.DialogCustomProgressBinding
-import com.example.extensions.dp
+import com.example.common.dp
 import com.example.ui.views.CustomProgressBar
 
 class CustomProgressDialog(val context: Context) {

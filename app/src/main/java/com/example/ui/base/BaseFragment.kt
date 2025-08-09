@@ -11,20 +11,13 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.LayoutRes
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
-import androidx.core.os.bundleOf
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
-import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import com.example.app.R
 import com.example.data.models.UserDetail
-import com.example.ui.state.UserState
-import com.example.ui.state.maxNew.MaxStateScreenType
-import com.example.ui.views.dialogs.ChangeStateBottomDialog
-import com.example.ui.views.dialogs.ClickType
 import com.example.ui.views.dialogs.DefaultAlertDialog
 import com.example.ui.views.dialogs.StateType
-import com.example.util.Utils
 import com.google.android.material.transition.MaterialFadeThrough
 import com.google.android.material.transition.MaterialSharedAxis
 
@@ -147,57 +140,7 @@ abstract class BaseFragment<binding : ViewDataBinding> : MvpAppCompatFragment(),
     }
 
     override fun showStateErrorMessage(type: StateType, hasBase: Boolean, user: UserDetail?) {
-        ChangeStateBottomDialog(requireActivity(), type)
-            .setClickCallback {
-                when (it) {
-                    ClickType.INFO -> findNavController().navigate(R.id.userStateFragment)
-                    ClickType.BASE -> {
-                        findNavController().navigate(
-                            R.id.mainInfoFragment,
-                            bundleOf("type" to UserState.BASE, "screen" to 3)
-                        )
-                    }
 
-                    ClickType.MAX -> {
-                        if (hasBase) {
-                            if (user != null) {
-                                when (Utils.maxStateScreen(user)) {
-                                    MaxStateScreenType.BASE ->
-                                        findNavController().navigate(
-                                            R.id.maxStatusContactsFragment,
-                                            bundleOf("screen" to 1)
-                                        )
-
-                                    MaxStateScreenType.INTERESTS ->
-                                        findNavController().navigate(
-                                            R.id.maxStatusInterestsFragment,
-                                            bundleOf("screen" to 1)
-                                        )
-
-                                    MaxStateScreenType.EDUCATION ->
-                                        findNavController().navigate(
-                                            R.id.maxStatusEducationFragment,
-                                            bundleOf("screen" to 1)
-                                        )
-
-                                    MaxStateScreenType.WORK ->
-                                        findNavController().navigate(
-                                            R.id.maxStatusWorkFragment,
-                                            bundleOf("screen" to 1)
-                                        )
-
-                                    else -> {}
-                                }
-                            }
-                        } else {
-                            findNavController().navigate(
-                                R.id.mainInfoFragment,
-                                bundleOf("type" to UserState.MAX, "screen" to 1)
-                            )
-                        }
-                    }
-                }
-            }.show()
     }
 
     override fun showAddedToFavoriteDialog() {
@@ -324,12 +267,6 @@ abstract class BaseFragment<binding : ViewDataBinding> : MvpAppCompatFragment(),
         FADE, AXIS, NONE
     }
 
-    fun isPreviousDestination(id: Int): Boolean {
-        val navHostFragment =
-            requireActivity().supportFragmentManager.findFragmentById(R.id.navHostFragment) as NavHostFragment
-        val prevId = navHostFragment.navController.previousBackStackEntry?.destination?.id
-        return prevId == id
-    }
 
     private var cashCollapseState: Pair<Int, Int>? = null
 

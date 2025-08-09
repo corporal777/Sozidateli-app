@@ -2,8 +2,6 @@ package com.example.ui.views
 
 import android.content.Context
 import android.graphics.Color
-import android.text.SpannableString
-import android.text.SpannableStringBuilder
 import android.text.method.LinkMovementMethod
 import android.util.AttributeSet
 import android.util.TypedValue
@@ -15,7 +13,7 @@ import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import com.example.app.R
 import com.example.app.databinding.LayoutCustomCheckViewBinding
-import com.example.extensions.dp
+import com.example.common.dp
 
 class CustomCheckView : ConstraintLayout {
 

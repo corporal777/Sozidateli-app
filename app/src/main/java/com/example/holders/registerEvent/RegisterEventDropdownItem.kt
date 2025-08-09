@@ -5,7 +5,7 @@ import android.widget.TextView
 import com.example.app.R
 import com.example.app.databinding.ItemRegisterEventSelectorBinding
 import com.example.data.models.eventRegister.EventRegisterField
-import com.example.extensions.initDropDownView
+import com.example.common.extensions.initDropDownView
 
 open class RegisterEventDropdownItem(
     private val fieldData: EventRegisterField<String>,

@@ -1,0 +1,54 @@
+plugins {
+    alias(libs.plugins.com.android.library)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.com.google.dagger.hilt)
+    alias(libs.plugins.kotlin.parcelize)
+    alias(libs.plugins.ksp)
+}
+
+android {
+    namespace 'com.examle.data'
+    compileSdk 34
+
+    defaultConfig {
+        minSdk 28
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildFeatures {
+        buildConfig true
+    }
+    buildTypes {
+        release { minifyEnabled false }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+    kotlinOptions {
+        jvmTarget = '11'
+    }
+}
+
+dependencies {
+    implementation project(':common')
+    implementation project(':domain')
+
+    implementation libs.androidx.core.ktx
+    implementation libs.androidx.appcompat
+    implementation libs.material
+
+    implementation libs.retrofit2
+    implementation libs.retrofit2.converter.gson
+    implementation libs.retrofit2.adapter.rxjava
+    implementation libs.retrofit2.kotlin.coroutines.adapter
+    implementation libs.okhttp3.logging.interceptor
+
+    implementation(libs.dagger.hilt.android)
+    ksp(libs.dagger.hilt.compiler)
+
+    testImplementation libs.junit
+    androidTestImplementation libs.androidx.junit
+    androidTestImplementation libs.androidx.espresso.core
+}

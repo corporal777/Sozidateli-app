@@ -8,14 +8,10 @@ import android.content.BroadcastReceiver
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.os.PersistableBundle
-import android.util.Log
-import android.widget.Toast
 import com.example.services.NotificationClickJobService
-import com.example.util.FIELD_ACTION
-import com.example.util.FIELD_NOTIFICATION_ID
-import com.example.util.showCustomTabsBrowser
+import com.example.common.FIELD_ACTION
+import com.example.common.FIELD_NOTIFICATION_ID
 
 class NotificationClickBroadcastReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {

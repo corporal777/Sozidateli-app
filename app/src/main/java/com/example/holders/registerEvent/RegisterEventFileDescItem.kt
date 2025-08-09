@@ -4,8 +4,7 @@ import android.view.View
 import androidx.core.view.isVisible
 import com.example.app.R
 import com.example.app.databinding.ItemEventRegistrationFieldDescriptionBinding
-import com.example.extensions.textColor
-import com.example.util.getColor
+import com.example.common.extensions.textColor
 import com.xwray.groupie.viewbinding.BindableItem
 
 class RegisterEventFileDescItem(

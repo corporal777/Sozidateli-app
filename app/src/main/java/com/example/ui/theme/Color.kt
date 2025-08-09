@@ -11,6 +11,7 @@ val PurpleGrey40 = Color(0xFF625b71)
 val Pink40 = Color(0xFF7D5260)
 
 val AppBackgroundColor = Color(0xFFFFFFFF)
+val BottomSheetBackgroundColor = Color(0xFFFFFFFF)
 val CourseItemColor = Color(0xFF24252A)
 val CourseItemTextColor = Color(0xFFF2F2F3)
 val CourseLessonColor = Color(0x80F2F2F3)

@@ -1,18 +1,13 @@
 package com.example.holders
 
 import android.view.View
-import androidx.core.content.ContextCompat
 import com.example.app.R
-import com.example.app.databinding.ItemDayBinding
 import com.example.app.databinding.ItemEventTimetableBinding
-import com.example.data.models.EventScheduleDay
-import com.example.extensions.dateFormatterFullDayFullMonthNoYear
-import com.example.extensions.defaultServerDateFormatter
+import com.example.common.dateFormatterFullDayFullMonthNoYear
+import com.example.common.defaultServerDateFormatter
 import com.example.extensions.firstLetterToUppercase
-import com.example.extensions.parseAndFormat
+import com.example.common.parseAndFormat
 import com.xwray.groupie.viewbinding.BindableItem
-import java.text.SimpleDateFormat
-import java.util.Locale
 
 
 class EventActivityDayItem(

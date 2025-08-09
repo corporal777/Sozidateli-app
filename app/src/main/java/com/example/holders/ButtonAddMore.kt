@@ -4,7 +4,7 @@ import android.view.View
 import androidx.core.view.isVisible
 import com.example.app.R
 import com.example.app.databinding.ItemProfileButtonEditBinding
-import com.example.extensions.setOnClickListener
+import com.example.common.extensions.setOnClickListener
 import com.xwray.groupie.viewbinding.BindableItem
 
 class ButtonAddMore(

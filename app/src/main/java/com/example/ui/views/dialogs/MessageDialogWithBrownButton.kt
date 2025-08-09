@@ -10,7 +10,7 @@ import androidx.core.content.ContextCompat
 import com.example.app.R
 import com.example.app.databinding.DialogMessageWithGrayButtonBinding
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
-import com.example.extensions.removeUrlUnderline
+import com.example.common.extensions.removeUrlUnderline
 
 class MessageDialogWithBrownButton(
     val context: Context,

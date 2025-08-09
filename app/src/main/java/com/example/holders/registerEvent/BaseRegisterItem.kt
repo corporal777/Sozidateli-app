@@ -6,7 +6,7 @@ import androidx.core.view.isVisible
 import androidx.databinding.ViewDataBinding
 import com.example.app.R
 import com.example.data.models.eventRegister.EventRegisterField
-import com.example.extensions.textColor
+import com.example.common.extensions.textColor
 import com.xwray.groupie.viewbinding.BindableItem
 
 abstract class BaseRegisterItem<T : ViewDataBinding>(

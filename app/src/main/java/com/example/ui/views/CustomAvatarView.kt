@@ -11,8 +11,8 @@ import coil.load
 import coil.request.CachePolicy
 import coil.size.Scale
 import com.example.app.R
-import com.example.extensions.px
-import com.example.extensions.textColor
+import com.example.common.px
+import com.example.common.extensions.textColor
 import com.example.util.getColor
 import com.example.util.getDrawable
 import io.github.inflationx.calligraphy3.CalligraphyUtils

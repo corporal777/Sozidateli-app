@@ -1,6 +1,6 @@
 package com.example.ui.views.notifications
 
-import com.example.data.AppData
+import com.examle.data.AppData
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import moxy.InjectViewState
