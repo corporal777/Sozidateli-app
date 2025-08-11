@@ -1,7 +1,7 @@
 package com.examle.data.repository
 
 import com.examle.data.AppData
-import com.examle.data.api.Api
+import com.examle.data.source.remote.Api
 import com.examle.domain.repository.ChatRepository
 import javax.inject.Inject
 

@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace 'com.example.common'
-    compileSdk 34
+    compileSdk 35
 
     defaultConfig {
         minSdk 28
@@ -40,7 +40,7 @@ dependencies {
     api(libs.io.reactivex.rxjava2)
     api(libs.io.reactivex.rxandroid)
     api(libs.io.reactivex.rxkotlin)
-
+    implementation libs.com.google.gson
 
     implementation(libs.dagger.hilt.android)
     ksp(libs.dagger.hilt.compiler)

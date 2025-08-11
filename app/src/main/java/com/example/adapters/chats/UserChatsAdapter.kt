@@ -10,18 +10,18 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.examle.data.models.Message
+import com.examle.data.models.UserChatModel
 import com.example.adapters.CustomLoadStateAdapter
 import com.example.app.R
 import com.example.app.databinding.ItemChatBinding
-import com.example.data.models.Message.MessageType
-import com.example.data.models.UserChatModel
+import com.example.common.constants.CHAT_SERVICE_MESSAGE_ACCEPT
 import com.example.common.calendar
 import com.example.common.dateFormatterShortMothNoYear
 import com.example.common.defaultServerDateTimeFormatter
 import com.example.common.isSameDay
 import com.example.common.isYesterday
-import com.example.common.CHAT_SERVICE_MESSAGE_ACCEPT
-import com.example.util.setCircleAvatar
+import com.example.extensions.setCircleAvatar
 import dev.androidbroadcast.vbpd.viewBinding
 import java.util.Calendar
 
@@ -63,8 +63,8 @@ class UserChatsAdapter(val onUserClick: (user: UserChatModel) -> Unit) :
 
         private fun View.getMessageText(model: UserChatModel): String? {
             return when (model.lastMessageType) {
-                MessageType.IMAGE -> context.getString(R.string.chat_photo_message_text)
-                MessageType.SERVICE -> {
+                Message.MessageType.IMAGE -> context.getString(R.string.chat_photo_message_text)
+                Message.MessageType.SERVICE -> {
                     if (model.lastMessage == CHAT_SERVICE_MESSAGE_ACCEPT) {
                         if (model.lastMessageSender == model.user?.id)
                             context.getString(R.string.chat_accepted)

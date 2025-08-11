@@ -49,4 +49,7 @@ val BottomNavigationBarColor = Color(0xFFF9F9F9)
 val BottomNavigationSelectedColor = Color(0xFFC3996C)
 val BottomNavigationNormalColor = Color(0xFF979592)
 
+val CheckBoxCheckedColor = Color(0xFFC49A6C)
+val CheckBoxUncheckedColor = Color(0xFFE6E4EA)
+
 

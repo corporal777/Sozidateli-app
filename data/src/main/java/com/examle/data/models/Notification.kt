@@ -1,14 +1,15 @@
 package com.examle.data.models
 
 import android.os.Parcelable
-import com.example.data.models.Notification.AcceptState
-import com.example.data.models.Notification.Type
-import com.example.data.models.NotificationModel.Companion.NOTIFICATION_TYPE_EVENT
-import com.example.data.models.NotificationModel.Companion.NOTIFICATION_TYPE_EVENT_ACTIVITY
-import com.example.data.models.NotificationModel.Companion.NOTIFICATION_TYPE_EVENT_MEMBER
-import com.example.data.models.NotificationModel.Companion.NOTIFICATION_TYPE_INVITE_ASSISTANCE
-import com.example.data.models.NotificationModel.Companion.NOTIFICATION_TYPE_INVITE_PGFR
-import com.example.data.models.NotificationModel.Companion.NOTIFICATION_TYPE_ORGANIZATION_MEMBER
+import com.examle.data.models.NotificationModel.Companion.NOTIFICATION_TYPE_EVENT
+import com.examle.data.models.Notification.AcceptState
+import com.examle.data.models.Notification.Type
+import com.examle.data.models.NotificationModel.Companion.NOTIFICATION_TYPE_EVENT_ACTIVITY
+import com.examle.data.models.NotificationModel.Companion.NOTIFICATION_TYPE_EVENT_MEMBER
+import com.examle.data.models.NotificationModel.Companion.NOTIFICATION_TYPE_INVITE_ASSISTANCE
+import com.examle.data.models.NotificationModel.Companion.NOTIFICATION_TYPE_INVITE_PGFR
+import com.examle.data.models.NotificationModel.Companion.NOTIFICATION_TYPE_ORGANIZATION_MEMBER
+import com.examle.data.models.event.DateModel
 import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
 

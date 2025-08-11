@@ -1,30 +1,32 @@
 package com.examle.domain.repository
 
-import com.examle.domain.model.AuthModel
-import com.examle.domain.model.TokenStatusModel
+import com.examle.domain.model.Optional
+import com.examle.domain.model.auth.AuthModel
+import com.examle.domain.model.auth.SnAuthModel
+import com.examle.domain.model.auth.TokenStatusModel
 import com.examle.domain.model.body.AuthBody
+import com.examle.domain.model.body.VKAuthBody
+import com.examle.domain.model.user.SnUser
 import io.reactivex.Completable
-import io.reactivex.Maybe
 import kotlinx.coroutines.flow.Flow
 
 interface AuthRepository {
 
-    fun checkUserAuth(): Completable
-    fun checkUserAuthFlow(): Flow<TokenStatusModel>
+    fun checkUserAuth(): Flow<TokenStatusModel>
 
     //fun getFcmToken(): Maybe<String>
     //fun sendFcmToken(): Completable
     //fun deleteFcmToken(): Completable
 
     //fun getTemporaryToken() : Completable
-    fun getStories() : List<String>
     fun authEmailOrPhoneWithResult(login: AuthBody): Flow<AuthModel>
 
     fun authEmailOrPhoneWithInvite(invite: Int, body: AuthBody): Flow<AuthModel>
+    fun authEmailOrPhoneWithSn(body: AuthBody, sn: SnAuthModel): Flow<AuthModel>
+
 
     //auth social
-    //fun authWithVk(token : String, uuid : String): Flow<SnAuthResponse>
-    //fun authEmailOrPhoneWithSn(body: AuthBody, snAuth: SnAuth): Flow<AuthModel>
+    fun authWithVk(body: VKAuthBody, sn: SnAuthModel): Flow<Optional<SnUser>>
 //
 //    fun sendQrCode(body: QrBody):Single<QrAuthResponse>
 //    fun authWebWithQrCode(body: QrBody): Single<AuthResponse>

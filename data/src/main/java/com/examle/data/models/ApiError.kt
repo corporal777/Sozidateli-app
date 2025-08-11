@@ -1,6 +1,5 @@
 package com.examle.data.models
 
-import com.example.ui.base.BasePresenter
 import com.google.gson.Gson
 import retrofit2.HttpException
 import retrofit2.Response

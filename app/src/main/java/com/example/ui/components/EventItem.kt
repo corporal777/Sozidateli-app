@@ -29,9 +29,15 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
-import com.examle.data.models.EventResponse
-import com.examle.domain.model.EventModel
+import com.examle.data.models.event.EventResponse
+import com.examle.domain.model.event.EventModel
 import com.example.app.R
+import com.example.common.constants.EVENT_STATUS_APPROVED
+import com.example.common.constants.EVENT_STATUS_CANCELED
+import com.example.common.constants.EVENT_STATUS_DECLINED
+import com.example.common.constants.EVENT_STATUS_FINISHED
+import com.example.common.constants.EVENT_STATUS_PENDING
+import com.example.common.constants.EVENT_STATUS_REGISTRATION_FINISHED
 import com.example.extensions.clickable
 import com.example.extensions.verticalGradientBrush
 import com.example.ui.theme.AmbientShadowColor
@@ -87,7 +93,7 @@ fun EventCardItem(
         )
 
         TextBold(
-            text = event.name ?: "Undefined",
+            text = event.name,
             color = Color.White,
             fontSize = 21.sp,
             maxLines = 5,
@@ -139,26 +145,20 @@ fun EventCardItem(
 
 
         if (actionButtonText != EventAction.NONE) {
-            Box(
+            TextSemibold(
                 modifier = Modifier
                     .clip(RoundedCornerShape(12.dp))
-                    .height(dimensionResource(R.dimen.event_detail_action_button_min_height))
-                    .wrapContentWidth()
                     .background(BtnBackgroundWhiteGhostColor)
                     .clickable(rippleColor = Color.Black) { onAction(actionButtonText) }
-                    .padding(horizontal = 24.dp)
+                    .padding(horizontal = 20.dp, vertical = 10.dp)
                     .constrainAs(action) {
                         bottom.linkTo(parent.bottom, 20.dp)
                         end.linkTo(parent.end, 20.dp)
                     },
-                contentAlignment = Alignment.Center
-            ) {
-                TextSemibold(
-                    text = actionButtonText.text,
-                    color = Color.Black,
-                    fontSize = dimensionResource(R.dimen.common_button_text_size).value.sp,
-                )
-            }
+                text = actionButtonText.text,
+                color = Color.Black,
+                fontSize = dimensionResource(R.dimen.common_button_text_size).value.sp,
+            )
         }
 
     }
@@ -166,8 +166,8 @@ fun EventCardItem(
 }
 
 private fun getActionButtonText(event: EventModel, isTemporary: Boolean): EventAction {
-    val registrationState = event.currentUserRegistrationState
-    val registrationClosed = registrationState?.prohibitions?.registrationClosed ?: false
+    val registrationState = event.userRegistrationState
+    val registrationClosed = registrationState?.registrationClosed ?: false
     val actions = registrationState?.availableActions ?: arrayListOf("")
 
     return if (isTemporary) EventAction.AUTH
@@ -179,29 +179,20 @@ private fun getActionButtonText(event: EventModel, isTemporary: Boolean): EventA
 }
 
 private fun getEventStatus(event: EventModel): Triple<Boolean, Int, Int> {
-    val status = event.status?.value
-    val userRegistration = event.currentUserRegistration?.status?.value
+    val userRegistration = event.userRegistration?.status
 
-    return if (status == EventResponse.Status.FINISHED.name)
+    return if (event.status == EVENT_STATUS_FINISHED)
         Triple(true, R.color.event_status_finished_background, R.string.event_status_finished)
-    else if (status == EventResponse.Status.CANCELED.name)
+    else if (event.status == EVENT_STATUS_CANCELED)
         Triple(true, R.color.event_status_cancelled_background, R.string.event_status_cancelled)
-    else if (userRegistration == EventResponse.Status.APPROVED.name)
+    else if (userRegistration == EVENT_STATUS_APPROVED)
         Triple(true, R.color.event_status_approved_background, R.string.event_status_approved_new)
-    else if (userRegistration == EventResponse.Status.PENDING.name)
-        Triple(
-            true,
-            R.color.event_status_wait_confirmation_background,
-            R.string.event_status_wait_confirmation
-        )
-    else if (userRegistration == EventResponse.Status.DECLINED.name)
+    else if (userRegistration == EVENT_STATUS_PENDING)
+        Triple(true, R.color.event_status_wait_confirmation_background, R.string.event_status_wait_confirmation)
+    else if (userRegistration == EVENT_STATUS_DECLINED)
         Triple(true, R.color.event_status_declined_background, R.string.event_status_decline_new)
-    else if (userRegistration == EventResponse.Status.REGISTRATION_FINISHED.name)
-        Triple(
-            true,
-            R.color.event_status_wait_confirmation_background,
-            R.string.event_closed_request
-        )
+    else if (userRegistration == EVENT_STATUS_REGISTRATION_FINISHED)
+        Triple(true, R.color.event_status_wait_confirmation_background, R.string.event_closed_request)
     else Triple(false, R.color.event_status_finished_background, R.string.event_status_finished)
 }
 

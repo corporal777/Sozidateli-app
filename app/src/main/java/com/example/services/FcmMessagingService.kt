@@ -6,22 +6,18 @@ import android.graphics.Bitmap
 import android.os.Handler
 import androidx.core.app.NotificationCompat
 import androidx.core.os.bundleOf
-import com.example.app.R
 import com.examle.data.AppData
-import com.example.data.models.RemoteNotification
-import com.example.data.models.RemoteNotification.Companion.TYPE_INVITE
+import com.example.app.R
+import com.example.common.constants.FIELD_ACTION
+import com.example.common.constants.FIELD_EVENT
+import com.example.common.constants.FIELD_NOTIFICATION_ID
 import com.example.receivers.NotificationClickBroadcastReceiver
 import com.example.util.ChatHelper
 import com.example.util.CropCircleTransformation
-import com.example.common.FIELD_ACTION
-import com.example.common.FIELD_EVENT
-import com.example.common.FIELD_NOTIFICATION
-import com.example.common.FIELD_NOTIFICATION_ID
 import com.example.util.NotificationUtil
 import com.example.util.loadBitmap
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-import com.google.gson.Gson
 import javax.inject.Inject
 
 class FcmMessagingService : FirebaseMessagingService() {
@@ -125,53 +121,52 @@ class FcmMessagingService : FirebaseMessagingService() {
     }
 
     private fun processNotification(data: Map<String, String>) {
-        val objectJson = data[DATA_OBJECT] ?: return
-        val notification = Gson().fromJson(objectJson, RemoteNotification::class.java) ?: return
-        val notificationId = notification.id
-        appData.notificationsCount += 1
-
-        val title = data[DATA_TITLE] ?: return
-        val body = data[DATA_BODY] ?: return
-
-        val intent = NotificationUtil.createNotificationIntent(this, bundleOf(FIELD_NOTIFICATION to notification))
-        notificationUtil.createNotification(
-                channel = channel,
-                notificationId = notificationId
-        ) {
-            setContentTitle(title)
-            setContentText(body)
-            setTicker(body)
-            setStyle(NotificationCompat.BigTextStyle().bigText(body))
-            setContentIntent(intent)
-
-            if (notification.type == TYPE_INVITE) {
-                val actionAcceptIntent = PendingIntent.getBroadcast(
-                        this@FcmMessagingService,
-                        notificationId + NotificationClickJobService.ACTION_ACCEPT.hashCode(),
-                        Intent(this@FcmMessagingService, NotificationClickBroadcastReceiver::class.java).apply {
-                            putExtras(bundleOf(
-                                    FIELD_NOTIFICATION_ID to notificationId,
-                                    FIELD_ACTION to NotificationClickJobService.ACTION_ACCEPT
-                            ))
-                        },
-                    PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE
-                )
-                addAction(0, getString(R.string.notifications_accept), actionAcceptIntent)
-
-                val actionDeclineIntent = PendingIntent.getBroadcast(
-                        this@FcmMessagingService,
-                        notificationId + NotificationClickJobService.ACTION_DECLINE.hashCode(),
-                        Intent(this@FcmMessagingService, NotificationClickBroadcastReceiver::class.java).apply {
-                            putExtras(bundleOf(
-                                    FIELD_NOTIFICATION_ID to notificationId,
-                                    FIELD_ACTION to NotificationClickJobService.ACTION_DECLINE
-                            ))
-                        },
-                    PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE
-                )
-                addAction(0, getString(R.string.notifications_cancel), actionDeclineIntent)
-            }
-        }
+//        val objectJson = data[DATA_OBJECT] ?: return
+//        val notificationId = 0
+//        appData.notificationsCount += 1
+//
+//        val title = data[DATA_TITLE] ?: return
+//        val body = data[DATA_BODY] ?: return
+//
+//        val intent = NotificationUtil.createNotificationIntent(this, bundleOf(FIELD_NOTIFICATION to notification))
+//        notificationUtil.createNotification(
+//                channel = channel,
+//                notificationId = notificationId
+//        ) {
+//            setContentTitle(title)
+//            setContentText(body)
+//            setTicker(body)
+//            setStyle(NotificationCompat.BigTextStyle().bigText(body))
+//            setContentIntent(intent)
+//
+//            if (notification.type == TYPE_INVITE) {
+//                val actionAcceptIntent = PendingIntent.getBroadcast(
+//                        this@FcmMessagingService,
+//                        notificationId + NotificationClickJobService.ACTION_ACCEPT.hashCode(),
+//                        Intent(this@FcmMessagingService, NotificationClickBroadcastReceiver::class.java).apply {
+//                            putExtras(bundleOf(
+//                                    FIELD_NOTIFICATION_ID to notificationId,
+//                                    FIELD_ACTION to NotificationClickJobService.ACTION_ACCEPT
+//                            ))
+//                        },
+//                    PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE
+//                )
+//                addAction(0, getString(R.string.notifications_accept), actionAcceptIntent)
+//
+//                val actionDeclineIntent = PendingIntent.getBroadcast(
+//                        this@FcmMessagingService,
+//                        notificationId + NotificationClickJobService.ACTION_DECLINE.hashCode(),
+//                        Intent(this@FcmMessagingService, NotificationClickBroadcastReceiver::class.java).apply {
+//                            putExtras(bundleOf(
+//                                    FIELD_NOTIFICATION_ID to notificationId,
+//                                    FIELD_ACTION to NotificationClickJobService.ACTION_DECLINE
+//                            ))
+//                        },
+//                    PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE
+//                )
+//                addAction(0, getString(R.string.notifications_cancel), actionDeclineIntent)
+//            }
+//        }
     }
 
     private fun sendNoTypeNotification(id: Int, title: String?, body: String?) {

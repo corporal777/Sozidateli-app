@@ -11,14 +11,14 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.examle.data.models.OrganizationNew
 import com.example.adapters.CustomLoadStateAdapter
 import com.example.app.R
 import com.example.app.databinding.ItemOrganizationBinding
-import com.example.data.models.OrganizationNew
 import com.example.extensions.executePlaceholderLoadState
+import com.example.extensions.getColorStateList
+import com.example.extensions.setImage
 import com.example.ui.views.UserSubscribeButton
-import com.example.util.getColorStateList
-import com.example.util.setImage
 import dev.androidbroadcast.vbpd.viewBinding
 
 class OrganizationPagingAdapter(

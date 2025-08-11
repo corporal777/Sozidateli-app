@@ -1,6 +1,7 @@
 package com.examle.data.di
 
 import com.examle.data.BuildConfig
+import com.examle.data.source.remote.ApiDataData
 import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
@@ -20,7 +21,7 @@ class DataDataRetrofitModule {
 
     @Provides
     @Singleton
-    fun provideApi(): com.examle.data.api.ApiDataData {
+    fun provideApi(): ApiDataData {
         val retrofit = retrofit2.Retrofit.Builder()
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
                 .addConverterFactory(GsonConverterFactory.create(GsonBuilder().create()))
@@ -41,6 +42,6 @@ class DataDataRetrofitModule {
 
         retrofit.client(clientBuilder.build())
 
-        return retrofit.build().create(com.examle.data.api.ApiDataData::class.java)
+        return retrofit.build().create(ApiDataData::class.java)
     }
 }

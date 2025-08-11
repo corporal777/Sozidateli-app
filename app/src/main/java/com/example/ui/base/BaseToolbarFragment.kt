@@ -7,9 +7,8 @@ import androidx.core.view.isVisible
 import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
-import com.example.common.extensions.onScrolled
+import com.example.extensions.onScrolled
 import com.example.interfaces.ToolbarFragment
-import com.example.ui.main.MainActivity
 import com.example.ui.views.loading.CustomCircleLoadingButton
 import com.example.ui.views.toolbar.ToolbarContent
 import com.example.ui.views.toolbar.ToolbarIconView
@@ -42,7 +41,7 @@ abstract class BaseToolbarFragment<VB : ViewBinding> : BaseVBFragment<VB>(), Too
     private fun setActivityAppBarElevation(value: Int) {
         try {
             val offset = abs(value / 10f)
-            (requireActivity() as MainActivity).setAppBarElevation(offset)
+            //(requireActivity() as SozidateliActivity).setAppBarElevation(offset)
         } catch (e: Exception) {
             e.printStackTrace()
         }

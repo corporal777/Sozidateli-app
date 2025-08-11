@@ -7,11 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.annotation.StringRes
-import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.viewbinding.ViewBinding
+import com.examle.data.models.UserDetail
 import com.example.app.R
-import com.example.data.models.UserDetail
 import com.example.ui.views.dialogs.DefaultAlertDialog
 import com.example.ui.views.dialogs.StateType
 import com.google.android.material.transition.MaterialSharedAxis

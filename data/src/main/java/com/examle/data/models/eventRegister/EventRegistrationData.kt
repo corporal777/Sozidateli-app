@@ -1,6 +1,6 @@
 package com.examle.data.models.eventRegister
 
-import com.example.data.models.EventFormFieldModel
+import com.examle.data.models.EventFormFieldModel
 
 sealed class EventRegistrationData(val field: EventFormFieldModel) {
 

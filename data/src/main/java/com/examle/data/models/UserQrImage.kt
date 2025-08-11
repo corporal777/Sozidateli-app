@@ -3,7 +3,6 @@ package com.examle.data.models
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
-import com.example.data.database.converters.UserEventConverter
 
 @Entity
 data class UserQrImage(

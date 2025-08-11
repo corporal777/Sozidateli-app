@@ -1,23 +1,17 @@
 package com.example.ui.auth.login
 
 import androidx.lifecycle.viewModelScope
-import com.examle.data.AppData
-import com.example.data.models.SnAuth
-import com.example.extensions.getAppVersion
-import com.example.extensions.getAppVersionCode
-import com.example.extensions.getDeviceName
-import com.examle.domain.repository.AuthRepository
+import com.examle.domain.model.auth.SnAuthModel
+import com.examle.domain.interactor.AuthInteractor
 import com.example.ui.base.BaseViewModel
-import com.example.util.AuthValidateUtil
-import com.example.util.Utils.isContainLetters
-import com.example.util.Utils.isPhone
-import com.example.util.Utils.isPhoneNumberValid
-import com.example.util.Utils.validatePhoneBeforeSend
+import com.example.common.util.AuthValidateUtil
+import com.example.common.util.Utils.isContainLetters
+import com.example.common.util.Utils.isPhone
+import com.example.common.util.Utils.isPhoneNumberValid
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -25,8 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel
 @Inject constructor(
-    private val repository: AuthRepository,
-    private val appData: AppData
+    private val interactor: AuthInteractor
 ) : BaseViewModel() {
 
     private val _isEnabled = MutableStateFlow<Boolean>(false)
@@ -38,18 +31,13 @@ class LoginViewModel
     private var login = ""
     private var password = ""
     private var loginType = "email"
-    var snAuth : SnAuth? = null
+    var snAuth: SnAuthModel? = null
 
     fun onLoginClick(invite: Int) {
         viewModelScope.launch {
-            if (invite != -1) repository.authEmailOrPhoneWithInvite(invite, getLoginBody())
-            else if (snAuth != null) repository.authEmailOrPhoneWithSn(getLoginBody(), snAuth!!)
-            else repository.authEmailOrPhoneWithResult(getLoginBody())
-                //flowOf(AuthResponse(id = 22197, token = "ca5b1d3386ec1e7f3fc4195e4653bcd7"))
-                .onEach {
-                    if (it.token != null) appData.login(it.token)
-                    if (it.id != null) appData.saveId(it.id)
-                }
+            if (invite != -1) interactor.authWithInvite(invite, loginType, login, password)
+            else if (snAuth != null) interactor.authWithSn(loginType, login, password, snAuth!!)
+            else interactor.authWithResult(loginType, login, password)
                 .withLoading()
                 .catch { e -> e.printStackTrace() }
                 .collect { _isLoginSuccess.update { true } }
@@ -74,18 +62,5 @@ class LoginViewModel
             loginType = "email"
             AuthValidateUtil.isValidEmail(login) && password.isNotEmpty()
         }
-    }
-
-    private fun getLoginBody(): com.examle.data.bodies.AuthBody {
-        val validatedLogin = if (loginType == "phone") validatePhoneBeforeSend(login) else login
-        return com.examle.data.bodies.AuthBody(
-            com.examle.data.bodies.LoginModel(loginType, validatedLogin),
-            com.examle.data.bodies.LoginModel("common", password),
-            "",
-            getDeviceName(),
-            getAppVersionCode(),
-            getAppVersion(),
-            ""
-        )
     }
 }

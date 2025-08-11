@@ -1,20 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/EventRegistrationItemContainer">
 
-    <LinearLayout style="@style/EventRegistrationItemContainer">
 
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/textView"
-            fontPath="fonts/sf_pro_text_regular.ttf"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:includeFontPadding="false"
-            android:letterSpacing="-0.01"
-            android:textColor="@color/profile_data_text_hint"
-            android:textSize="15sp"
-            tools:text="Title" />
-    </LinearLayout>
-</layout>
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/textView"
+        fontPath="fonts/sf_pro_text_regular.ttf"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:includeFontPadding="false"
+        android:letterSpacing="-0.01"
+        android:textColor="@color/profile_data_text_hint"
+        android:textSize="15sp"
+        tools:text="Title" />
+</LinearLayout>

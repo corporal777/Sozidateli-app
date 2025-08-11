@@ -1,13 +1,17 @@
 package com.example.ui.base
 
 import com.examle.data.AppData
-import com.example.data.models.EventNew
+import com.examle.domain.model.event.EventModel
+import kotlinx.coroutines.flow.MutableStateFlow
 
 abstract class BaseEventViewModel(private val appData: AppData) : BaseViewModel() {
 
-    fun isProfileLevelLow(event: EventNew): Boolean {
-        val state = event.binds?.currentUserRegistrationState ?: return true
-        return if (state.prohibitions?.profileLevelToLow?.requiredLevel == "basic") !getHasBase()
+    val updatedEvent = MutableStateFlow<EventModel?>(null)
+
+
+    fun isProfileLevelLow(event: EventModel): Boolean {
+        val state = event.userRegistrationState ?: return true
+        return if (state.requiredLevel == "basic") !getHasBase()
         else !getHasMax()
     }
 

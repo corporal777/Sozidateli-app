@@ -3,8 +3,8 @@ package com.example.services
 import android.app.job.JobParameters
 import android.app.job.JobService
 import com.examle.data.AppData
-import com.example.common.FIELD_ACTION
-import com.example.common.FIELD_NOTIFICATION_ID
+import com.example.common.constants.FIELD_ACTION
+import com.example.common.constants.FIELD_NOTIFICATION_ID
 import io.reactivex.disposables.CompositeDisposable
 import javax.inject.Inject
 

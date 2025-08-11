@@ -8,8 +8,8 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.isVisible
 import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.extensions.onScrolled
 import com.google.android.material.appbar.AppBarLayout
-import com.example.common.extensions.onScrolled
 
 class CustomAppBarLayoutBehavior : AppBarLayout.ScrollingViewBehavior {
 

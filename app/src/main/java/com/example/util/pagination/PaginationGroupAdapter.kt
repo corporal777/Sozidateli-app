@@ -1,6 +1,6 @@
 package com.example.util.pagination
 
-import com.example.common.PAGE_SIZE
+import com.example.common.constants.PAGE_SIZE
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Item

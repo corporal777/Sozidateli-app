@@ -1,41 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
 
-    <LinearLayout
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="@dimen/margin_horizontal_default"
+    android:layout_marginTop="20dp"
+    android:background="@drawable/background_input_text_field_new"
+    android:orientation="vertical">
+
+
+    <TextView
+        fontPath="fonts/sf_pro_text.ttf"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/margin_horizontal_default"
         android:layout_marginTop="20dp"
-        android:background="@drawable/background_input_text_field_new"
-        android:orientation="vertical">
+        android:gravity="center"
+        android:text="@string/register_event_go_to_fill_missing_data"
+        android:textColor="@color/text_color_weekend"
+        android:textSize="14sp"
+        tools:ignore="MissingPrefix" />
 
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_go_to_profile"
+        style="@style/BtnBrownStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="15dp"
+        android:minHeight="30dp"
+        android:paddingHorizontal="15dp"
+        android:text="@string/go_to_profile"
+        android:textSize="13sp" />
 
-        <TextView
-            fontPath="fonts/sf_pro_text.ttf"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/margin_horizontal_default"
-            android:layout_marginTop="20dp"
-            android:gravity="center"
-            android:text="@string/register_event_go_to_fill_missing_data"
-            android:textColor="@color/text_color_weekend"
-            android:textSize="14sp" />
+</LinearLayout>
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btn_go_to_profile"
-            style="@style/BtnBrownStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="15dp"
-            android:minHeight="30dp"
-            android:paddingHorizontal="15dp"
-            android:text="@string/go_to_profile"
-            android:textSize="13sp" />
-
-    </LinearLayout>
-
-</layout>

@@ -5,7 +5,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.view.isInvisible
 import com.example.app.R
-import com.example.util.setTint
+import com.example.extensions.setTint
 
 class ToolbarContent(
     private val backButton : ImageView,

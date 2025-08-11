@@ -11,17 +11,17 @@ import androidx.core.text.set
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
+import com.examle.data.models.NotificationLocal
 import com.example.app.R
-import com.example.data.models.NotificationLocal
 import com.example.common.dateFormatterFullMothFullYear
 import com.example.common.defaultServerDateFormatter
-import com.example.extensions.markWon
 import com.example.common.parseAndFormat
+import com.example.extensions.getColor
+import com.example.extensions.getDrawable
+import com.example.extensions.markWon
 import com.example.ui.views.CustomSpannableString
 import com.example.ui.views.expandableTextView.CustomExpandableTextView
 import com.example.util.URLSpanNoUnderline
-import com.example.util.getColor
-import com.example.util.getDrawable
 
 abstract class NotificationVH<T : ViewBinding>(
     itemView: View,

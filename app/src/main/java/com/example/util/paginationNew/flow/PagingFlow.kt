@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.paging.PagingData
 import androidx.paging.filter
 import androidx.paging.map
-import com.example.data.models.EventNew
 import com.example.util.paginationNew.PagingDataSourceFactory
 import com.example.util.paginationNew.PagingSourceFactory
 import io.reactivex.Flowable

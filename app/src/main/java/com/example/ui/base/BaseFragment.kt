@@ -14,8 +14,8 @@ import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.navigation.fragment.findNavController
+import com.examle.data.models.UserDetail
 import com.example.app.R
-import com.example.data.models.UserDetail
 import com.example.ui.views.dialogs.DefaultAlertDialog
 import com.example.ui.views.dialogs.StateType
 import com.google.android.material.transition.MaterialFadeThrough

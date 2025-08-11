@@ -13,21 +13,21 @@ import android.widget.Toast
 import androidx.core.text.getSpans
 import androidx.core.text.set
 import androidx.core.view.isVisible
+import com.examle.data.models.event.EventResponse
 import com.example.app.R
 import com.example.app.databinding.BottomSheetEventDetailInformationBinding
-import com.example.data.models.EventNew
+import com.example.extensions.getColor
 import com.example.extensions.markWon
 import com.example.extensions.parsePhone
 import com.example.ui.views.CustomSpannableString
 import com.example.util.URLSpanNoUnderline
-import com.example.util.getColor
 import com.example.util.showCustomTabsBrowser
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 
 class EventDetailInformationBottomSheetDialog(
     private val activity : Context,
-    private val event: EventNew
+    private val event: EventResponse
 ) : BottomSheetDialog(activity) {
 
     private val mBinding = BottomSheetEventDetailInformationBinding.inflate(LayoutInflater.from(activity))

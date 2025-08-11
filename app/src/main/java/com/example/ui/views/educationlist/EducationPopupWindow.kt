@@ -7,7 +7,7 @@ import android.widget.PopupWindow
 import android.widget.RelativeLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.example.app.R
-import com.example.util.settings
+import com.example.extensions.settings
 
 class EducationPopupWindow(val context: Context, val data: List<String>): PopupWindow() {
 

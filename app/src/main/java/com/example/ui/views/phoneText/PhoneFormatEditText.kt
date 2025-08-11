@@ -5,8 +5,8 @@ import android.util.AttributeSet
 import androidx.core.widget.doAfterTextChanged
 import androidx.core.widget.doOnTextChanged
 import com.example.app.R
-import com.example.common.extensions.onFocusChanged
-import com.example.util.Utils.isContainsNumbers
+import com.example.extensions.onFocusChanged
+import com.example.common.util.Utils.isContainsNumbers
 import com.google.android.material.textfield.TextInputEditText
 
 class PhoneFormatEditText : TextInputEditText {

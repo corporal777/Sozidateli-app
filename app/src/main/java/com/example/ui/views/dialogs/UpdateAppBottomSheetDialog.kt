@@ -7,7 +7,7 @@ import android.view.LayoutInflater
 import androidx.core.view.isVisible
 import com.example.app.R
 import com.example.app.databinding.BottomSheetUpdateAppBinding
-import com.example.util.getDrawable
+import com.example.extensions.getDrawable
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 

@@ -1,5 +1,7 @@
 package com.examle.data.models
 
+import com.examle.data.models.event.EventResponse
+
 data class FavoriteModel(
         val id: Int? = null,
         val user: Int? = null,

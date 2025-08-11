@@ -1,6 +1,7 @@
 package com.examle.data.models
 
 import android.os.Parcelable
+import com.examle.data.models.event.EventResponse
 import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
 
@@ -65,12 +66,12 @@ data class ChatInvitedUserModel(
 )
 
 data class ChatBinds(
-        val users: List<UserDetail>? = null,
-        val event: EventResponse? = null,
-        @SerializedName("last-unread-message")
+    val users: List<UserDetail>? = null,
+    val event: EventResponse? = null,
+    @SerializedName("last-unread-message")
         val lastUnreadMessage: MessageModel? = null,
-        val bans: List<ChatBanModel>? = null,
-        @SerializedName("last-message")
+    val bans: List<ChatBanModel>? = null,
+    @SerializedName("last-message")
         val lastMessage: MessageModel? = null
         //val rights
 )

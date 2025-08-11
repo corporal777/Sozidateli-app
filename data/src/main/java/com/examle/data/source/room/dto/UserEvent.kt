@@ -1,0 +1,27 @@
+package com.examle.data.source.room.dto
+
+import androidx.room.Entity
+import androidx.room.Ignore
+import androidx.room.PrimaryKey
+import androidx.room.TypeConverters
+import com.examle.data.models.EventActivity
+import com.examle.data.models.event.EventResponse
+import com.examle.data.source.room.converter.UserEventConverter
+
+@Entity
+@TypeConverters(UserEventConverter::class)
+data class UserEvent(
+    @PrimaryKey(autoGenerate = false)
+        val eventId: String,
+    val eventInfo: EventResponse,
+    val activity: EventActivity,
+    val updatedAt: Long
+) {
+
+    @Ignore
+    var isDataFromLocalStorage: Boolean = false
+
+    fun isHasBuildingScheme(): Boolean {
+        return !eventInfo.binds?.destinationScheme.isNullOrEmpty()
+    }
+}

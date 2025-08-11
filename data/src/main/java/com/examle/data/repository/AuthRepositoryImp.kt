@@ -1,11 +1,17 @@
 package com.examle.data.repository
 
 import com.examle.data.AppData
-import com.examle.data.api.Api
-import com.examle.data.bodies.RebaseInviteBody
-import com.examle.domain.model.AuthModel
-import com.examle.domain.model.TokenStatusModel
+import com.examle.data.bodies.BindSocialAccountBody
+import com.examle.domain.model.Optional
+import com.examle.data.source.remote.Api
+import com.examle.domain.model.asOptional
+import com.examle.domain.model.auth.AuthModel
+import com.examle.domain.model.auth.SnAuthModel
+import com.examle.domain.model.auth.TokenStatusModel
 import com.examle.domain.model.body.AuthBody
+import com.examle.domain.model.body.InviteBody
+import com.examle.domain.model.body.VKAuthBody
+import com.examle.domain.model.user.SnUser
 import com.examle.domain.repository.AuthRepository
 import com.example.common.flatMap
 import io.reactivex.Completable
@@ -14,6 +20,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import retrofit2.HttpException
 import javax.inject.Inject
 
@@ -24,15 +31,55 @@ class AuthRepositoryImp
     private val api: Api
 ) : ApiRepository(appData), AuthRepository {
 
-    override fun checkUserAuth(): Completable {
-        return Completable.complete()
+
+    override fun checkUserAuth(): Flow<TokenStatusModel> {
+        return flow { emit(api.getTokenStatus()) }.catch {
+            if (it is HttpException && it.code() == 400) appData.logoutInvalidation()
+            else it.printStackTrace()
+        }
     }
 
-    override fun checkUserAuthFlow(): Flow<TokenStatusModel> {
-        return flow { emit(api.getTokenStatus()) }
-            .catch {
-                if (it is HttpException && it.code() == 400) appData.logoutInvalidation()
-                else it.printStackTrace()
+    override fun authEmailOrPhoneWithResult(login: AuthBody): Flow<AuthModel> {
+        return flow { emit(api.authByEmailOrPhone(login)) }
+            .map { AuthModel(it.id, it.token) }
+            .saveLogin()
+    }
+
+    override fun authEmailOrPhoneWithInvite(invite: Int, body: AuthBody): Flow<AuthModel> {
+        return flow { emit(api.authByEmailOrPhone(body)) }
+            .flatMap { auth ->
+                val rebase = InviteBody(auth.id, auth.token)
+                flowOf(api.rebaseInvite(invite, rebase)).map { AuthModel(auth.id, auth.token) }
+            }.saveLogin()
+    }
+
+    override fun authEmailOrPhoneWithSn(body: AuthBody, sn: SnAuthModel): Flow<AuthModel> {
+        return flow { emit(api.authByEmailOrPhone(body)) }
+            .flatMap {
+                val oldTempToken = appData.tempToken
+                appData.tempToken = null
+                api.bindSocialAccountWithToken(
+                    BindSocialAccountBody(
+                        sn.uuid,
+                        it.id,
+                        sn.snType.code,
+                        false
+                    ), "Token ${it.token}"
+                )
+                appData.tempToken = oldTempToken
+
+                flowOf(AuthModel(it.id, it.token))
+            }.saveLogin()
+    }
+
+    override fun authWithVk(body: VKAuthBody, sn: SnAuthModel): Flow<Optional<SnUser>> {
+        return flow { emit(api.authWithVk(body)) }
+            .map {
+                if (it.accessData != null && it.accessData.token.isNotEmpty()){
+                    appData.login(it.accessData.token)
+                    appData.saveId(it.accessData.id)
+                    Optional()
+                } else SnUser(sn, it.personalData).asOptional()
             }
     }
 
@@ -67,58 +114,9 @@ class AuthRepositoryImp
 //        }.ignoreElement()
 //    }
 
-    override fun getStories(): List<String> {
-        val list = listOf(
-            "Завязывайте новые знакомства и встречайте единомышленников",
-            "Находите интересные события и выступайте на мероприятиях",
-            "Будьте в курсе актуальных событий в вашем городе и во всей стране",
-            "Создавайте интересные страницы своих мероприятий",
-            "Рассказывайте о себе, обменивайтесь опытом и получайте новые знания",
-        )
-        return arrayListOf<String>().apply {
-            add(list.last())
-            addAll(list)
-            add(list.first())
-        }
-    }
 
-    override fun authEmailOrPhoneWithResult(login: AuthBody): Flow<AuthModel> {
-        return flow { emit(api.authByEmailOrPhone(login)) }.map { AuthModel(it.id, it.token) }
-    }
-
-    override fun authEmailOrPhoneWithInvite(invite: Int, body: AuthBody): Flow<AuthModel> {
-        return flow { emit(api.authByEmailOrPhone(body)) }
-            .map { AuthModel(it.id, it.token) }
-            .flatMap { auth ->
-                val rebase = RebaseInviteBody(auth.id, auth.token)
-                flowOf(api.rebaseInvite(invite, rebase)).map { auth }
-            }
-    }
-
-
-
-//    override fun authEmailOrPhoneWithSn(body: com.examle.data.bodies.AuthBody, snAuth: SnAuth): Flow<AuthResponse> {
-//        return flow { emit(api.authByEmailOrPhone(body)) }
-//            .flatMapConcat { auth ->
-//                bindSocialAccount(snAuth.uuid, auth.id, snAuth.snType.code, auth.token)
-//                    .map { auth }
-//            }
-//    }
 //
-//    override fun authWithVk(token: String, uuid: String): Flow<SnAuthResponse> {
-//        return flow {
-//            emit(api.authWithVk(
-//                com.examle.data.bodies.VKAuthBody(
-//                    token,
-//                    uuid,
-//                    appData.deviceId ?: "",
-//                    getDeviceName(),
-//                    getAppVersionCode(),
-//                    getAppVersion()
-//                )
-//            ))
-//        }
-//    }
+
 
 //    override fun sendQrCode(body: QrBody): Single<QrAuthResponse> {
 //        return api.sendQrCodeToGetDeviceInfo(body)
@@ -182,28 +180,10 @@ class AuthRepositoryImp
 //        return api.checkAppVersion(appVersion, "android")
 //    }
 
-    private fun bindSocialAccount(
-        uuid: String,
-        userId: Int?,
-        socialType: String,
-        token: String?
-    ): Flow<Unit> {
-        return flow {
-            if (userId == null || token.isNullOrEmpty()) throw NullPointerException()
-            else {
-                val oldTempToken = appData.tempToken
-                appData.tempToken = null
-
-                api.bindSocialAccountWithToken(
-                    com.examle.data.bodies.BindSocialAccountBody(
-                        uuid,
-                        userId,
-                        socialType,
-                        false
-                    ), "Token $token")
-                appData.tempToken = oldTempToken
-                emit(Unit)
-            }
+    private fun Flow<AuthModel>.saveLogin(): Flow<AuthModel> {
+        return onEach {
+            appData.login(it.token)
+            appData.saveId(it.id)
         }
     }
 }

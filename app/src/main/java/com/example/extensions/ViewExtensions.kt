@@ -4,7 +4,12 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.content.Context
 import android.content.Intent
+import android.content.res.ColorStateList
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.os.Build
 import android.text.Editable
 import android.text.InputFilter
@@ -12,22 +17,30 @@ import android.text.Layout
 import android.text.TextWatcher
 import android.text.method.PasswordTransformationMethod
 import android.text.style.URLSpan
+import android.util.DisplayMetrics
+import android.util.Patterns
 import android.util.TypedValue
 import android.view.KeyEvent.ACTION_UP
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import android.widget.AutoCompleteTextView
 import android.widget.CompoundButton
 import android.widget.EditText
+import android.widget.ImageView
+import android.widget.PopupWindow
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
+import androidx.annotation.ColorRes
 import androidx.annotation.RequiresApi
+import androidx.appcompat.widget.AppCompatAutoCompleteTextView
 import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.appcompat.widget.AppCompatToggleButton
 import androidx.constraintlayout.widget.Group
+import androidx.core.content.ContextCompat
 import androidx.core.text.getSpans
 import androidx.core.text.set
 import androidx.core.text.toSpannable
@@ -35,22 +48,253 @@ import androidx.core.view.doOnLayout
 import androidx.core.view.isVisible
 import androidx.core.view.marginTop
 import androidx.core.view.updateLayoutParams
+import androidx.core.view.updatePadding
+import androidx.core.widget.ImageViewCompat
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
 import androidx.viewpager2.widget.ViewPager2
+import coil.load
+import coil.request.CachePolicy
+import coil.request.ImageRequest
+import coil.size.Scale
+import coil.transform.CircleCropTransformation
+import coil.transform.Transformation
 import com.example.adapters.NoFilterArrayAdapter
 import com.example.app.R
+import com.example.common.dp
+import com.example.common.parseColor
 import com.example.ui.base.BaseVBFragment
 import com.example.util.URLSpanNoUnderline
-import com.example.util.getColor
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.textfield.TextInputLayout
+import com.squareup.picasso.Picasso
+import java.io.File
 import java.util.Calendar
 import java.util.Calendar.YEAR
 import java.util.Date
 import kotlin.math.roundToInt
+
+fun TextView.changeTitleTextColor(show: Boolean){
+    textColor = if (show) R.color.title_text_error_red else R.color.chat_list_date
+}
+
+fun TextView.showInputError(show: Boolean){
+    if (show) {
+        setRightDrawable(R.drawable.ic_input_error_icon)
+        updatePadding(right = 10.dp)
+    } else {
+        setRightDrawable(0)
+        updatePadding(right = 15.dp)
+    }
+}
+
+
+fun ImageView.setTint(@ColorRes colorRes: Int) {
+    ImageViewCompat.setImageTintList(
+        this,
+        ColorStateList.valueOf(ContextCompat.getColor(context, colorRes))
+    )
+}
+
+fun View.getDrawable(res: Int): Drawable? {
+    return ContextCompat.getDrawable(context, res)
+}
+
+fun View.getColor(res: Int): Int {
+    return ContextCompat.getColor(context, res)
+}
+
+fun View.getColorStateList(res: Int): ColorStateList? {
+    return ContextCompat.getColorStateList(context, res)
+}
+
+fun View.getColorStateList(res: String): ColorStateList {
+    return ColorStateList.valueOf(res.parseColor() ?: getColor(R.color.colorAccent))
+}
+
+fun TextView.setLeftDrawable(res: Int) {
+    this.setCompoundDrawablesWithIntrinsicBounds(res, 0, 0, 0)
+}
+
+fun TextView.setRightDrawable(res: Int) {
+    this.setCompoundDrawablesWithIntrinsicBounds(0, 0, res, 0)
+}
+
+fun ImageView.setImagePicasso(url: String?, placeholder: Any? = null, error: Any? = null) {
+    Picasso.get()
+        .load(url)
+        .let {
+            when (placeholder) {
+                null -> it
+                is Int -> it.placeholder(placeholder)
+                else -> it.placeholder(placeholder as Drawable)
+            }
+        }
+        .let {
+            when (error) {
+                null -> it
+                is Int -> it.error(error)
+                else -> it.error(error as Drawable)
+            }
+        }
+        .into(this)
+}
+
+fun ImageView.setImage(
+    image: Any?, crossfade: Int? = 500,
+    placeholder: Int? = R.drawable.background_image_placeholder,
+    error: Int? = null,
+    transformations: List<Transformation>? = null
+) {
+    val resImage: Any = image ?: ""
+    when (resImage) {
+        is Int -> load(resImage) {
+            setParams(crossfade, placeholder, error, transformations)
+        }
+
+        is Uri -> load(resImage) {
+            setParams(crossfade, placeholder, error, transformations)
+        }
+
+        is String ->
+            if (Patterns.WEB_URL.matcher(resImage).matches())
+                load(resImage) {
+                    setParams(crossfade, placeholder, error, transformations)
+                }
+            else
+                load(File(resImage)) {
+                    setParams(crossfade, placeholder, error, transformations)
+                }
+
+        is Drawable ->
+            load(resImage) {
+                setParams(crossfade, placeholder, error, transformations)
+            }
+
+        is Bitmap -> load(resImage) {
+            setParams(crossfade, placeholder, error, transformations)
+        }
+    }
+}
+
+fun ImageView.setCircleAvatar(
+    image: Any?, crossFad: Int? = 500,
+    placeholder: Int? = R.drawable.background_image_placeholder,
+    error: Int? = R.drawable.avatar_placeholder_circle
+) {
+    val resImage: Any = image ?: ""
+    when (resImage) {
+        is Int -> load(resImage) {
+            setParams(crossFad, placeholder, error, listOf(CircleCropTransformation()))
+        }
+
+        is String ->
+            if (Patterns.WEB_URL.matcher(resImage).matches())
+                load(resImage) {
+                    setParams(crossFad, placeholder, error, listOf(CircleCropTransformation()))
+                }
+            else
+                load(File(resImage)) {
+                    setParams(crossFad, placeholder, error, listOf(CircleCropTransformation()))
+                }
+
+        is Drawable ->
+            load(resImage) {
+                setParams(crossFad, placeholder, error, listOf(CircleCropTransformation()))
+            }
+
+        is Bitmap -> load(resImage) {
+            setParams(crossFad, placeholder, error, listOf(CircleCropTransformation()))
+        }
+    }
+}
+
+
+fun ImageRequest.Builder.setParams(
+    crossfad: Int? = 500,
+    placeholder: Int? = R.drawable.background_image_placeholder,
+    error: Int? = R.drawable.background_image_placeholder,
+    transformations: List<Transformation>? = null
+) {
+    if (crossfad != null) crossfade(crossfad)
+    if (placeholder != null) placeholder(placeholder)
+    if (error != null) error(error)
+    if (!transformations.isNullOrEmpty()) transformations(transformations)
+    scale(Scale.FILL)
+    diskCachePolicy(CachePolicy.ENABLED)
+    listener(
+        onStart = {},
+        onCancel = {},
+        onError = { _, _ ->
+
+        }
+    )
+}
+
+
+
+
+fun LinearLayoutManager.smoothScrollToFirstItem(
+    context: Context,
+    appBar: AppBarLayout?,
+    jumpToPosition: Int
+) {
+    val mSmoothScroller by lazy {
+        object : LinearSmoothScroller(context) {
+            override fun getVerticalSnapPreference(): Int {
+                return SNAP_TO_END
+            }
+
+            override fun updateActionForInterimTarget(action: Action?) {
+                action?.jumpTo(jumpToPosition)
+            }
+
+            override fun onStop() {
+                super.onStop()
+                appBar?.setExpanded(true)
+            }
+
+            override fun calculateSpeedPerPixel(displayMetrics: DisplayMetrics): Float {
+                return 20f / displayMetrics.densityDpi
+            }
+        }
+    }
+    mSmoothScroller.targetPosition = 0
+    this.startSmoothScroll(mSmoothScroller)
+}
+
+fun <T> AppCompatAutoCompleteTextView.initDropDownAdapter(list: MutableList<T>) {
+    keyListener = null
+    setAdapter(
+        NoFilterArrayAdapter(
+            context,
+            android.R.layout.simple_list_item_1,
+            list
+        )
+    )
+}
+
+
+fun PopupWindow.settings() {
+    isOutsideTouchable = true
+    softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
+    inputMethodMode = PopupWindow.INPUT_METHOD_NEEDED
+}
+
+
+fun AppCompatCheckBox.initSwitch(checked: Boolean, onCheckedChanged: (isChecked: Boolean) -> Unit) {
+    isChecked = checked
+    setOnCheckedChangeListener { _, isChecked -> onCheckedChanged(isChecked) }
+}
+
+fun EditText.initInput(text: String? = null, onTextChanged: (text: CharSequence?) -> Unit) {
+    setText(text)
+    onTextChanged(onTextChanged)
+}
 
 fun AppCompatImageButton.setFiltersBackground(isChosen: Boolean) {
     if (isChosen) setImageResource(R.drawable.ic_filters_selected)

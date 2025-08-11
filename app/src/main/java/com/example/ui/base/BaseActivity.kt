@@ -18,11 +18,11 @@ import androidx.navigation.fragment.NavHostFragment
 import com.example.app.R
 import com.example.app.databinding.ActivityMainBinding
 import com.example.app.databinding.LayoutBottomNavBadgeBinding
-import com.example.common.extensions.statusBarColorValue
+import com.example.common.constants.SYSTEM_UI_LIGHT_STATUS_BAR
+import com.example.extensions.statusBarColorValue
 import com.example.interfaces.BackgroundImageFragment
 import com.example.ui.views.dialogs.CustomProgressDialog
 import com.example.ui.views.dialogs.EventAddedToFavoriteDialog
-import com.example.common.SYSTEM_UI_LIGHT_STATUS_BAR
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
 import io.reactivex.exceptions.UndeliverableException

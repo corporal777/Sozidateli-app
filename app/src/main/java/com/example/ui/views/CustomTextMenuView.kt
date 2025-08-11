@@ -9,14 +9,15 @@ import android.widget.LinearLayout
 import androidx.core.view.isVisible
 import com.example.app.R
 import com.example.app.databinding.LayoutCustomTextMenuViewBinding
+import com.example.common.constants.DATE_STRING_FORMAT_SHORT_MONTH_FULL_YEAR
 import com.example.common.defaultDateFormatter
-import com.example.common.DATE_STRING_FORMAT_SHORT_MONTH_FULL_YEAR
-import com.example.util.getDrawable
-import com.example.util.initDropDownAdapter
+import com.example.extensions.getDrawable
+import com.example.extensions.initAsDatePicker
+import com.example.extensions.initDropDownAdapter
+import com.example.extensions.onTextChanged
+import com.example.extensions.textColor
 import com.google.android.material.textfield.TextInputLayout
-import com.example.common.extensions.initAsDatePicker
-import com.example.common.extensions.textColor
-import java.util.*
+import java.util.Calendar
 
 
 class CustomTextMenuView : LinearLayout {

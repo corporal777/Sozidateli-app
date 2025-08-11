@@ -47,16 +47,7 @@ abstract class ApiRepository(
                 .map { it.response }
     }
 
-    fun <T, C : List<T>> callPagination(request: Maybe<ApiResponse<C>>): Maybe<PaginationResponse<T>> {
-        return request
-                .onErrorResumeNext { t: Throwable -> Maybe.error(processError(t)) }
-                .map {
-                    PaginationResponse(
-                        it.response_detail?.total,
-                        it.response
-                    )
-                }
-    }
+
 
     private fun processError(throwable: Throwable): Throwable {
         if (throwable is ConnectException) return NoInternetConnectionException()

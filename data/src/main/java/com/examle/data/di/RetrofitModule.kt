@@ -4,7 +4,8 @@ import android.content.Context
 import android.util.Log
 import com.examle.data.AppData
 import com.examle.data.BuildConfig
-import com.examle.data.api.AuthInterceptor
+import com.examle.data.source.remote.AuthInterceptor
+import com.examle.data.source.remote.Api
 import com.example.common.isConnectedToNetwork
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -36,7 +37,7 @@ class RetrofitModule {
 
     @Provides
     @Singleton
-    fun provideApi(converterFactory: Converter.Factory, authInterceptor: AuthInterceptor, context: Context): com.examle.data.api.Api {
+    fun provideApi(converterFactory: Converter.Factory, authInterceptor: AuthInterceptor, context: Context): Api {
         val clientBuilder = OkHttpClient.Builder()
             .connectTimeout(5, TimeUnit.SECONDS)
             .readTimeout(1, TimeUnit.MINUTES)
@@ -93,7 +94,7 @@ class RetrofitModule {
             .addConverterFactory(converterFactory)
             .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
             .addCallAdapterFactory(CoroutineCallAdapterFactory())
-            .client(clientBuilder.build()).build().create(com.examle.data.api.Api::class.java)
+            .client(clientBuilder.build()).build().create(Api::class.java)
     }
 
 

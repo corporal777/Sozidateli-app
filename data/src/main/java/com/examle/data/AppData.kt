@@ -3,10 +3,13 @@ package com.examle.data
 import com.examle.data.models.FileModel
 import com.examle.data.models.InterestNew
 import com.examle.data.models.NewEventFormat
-import com.examle.data.models.Optional
+import com.examle.domain.model.Optional
 import com.examle.data.models.SupportData
 import com.examle.data.models.*
-import com.examle.data.models.EventResponse
+import com.examle.data.models.event.EventResponse
+import com.examle.domain.model.asOptional
+import com.examle.domain.model.user.EducationLevel
+import com.examle.domain.model.user.UserProfileState
 import com.examle.domain.repository.AppPrefs
 import com.example.common.BuildConfig
 import io.reactivex.subjects.BehaviorSubject
@@ -202,9 +205,9 @@ class AppData(private val appPrefs: AppPrefs) {
         eventChangeSubject.onNext(eventResponse)
     }
 
-    fun checkUserState(data: List<UserProfileFields>?) {
-        val base = data?.filter { it.requiredFor?.contains("basic") == true }
-        val max = data?.filter { it.requiredFor?.contains("maximum") == true }
+    fun checkUserState(data: List<UserProfileState>?) {
+        val base = data?.filter { it.requiredFor.contains("basic") }
+        val max = data?.filter { it.requiredFor.contains("maximum") }
         hasBaseState = (base?.filter { it.filled == false }?.size ?: 0) == 0
         hasMaxState = (max?.filter { it.filled == false }?.size ?: 0) == 0
     }

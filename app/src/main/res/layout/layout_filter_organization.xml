@@ -31,15 +31,15 @@
         android:layout_marginTop="24dp"
         app:endIconMode="none">
 
-        <com.example.ui.views.suggestFieldView.address.DaDataAutoCompleteTextView
-            android:id="@+id/etAddress"
-            style="@style/Profile.Edit.Input.SingleLine"
-            android:hint="@string/search_filter_address_new"
-            android:imeOptions="actionDone"
-            android:inputType="textCapSentences"
-            android:minHeight="48dp"
-            android:paddingStart="@dimen/background_input_padding"
-            android:paddingEnd="@dimen/background_input_padding" />
+<!--        <com.example.ui.views.suggestFieldView.address.DaDataAutoCompleteTextView-->
+<!--            android:id="@+id/etAddress"-->
+<!--            style="@style/Profile.Edit.Input.SingleLine"-->
+<!--            android:hint="@string/search_filter_address_new"-->
+<!--            android:imeOptions="actionDone"-->
+<!--            android:inputType="textCapSentences"-->
+<!--            android:minHeight="48dp"-->
+<!--            android:paddingStart="@dimen/background_input_padding"-->
+<!--            android:paddingEnd="@dimen/background_input_padding" />-->
     </com.example.ui.views.CustomTextInputLayout>
 
     <com.example.ui.views.CustomTextInputLayout

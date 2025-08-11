@@ -9,20 +9,20 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.examle.data.models.event.EventResponse
 import com.example.adapters.CustomLoadStateAdapter
 import com.example.app.R
 import com.example.app.databinding.ItemEventFavoriteBinding
-import com.example.data.models.EventNew
 import com.example.extensions.executePlaceholderLoadState
+import com.example.extensions.getColorStateList
+import com.example.extensions.setImage
 import com.example.ui.views.UserSubscribeButton
-import com.example.util.getColorStateList
-import com.example.util.setImage
 import dev.androidbroadcast.vbpd.viewBinding
 
 class FavoriteEventPagingAdapter(
-    val onEventClick: (event: EventNew) -> Unit,
-    val onEventActionClick: (event: EventNew) -> Unit
-) : PagingDataAdapter<EventNew, FavoriteEventPagingAdapter.FavoriteEventVH>(AsyncDiffCallback) {
+    val onEventClick: (event: EventResponse) -> Unit,
+    val onEventActionClick: (event: EventResponse) -> Unit
+) : PagingDataAdapter<EventResponse, FavoriteEventPagingAdapter.FavoriteEventVH>(AsyncDiffCallback) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FavoriteEventVH {
         val layoutInflater = LayoutInflater.from(parent.context)
@@ -35,7 +35,7 @@ class FavoriteEventPagingAdapter(
         }
     }
 
-    fun updateEventAction(event: EventNew) {
+    fun updateEventAction(event: EventResponse) {
         snapshot().items.find { x -> x.id == event.id }.let { local ->
             if (local != null) {
 
@@ -51,7 +51,7 @@ class FavoriteEventPagingAdapter(
 
         private val viewBinding by viewBinding(ItemEventFavoriteBinding::bind)
 
-        fun bind(event: EventNew) {
+        fun bind(event: EventResponse) {
             with(viewBinding) {
                 tvEventName.text = event.name
                 ivLogo.apply {
@@ -110,12 +110,12 @@ class FavoriteEventPagingAdapter(
     }
 
 
-    private object AsyncDiffCallback : DiffUtil.ItemCallback<EventNew>() {
-        override fun areItemsTheSame(oldItem: EventNew, newItem: EventNew): Boolean {
+    private object AsyncDiffCallback : DiffUtil.ItemCallback<EventResponse>() {
+        override fun areItemsTheSame(oldItem: EventResponse, newItem: EventResponse): Boolean {
             return oldItem.id == newItem.id
         }
 
-        override fun areContentsTheSame(oldItem: EventNew, newItem: EventNew): Boolean {
+        override fun areContentsTheSame(oldItem: EventResponse, newItem: EventResponse): Boolean {
             return oldItem == newItem
         }
     }

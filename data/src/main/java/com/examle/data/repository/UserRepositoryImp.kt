@@ -1,8 +1,16 @@
 package com.examle.data.repository
 
 import com.examle.data.AppData
-import com.examle.data.api.Api
+import com.examle.data.mapper.mapToUserProfileStateDomainModel
+import com.examle.data.source.remote.Api
+import com.examle.domain.model.user.EducationLevelModel
+import com.examle.domain.model.user.UserProfileStateModel
 import com.examle.domain.repository.UserRepository
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
 
@@ -11,6 +19,33 @@ class UserRepositoryImp
     private val api: Api,
     private val appData: AppData
 ) : ApiRepository(appData), UserRepository {
+
+    override fun checkUserProfileState(): Flow<UserProfileStateModel> {
+        return flow { emit(api.checkUserProfileNew(appData.getId())) }
+            .map { it.mapToUserProfileStateDomainModel() }
+            .onEach { appData.checkUserState(it.fields) }
+    }
+
+    override fun getEducationLevel(): Flow<EducationLevelModel> {
+        val education = appData.educationLevels
+        return if (education.isNotEmpty()) flowOf(EducationLevelModel(education, 6))
+        else flow { emit(api.getEducationLevelNew()) }
+            .onEach { appData.educationLevels.addAll(it.data ?: emptyList()) }
+    }
+
+    override fun getSpeciality(): Flow<EducationLevelModel> {
+        val speciality = appData.specialities
+        return if (speciality.isNotEmpty()) flowOf(EducationLevelModel(speciality, 23))
+        else flow { emit(api.getSpecialityNew(100)) }
+            .onEach { appData.specialities.addAll(it.data ?: emptyList()) }
+    }
+
+    override fun getAcademicDegrees(): Flow<EducationLevelModel> {
+        val degrees = appData.academicDegrees
+        return if (degrees.isNotEmpty()) flowOf(EducationLevelModel(degrees, 4))
+        else flow { emit(api.getAcademicDegreesNew()) }
+            .onEach { appData.academicDegrees.addAll(it.data ?: emptyList()) }
+    }
 
 //    override fun getUserInternal(): Maybe<UserDetail> {
 //        return Maybe.zip(
@@ -86,10 +121,7 @@ class UserRepositoryImp
 //            appData.checkUserState(state.fields)
 //        }
 //
-//    override fun checkUserProfileFlow(): Flow<UserProfileFieldsModel> {
-//        return flow { emit(api.checkUserProfileNew(appData.getId())) }
-//            .onEach { appData.checkUserState(it.fields) }
-//    }
+
 //
 //    override fun updateUserProfile(id: Int, map: Map<String, Any?>): Single<UserDetail> =
 //        api.updateProfile(id, map).doOnSuccess {
@@ -273,30 +305,9 @@ class UserRepositoryImp
 //            .doOnSuccess { appData.academicDegrees.addAll(it.data ?: emptyList()) }
 //    }
 //
-//    override fun getUserProfileAdditionalData(): Flow<EducationLevelModel> {
-//        return merge(getAcademicDegreesFlow(), getEducationLevelFlow(), getSpecialityFlow())
-//    }
+
 //
-//    private fun getEducationLevelFlow(): Flow<EducationLevelModel> {
-//        val education = appData.educationLevels
-//        return if (education.isNotEmpty()) flowOf(EducationLevelModel(education, 6))
-//        else flow { emit(api.getEducationLevelNew()) }
-//            .onEach { appData.educationLevels.addAll(it.data ?: emptyList()) }
-//    }
-//
-//    private fun getSpecialityFlow(): Flow<EducationLevelModel> {
-//        val speciality = appData.specialities
-//        return if (speciality.isNotEmpty()) flowOf(EducationLevelModel(speciality, 23))
-//        else flow { emit(api.getSpecialityNew(100)) }
-//            .onEach { appData.specialities.addAll(it.data ?: emptyList()) }
-//    }
-//
-//    private fun getAcademicDegreesFlow(): Flow<EducationLevelModel> {
-//        val degrees = appData.academicDegrees
-//        return if (degrees.isNotEmpty()) flowOf(EducationLevelModel(degrees, 4))
-//        else flow { emit(api.getAcademicDegreesNew()) }
-//            .onEach { appData.academicDegrees.addAll(it.data ?: emptyList()) }
-//    }
+
 //
 //    private fun sendUserEducation(body: EducationBodyModel): Single<EducationBodyModel> =
 //        api.updateUserEducation(appData.getId(), body)

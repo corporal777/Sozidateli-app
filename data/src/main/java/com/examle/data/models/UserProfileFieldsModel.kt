@@ -4,13 +4,13 @@ import com.google.gson.annotations.SerializedName
 
 data class UserProfileFieldsModel(
         @SerializedName("fields")
-        val fields: List<UserProfileFields>? = null,
-        val state: String? = null
+        val fields: List<UserProfileFields>,
+        val state: String
 )
 
 data class UserProfileFields(
-        val name: String? = null,
-        val filled: Boolean? = false,
+        val name: String,
+        val filled: Boolean,
         @SerializedName("requiredFor")
-        val requiredFor: List<String>? = null
+        val requiredFor: List<String>
 )

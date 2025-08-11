@@ -8,7 +8,7 @@ import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import com.example.app.databinding.DialogAlertDefaultBinding
-import com.example.common.extensions.removeUrlUnderline
+import com.example.extensions.removeUrlUnderline
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
 
 class DefaultAlertDialog(

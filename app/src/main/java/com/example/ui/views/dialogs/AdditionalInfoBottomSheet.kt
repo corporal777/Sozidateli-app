@@ -3,7 +3,7 @@ package com.example.ui.views.dialogs
 import android.content.Context
 import android.view.LayoutInflater
 import com.example.app.databinding.BottomSheetAdditionalInfoBinding
-import com.example.util.initInput
+import com.example.extensions.initInput
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 

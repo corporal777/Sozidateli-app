@@ -1,6 +1,7 @@
 package com.examle.data.models
 
 import android.os.Parcelable
+import com.examle.data.models.event.DateModel
 import kotlinx.parcelize.Parcelize
 
 @Parcelize

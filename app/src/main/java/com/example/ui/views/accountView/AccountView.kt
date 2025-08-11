@@ -7,7 +7,6 @@ import android.view.View
 import android.widget.FrameLayout
 import com.example.App
 import com.example.app.R
-import com.example.common.extensions.setCircleImage
 import com.example.ui.views.toolbar.ToolbarButton
 import moxy.MvpDelegate
 import moxy.presenter.InjectPresenter
@@ -56,7 +55,7 @@ class AccountView : FrameLayout, AccountViewContract.View {
     }
 
     override fun setAvatar(url: String?) {
-        view.findViewById<ToolbarButton>(R.id.ivImage).setCircleImage(url, PLACEHOLDER)
+
     }
 
     override fun onAttachedToWindow() {

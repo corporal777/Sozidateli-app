@@ -12,7 +12,7 @@ import androidx.annotation.Keep
 import androidx.core.content.ContextCompat
 import com.example.app.R
 import com.example.common.dp
-import com.example.util.getColor
+import com.example.extensions.getColor
 
 class CustomProgressBar : View {
 

@@ -1,8 +1,8 @@
 package com.example.util
 
 import android.content.Context
+import com.examle.domain.model.auth.SnAuthModel
 import com.example.exceptions.SnAuthError
-import com.example.data.models.SnAuth
 
 class SnAuthManager(private val context: Context) {
 
@@ -17,7 +17,7 @@ class SnAuthManager(private val context: Context) {
     }
 
 
-    internal fun onSnAuthComplete(snAuth: SnAuth) {
+    internal fun onSnAuthComplete(snAuth: SnAuthModel) {
         authListeners.forEach { it.onSnAuthComplete(snAuth) }
     }
 
@@ -26,7 +26,7 @@ class SnAuthManager(private val context: Context) {
     }
 
     interface OnSnAuthListener {
-        fun onSnAuthComplete(snAuth: SnAuth)
+        fun onSnAuthComplete(snAuth: SnAuthModel)
         fun onSnAuthError(error: SnAuthError)
     }
 }

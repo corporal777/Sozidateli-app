@@ -1,6 +1,5 @@
 package com.examle.data.models
 
-import com.example.data.models.user.User
 import com.google.gson.annotations.SerializedName
 
 data class UserChat(
@@ -16,8 +15,6 @@ data class UserChat(
     val lastMessageType: Message.MessageType?,
     @SerializedName("last_message_user_id")
     val lastMessageSender: Int?,
-    @SerializedName("user_sender")
-    var userSender: User?,
     @SerializedName("last_message_id")
     var messageId: String?,
     @SerializedName("user_recepient_in_favorite")

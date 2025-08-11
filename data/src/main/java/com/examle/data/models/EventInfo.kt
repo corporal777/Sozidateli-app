@@ -1,5 +1,9 @@
 package com.examle.data.models
 
+import com.examle.data.models.event.EventResponse
+import com.examle.data.models.event.PageModel
+import com.examle.data.models.event.PartnerModel
+import com.examle.data.models.event.UserRegisterModel
 import com.google.gson.annotations.SerializedName
 
 data class EventInfo(

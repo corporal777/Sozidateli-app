@@ -1,10 +1,10 @@
 package com.examle.data.models
 
-import com.example.extensions.calendar
-import com.example.extensions.isSameDay
-import com.example.extensions.isSameMonth
-import com.example.extensions.isYesterday
-import com.example.extensions.parseToDate
+import com.example.common.calendar
+import com.example.common.isSameDay
+import com.example.common.isSameMonth
+import com.example.common.isYesterday
+import com.example.common.parseToDate
 import com.google.gson.annotations.SerializedName
 import java.text.SimpleDateFormat
 import java.util.Calendar

@@ -1,7 +1,7 @@
 package com.examle.data.models.eventRegister
 
-import com.example.data.models.EventFormFieldModel
-import com.example.extensions.fromJson
+import com.examle.data.models.EventFormFieldModel
+import com.example.common.fromJson
 import com.google.gson.JsonElement
 
 class EventRegisterFieldSelectBox(

@@ -1,6 +1,6 @@
 package com.example
 
-import com.example.data.models.ApiError
+import com.examle.data.models.ApiError
 import org.junit.Assert
 import org.junit.Test
 

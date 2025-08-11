@@ -1,5 +1,7 @@
 package com.examle.domain.model.body
 
+import com.examle.domain.model.auth.LoginModel
+
 data class AuthBody(
     var login: LoginModel,
     var password: LoginModel,
@@ -8,11 +10,6 @@ data class AuthBody(
     var build: String = "",
     var version: String = "",
     var tempToken: String = ""
-)
-
-data class LoginModel(
-    val type: String,
-    val value: String
 )
 
 data class VKAuthBody(

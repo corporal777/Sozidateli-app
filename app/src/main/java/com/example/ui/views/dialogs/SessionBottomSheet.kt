@@ -3,8 +3,8 @@ package com.example.ui.views.dialogs
 import android.content.Context
 import android.view.LayoutInflater
 import android.widget.ImageView
+import com.examle.data.models.UserSessionModel
 import com.example.app.R
-import com.example.data.models.UserSessionModel
 import com.example.app.databinding.BottomSheetSessionBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
 

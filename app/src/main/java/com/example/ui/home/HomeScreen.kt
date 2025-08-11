@@ -1,5 +1,6 @@
 package com.example.ui.home
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,6 +14,11 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
@@ -20,9 +26,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.examle.domain.model.event.EventModel
 import com.example.app.R
 import com.example.extensions.showEventAgreementDialog
 import com.example.navigation.Route
+import com.example.ui.agreement.EventAgreementBottomSheet
 import com.example.ui.components.EventAction
 import com.example.ui.components.EventCardItem
 import com.example.ui.home.components.AuthButtonItem
@@ -39,13 +47,23 @@ fun HomeScreen(
     onAuthClick: (String) -> Unit
 ) {
 
-    val context = LocalContext.current
-    val events = viewModel.events.collectAsLazyPagingItems()
     val scrollBehavior = rememberToolbarScrollBehavior()
-
+    val events = viewModel.events.collectAsLazyPagingItems()
     LaunchedEffect(events.itemSnapshotList) {
         viewModel.setEventsLocal(events.itemSnapshotList.items)
     }
+
+    val eventState by viewModel.updatedEvent.collectAsState()
+    val updatedEvent = remember { mutableStateOf<EventModel?>(null) }
+    LaunchedEffect(eventState) { updatedEvent.value = eventState }
+
+    if (updatedEvent.value != null) {
+        EventAgreementBottomSheet(updatedEvent.value!!) {
+            if (it != null) viewModel.registerToEvent(it)
+            viewModel.updatedEvent.value = null
+        }
+    }
+
 
     Column(
         modifier = Modifier
@@ -63,7 +81,6 @@ fun HomeScreen(
             scrollBehavior = scrollBehavior
         )
 
-
         LazyColumn(
             contentPadding = PaddingValues(
                 top = 10.dp,
@@ -77,16 +94,9 @@ fun HomeScreen(
                 if (event == null) return@items
                 EventCardItem(event, false) {
                     when (it) {
-                        EventAction.REGISTER -> {
-                            showEventAgreementDialog(context, event) {
-                                viewModel.onActionRegister(event, it)
-                            }
-                        }
-
+                        EventAction.REGISTER -> viewModel.onActionRegister(event)
                         EventAction.CANCEL -> viewModel.onActionCancel(event)
-                        else -> {
-
-                        }
+                        else -> onAuthClick(Route.AuthorizationScreen.route)
                     }
                 }
             }
@@ -94,17 +104,4 @@ fun HomeScreen(
     }
 }
 
-
-private fun LazyListScope.scrollableItemsForSample() {
-    for (i in 0..100) {
-        item("scroll_test_$i") {
-            Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                text = "Item for scroll testing #$i"
-            )
-        }
-    }
-}
 

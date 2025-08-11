@@ -13,9 +13,9 @@ import androidx.core.widget.doAfterTextChanged
 import com.example.app.R
 import com.example.app.databinding.ViewPasswordCustomBinding
 import com.example.extensions.getSymbols
-import com.example.common.extensions.onFocusChanged
-import com.example.common.extensions.onTextChanged
-import com.example.common.extensions.textColor
+import com.example.extensions.onFocusChanged
+import com.example.extensions.onTextChanged
+import com.example.extensions.textColor
 import java.nio.charset.Charset
 
 class CustomPasswordView : FrameLayout {

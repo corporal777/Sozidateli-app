@@ -1,9 +1,7 @@
 package com.examle.data.models.eventRegister
 
-import com.example.data.models.EventFormFieldModel
-import com.example.extensions.fromJson
-import com.example.util.AuthValidateUtil
-import com.example.util.Utils
+import com.examle.data.models.EventFormFieldModel
+import com.example.common.fromJson
 import com.google.gson.JsonElement
 
 class EventRegisterFieldString(
@@ -16,14 +14,15 @@ class EventRegisterFieldString(
     override fun isValid(): Boolean {
         return when (field.type) {
             EventFormFieldModel.Type.EMAIL -> {
-                if (field.isRequired || !value.isNullOrEmpty()) Utils.isEmailValid(value)
-                else true
+                //if (field.isRequired || !value.isNullOrEmpty()) Utils.isEmailValid(value)
+                //else true
+                return true
             }
 
             EventFormFieldModel.Type.SITE -> {
-                if (field.isRequired || !value.isNullOrEmpty())
-                    AuthValidateUtil.isValidSite(value)
-                else true
+                //if (field.isRequired || !value.isNullOrEmpty()) AuthValidateUtil.isValidSite(value)
+                //else true
+                return true
             }
 
             else -> if (field.isRequired) !value.isNullOrEmpty() else true

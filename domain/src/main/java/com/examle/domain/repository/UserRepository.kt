@@ -1,6 +1,16 @@
 package com.examle.domain.repository
 
+import com.examle.domain.model.user.EducationLevelModel
+import com.examle.domain.model.user.UserProfileStateModel
+import kotlinx.coroutines.flow.Flow
+
 interface UserRepository {
+    fun checkUserProfileState(): Flow<UserProfileStateModel>
+
+    fun getEducationLevel(): Flow<EducationLevelModel>
+    fun getSpeciality(): Flow<EducationLevelModel>
+    fun getAcademicDegrees(): Flow<EducationLevelModel>
+
 //    fun getUserInternal(): Maybe<UserDetail>
 //    fun getUserFullData(): Maybe<UserDetail>
 //    fun getUserShortData(): Maybe<UserDetail>
@@ -38,9 +48,7 @@ interface UserRepository {
 //
 //    fun updateWorkExperience(body: WorkExperienceServerModel): Single<WorkExperienceServerModel>
 //    fun getInterestsList(ids: List<Int>?): Maybe<InterestsModel>
-//    fun getEducationLevel(): Single<EducationLevelModel>
-//    fun getSpeciality(): Single<EducationLevelModel>
-//    fun getAcademicDegrees(): Single<EducationLevelModel>
+
 //    fun getUserProfileAdditionalData(): kotlinx.coroutines.flow.Flow<EducationLevelModel>
 //
 //    fun updateUserEducation(educationLevel: ToggleIntModel?, educationsList: List<EducationModel>?, degree: List<AcademicDegreeModel>?): Single<String>
@@ -53,7 +61,7 @@ interface UserRepository {
 //    fun getUsersFavoritesList(map: Map<String, Any>): Maybe<PaginationResponse<UserDetail>>
 //    fun getUsersFavoritesWithoutPagination(map: Map<String, Any>): Maybe<List<UserDetail?>>
 //
-//    fun checkUserProfileFlow(): kotlinx.coroutines.flow.Flow<UserProfileFieldsModel>
+
 //    fun checkUserProfileSingle(): Single<UserProfileFieldsModel>
 //    fun getNotificationDetail(notificationId: String, loadModel: Boolean): Single<NotificationModel>
 //    fun markAsRead(notificationId: String): Completable

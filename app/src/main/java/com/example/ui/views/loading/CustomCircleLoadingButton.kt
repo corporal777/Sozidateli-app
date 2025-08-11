@@ -11,9 +11,9 @@ import androidx.core.view.isVisible
 import com.example.app.R
 import com.example.app.databinding.LayoutCircleLoadingButtonBinding
 import com.example.common.dp
-import com.example.common.extensions.textColor
-import com.example.util.getDrawable
-import com.example.util.setLeftDrawable
+import com.example.extensions.getDrawable
+import com.example.extensions.setLeftDrawable
+import com.example.extensions.textColor
 
 class CustomCircleLoadingButton : ConstraintLayout {
 

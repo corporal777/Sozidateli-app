@@ -1,26 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
-
-    <LinearLayout style="@style/EventRegistrationItemContainer">
-
-
-        <TextView
-            android:id="@+id/tvFileName"
-            fontPath="fonts/sf_pro_text_semibold.ttf"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:importantForAccessibility="no"
-            android:includeFontPadding="false"
-            android:letterSpacing="-0.01"
-            android:textColor="@color/about_event_date"
-            android:textColorLink="@color/about_event_date"
-            android:textSize="14sp"
-            tools:text="Ваше имя *" />
-
-    </LinearLayout>
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/EventRegistrationItemContainer">
 
 
-</layout>
+    <TextView
+        android:id="@+id/tvFileName"
+        fontPath="fonts/sf_pro_text_semibold.ttf"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:importantForAccessibility="no"
+        android:includeFontPadding="false"
+        android:letterSpacing="-0.01"
+        android:textColor="@color/about_event_date"
+        android:textColorLink="@color/about_event_date"
+        android:textSize="14sp"
+        tools:text="Ваше имя *" />
+
+</LinearLayout>

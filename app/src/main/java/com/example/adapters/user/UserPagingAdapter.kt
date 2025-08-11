@@ -9,14 +9,13 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.examle.data.models.UserDetail
 import com.example.adapters.CustomLoadStateAdapter
-import com.example.app.databinding.ItemUserBinding
-import com.example.data.models.UserDetail
-import dev.androidbroadcast.vbpd.viewBinding
 import com.example.app.R
+import com.example.app.databinding.ItemUserBinding
 import com.example.extensions.executePlaceholderLoadState
-import com.example.ui.views.UserSubscribeButton
-import com.example.util.setCircleAvatar
+import com.example.extensions.setCircleAvatar
+import dev.androidbroadcast.vbpd.viewBinding
 
 class UserPagingAdapter(
     private val onUserClick: (user: UserDetail) -> Unit,
@@ -62,19 +61,19 @@ class UserPagingAdapter(
                 ivUserAvatar.setCircleAvatar(user.loadUserImage(),300)
 
                 btnAction.apply {
-                    val action = user.getUserFavoriteState()
-                    if (action == null) isInvisible = true
-                    else {
-                        isInvisible = false
-                        if (action == UserSubscribeButton.Action.UNFAVORITE){
-                            setActionFavorite()
-                        } else setActionUnfavorite()
-
-                        setOnClickListener {
-                            showProgress(true)
-                            onActionClick.invoke(user)
-                        }
-                    }
+//                    val action = user.getUserFavoriteState()
+//                    if (action == null) isInvisible = true
+//                    else {
+//                        isInvisible = false
+//                        if (action == UserSubscribeButton.Action.UNFAVORITE){
+//                            setActionFavorite()
+//                        } else setActionUnfavorite()
+//
+//                        setOnClickListener {
+//                            showProgress(true)
+//                            onActionClick.invoke(user)
+//                        }
+//                    }
                 }
 
                 btnProgress.isVisible = false

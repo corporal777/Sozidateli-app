@@ -1,6 +1,6 @@
 package com.examle.data.repository
 
-import com.examle.data.api.Api
+import com.examle.data.source.remote.Api
 import com.examle.domain.repository.DaDataRepository
 import javax.inject.Inject
 

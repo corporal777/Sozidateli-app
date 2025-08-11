@@ -4,14 +4,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
-import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.DiffUtil
-import com.example.adapters.CustomLoadStateAdapter
+import com.examle.data.models.Notification
+import com.examle.data.models.NotificationLocal
 import com.example.adapters.notification.NotificationVH.OnNotificationActionListener
 import com.example.app.R
-import com.example.data.models.Notification
-import com.example.data.models.NotificationLocal
-import com.example.extensions.executePlaceholderLoadState
 
 class NotificationPagerAdapter(private val listener: OnNotificationActionListener) :
     PagingDataAdapter<NotificationLocal, NotificationVH<*>>(AsyncDiffCallback) {

@@ -1,6 +1,12 @@
 package com.examle.data.models
 
 import android.os.Parcelable
+import com.examle.data.models.event.BackgroundColorModel
+import com.examle.data.models.event.EventPhoneModel
+import com.examle.data.models.event.EventResponse
+import com.examle.data.models.event.EventStatusModel
+import com.examle.data.models.event.EventUserAgreement
+import com.examle.data.models.event.EventUserFavorite
 import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
 

@@ -1,8 +1,6 @@
 package com.examle.data.models.eventRegister
 
-import com.example.data.models.EventFormFieldModel
-import com.example.extensions.fromJson
-import com.google.gson.JsonElement
+import com.examle.data.models.EventFormFieldModel
 
 class EventRegisterFieldCheckBox(
     field: EventFormFieldModel,

@@ -4,8 +4,9 @@ import android.content.Context
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.lifecycle.viewModelScope
-import com.example.data.models.DataState
-import com.example.data.models.SnType
+import com.examle.data.models.DataState
+import com.examle.domain.interactor.AuthInteractor
+import com.examle.domain.model.auth.SnType
 import com.examle.domain.repository.AuthRepository
 import com.example.ui.auth.snAuth.SnAuthCallbackHelper
 import com.example.ui.base.BaseViewModel
@@ -27,10 +28,10 @@ import javax.inject.Inject
 @HiltViewModel
 class AuthorizationViewModel
 @Inject constructor(
-    private val repository: AuthRepository
+    private val interactor: AuthInteractor
 ) : BaseViewModel() {
 
-    private val _stories = MutableStateFlow<List<String>>(repository.getStories())
+    private val _stories = MutableStateFlow<List<String>>(interactor.getStories())
     val stories: StateFlow<List<String>> = _stories.asStateFlow()
 
     private val _nextStory = mutableLongStateOf(0)
@@ -52,16 +53,15 @@ class AuthorizationViewModel
     fun onAuthVkClick(context: Context) {
         viewModelScope.launch {
             SnAuthCallbackHelper.start(context, SnType.VK)
-                .map { it as DataState.Success }
                 .collectLatest { sn ->
-                    repository.authWithVk(sn.data.token, sn.data.uuid)
+                    if (sn !is DataState.Success) return@collectLatest
+                    interactor.authWithVk(sn.data)
                         .withLoading()
                         .onEach {
-                            if (it.accessData != null && !it.accessData.token.isNullOrEmpty()){
-                                //appData.login(it.accessData.token)
-                                //appData.saveId(it.accessData.id)
-                            } else {
+                            if (it.value != null){
                                 //viewState.showSnAuthorization(SnUser(sn.data, it.personalData))
+                            } else {
+
                             }
                         }
                         .catch { it.printStackTrace() }

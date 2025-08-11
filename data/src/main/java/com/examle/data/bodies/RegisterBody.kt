@@ -1,10 +1,10 @@
 package com.examle.data.bodies
 
-import com.example.data.models.FieldDetails
-import com.example.data.models.FieldListDetails
-import com.example.data.models.NewUserAddress
-import com.example.data.models.ToggleStringModel
-import com.example.data.models.UserState
+import com.examle.data.models.UserState
+import com.examle.data.models.FieldDetails
+import com.examle.data.models.FieldListDetails
+import com.examle.data.models.NewUserAddress
+import com.examle.data.models.ToggleStringModel
 import com.google.gson.annotations.SerializedName
 
 data class RegisterBody(

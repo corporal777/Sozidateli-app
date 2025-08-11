@@ -7,12 +7,12 @@ import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.os.bundleOf
+import com.examle.data.models.MessageModel
 import com.example.app.R
-import com.example.common.FIELD_CHAT
-import com.example.common.FIELD_CHAT_ID
-import com.example.common.FIELD_LABEL
-import com.example.common.FIELD_NOTIFICATION_ID
-import com.example.data.models.MessageModel
+import com.example.common.constants.FIELD_CHAT
+import com.example.common.constants.FIELD_CHAT_ID
+import com.example.common.constants.FIELD_LABEL
+import com.example.common.constants.FIELD_NOTIFICATION_ID
 import javax.inject.Inject
 
 class ChatHelper @Inject constructor(

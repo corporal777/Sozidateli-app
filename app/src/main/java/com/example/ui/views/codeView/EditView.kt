@@ -14,8 +14,9 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import com.example.app.R
 import com.example.common.dp
-import com.example.util.getDrawable
-import com.example.util.setRightDrawable
+import com.example.extensions.getDrawable
+import com.example.extensions.onFocusChanged
+import com.example.extensions.setRightDrawable
 import io.github.inflationx.calligraphy3.CalligraphyUtils
 
 

@@ -12,7 +12,7 @@ import androidx.core.view.isVisible
 import com.example.app.R
 import com.example.app.databinding.LayoutLoadingButtonBinding
 import com.example.common.dp
-import com.example.util.getDrawable
+import com.example.extensions.getDrawable
 
 class CustomLoadingButton : FrameLayout {
 

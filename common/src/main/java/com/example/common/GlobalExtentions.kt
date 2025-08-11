@@ -11,9 +11,12 @@ import android.util.Base64
 import android.util.SparseArray
 import androidx.core.os.BundleCompat
 import androidx.fragment.app.Fragment
+import com.google.gson.GsonBuilder
+import com.google.gson.JsonDeserializer
 import org.json.JSONObject
 import java.nio.charset.StandardCharsets
 import kotlin.properties.ReadOnlyProperty
+import com.google.gson.JsonElement
 
 
 //inline fun <reified F : Fragment> Fragment.setArgument(key: String, args: Any?): F {
@@ -68,15 +71,15 @@ fun Uri.fileName(contentResolver: ContentResolver): String? {
         }
 }
 
-//inline fun <reified T> JsonElement?.fromJson(deserializer: JsonDeserializer<T>? = null): T? {
-//    if (this == null) return null
-//    return GsonBuilder()
-//        .apply {
-//            if (deserializer != null) registerTypeAdapter(T::class.java, deserializer)
-//        }
-//        .create()
-//        .fromJson(this, T::class.java)
-//}
+inline fun <reified T> JsonElement?.fromJson(deserializer: JsonDeserializer<T>? = null): T? {
+    if (this == null) return null
+    return GsonBuilder()
+        .apply {
+            if (deserializer != null) registerTypeAdapter(T::class.java, deserializer)
+        }
+        .create()
+        .fromJson(this, T::class.java)
+}
 
 
 

@@ -5,12 +5,16 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.viewModelScope
 import com.examle.data.AppData
+import com.examle.data.models.DataState
+import com.examle.domain.interactor.AuthInteractor
+import com.examle.domain.interactor.UserInteractor
 import com.examle.domain.model.SocketConnectionState
 import com.examle.domain.repository.SocketIOManager
 import com.example.common.flatMap
 import com.example.navigation.Route
 import com.examle.domain.repository.AuthRepository
 import com.examle.domain.repository.UserRepository
+import com.example.data.UiStateData
 import com.example.ui.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -28,9 +32,10 @@ import javax.inject.Inject
 class MainViewModel
 @Inject constructor(
     private val appData: AppData,
-    private val userRepository: UserRepository,
-    private val authRepository: AuthRepository,
+    private val uiStateData: UiStateData,
     private val socket: SocketIOManager,
+    private val userInteractor : UserInteractor,
+    private val authInteractor : AuthInteractor
 ) : BaseViewModel() {
 
     private val _startDestination = mutableStateOf(Route.HomeScreen.route)
@@ -59,40 +64,40 @@ class MainViewModel
     }
 
     private fun getAdditionalData() {
-        userRepository.getUserProfileAdditionalData()
+        userInteractor.getUserProfileAdditionalData()
             .catch { it.printStackTrace() }
             .flowOn(Dispatchers.IO)
             .launchIn(viewModelScope)
     }
 
     private fun loadUser() {
-        authRepository.checkUserAuthFlow()
-            .flatMap { userRepository.checkUserProfileFlow() }
-            .flatMap { connectToSocket() }
+        authInteractor.checkUserAuth()
+            .flatMap { userInteractor.checkUserProfileState() }
+            //.flatMap { connectToSocket() }
             .catch { it.printStackTrace() }
             .flowOn(Dispatchers.IO)
             .launchIn(viewModelScope)
     }
 
-    private fun connectToSocket(): Flow<SocketConnectionState> {
-        return socket.connect()
-            .onEach {
-                val connected = it == SocketConnectionState.CONNECTED
-
-                if (connected) {
-                    subscribeToNotifications()
-                    socket.connectToUpdates()
-                }
-            }
-    }
+//    private fun connectToSocket(): Flow<SocketConnectionState> {
+//        return socket.connect()
+//            .onEach {
+//                val connected = it == SocketConnectionState.CONNECTED
+//
+//                if (connected) {
+//                    subscribeToNotifications()
+//                    socket.connectToUpdates()
+//                }
+//            }
+//    }
 
     private fun subscribeToNotifications() {
-        socket.subscribeToTotalNotificationsCount()
-            .onEach {
-                Log.e("REQUEST INFO NOTIFICATION", it.toString())
-                appData.notificationsCount = it
-            }
-            .catch { appData.notificationsCount = 0 }
-            .launchIn(viewModelScope)
+//        socket.subscribeToTotalNotificationsCount()
+//            .onEach {
+//                Log.e("REQUEST INFO NOTIFICATION", it.toString())
+//                appData.notificationsCount = it
+//            }
+//            .catch { appData.notificationsCount = 0 }
+//            .launchIn(viewModelScope)
     }
 }

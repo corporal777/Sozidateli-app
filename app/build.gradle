@@ -7,7 +7,6 @@ plugins {
     alias(libs.plugins.navigation.safeargs)
     alias(libs.plugins.firebase.crashlytics)
     alias(libs.plugins.gms.google.services)
-    id 'kotlin-kapt'
     alias(libs.plugins.com.google.dagger.hilt)
     alias(libs.plugins.ksp)
 }
@@ -18,7 +17,7 @@ android {
     compileSdk 35
     defaultConfig {
         applicationId "ru.houseofapps.sozidateli"
-        minSdk 24
+        minSdk 28
         targetSdk 34
         versionCode 70
         versionName "1.0.42"
@@ -64,23 +63,13 @@ android {
             debuggable false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             if (signingConfigs.hasProperty("release")) signingConfig signingConfigs.release
-
-            buildConfigField("String", "SHARE_URL", properties.getProperty("SHARE_URL"))
-            buildConfigField("String", "SOCKET_URL", properties.getProperty("SOCKET_URL"))
-            buildConfigField("String", "NEW_API_URL", properties.getProperty("API_URL"))
         }
         beta {
             initWith(debug)
-            buildConfigField("String", "SHARE_URL", properties.getProperty("BETA_SHARE_URL"))
-            buildConfigField("String", "SOCKET_URL", properties.getProperty("BETA_SOCKET_URL"))
-            buildConfigField("String", "NEW_API_URL", properties.getProperty("BETA_API_URL"))
             matchingFallbacks = ['debug', 'release']
         }
         "new" {
             initWith(debug)
-            buildConfigField("String", "SHARE_URL", properties.getProperty("ALFA_SHARE_URL"))
-            buildConfigField("String", "SOCKET_URL", properties.getProperty("ALFA_SOCKET_URL"))
-            buildConfigField("String", "NEW_API_URL", properties.getProperty("ALFA_API_URL"))
             matchingFallbacks = ['debug', 'release']
         }
     }
@@ -133,9 +122,14 @@ dependencies {
         exclude group: 'org.json', module: 'json'
     }
 
+    // support
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.material)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+
     //compose
     implementation(libs.androidx.activity.compose)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.compose.material3)
     implementation(libs.compose.ui)
     implementation(libs.compose.ui.tooling)
@@ -144,24 +138,14 @@ dependencies {
     implementation(libs.compose.constraintlayout)
     implementation(libs.compose.navigation)
     implementation(libs.compose.systemuicontroller)
-
     implementation(libs.compose.coil)
     implementation(libs.compose.coil.network)
-
     implementation(libs.compose.paging)
-
 
     //hilt
     implementation(libs.dagger.hilt.android)
     ksp(libs.dagger.hilt.compiler)
     implementation(libs.dagger.hilt.navigation.compose)
-
-    // support
-    implementation "androidx.appcompat:appcompat:$app_compat"
-    implementation "com.google.android.material:material:$androidx_material"
-    implementation "androidx.core:core-ktx:$core_ktx"
-    //implementation "androidx.fragment:fragment-ktx:$fragment_ktx"
-    //implementation "androidx.activity:activity-ktx:$activity_ktx"
 
     // google
     implementation platform('com.google.firebase:firebase-bom:31.1.1')
@@ -185,12 +169,7 @@ dependencies {
     implementation "com.github.moxy-community:moxy:$moxy_version"
     implementation "com.github.moxy-community:moxy-android:$moxy_version"
     implementation "com.github.moxy-community:moxy-app-compat:$moxy_version"
-    kapt "com.github.moxy-community:moxy-compiler:$moxy_version"
-
-    // Room
-    implementation "androidx.room:room-runtime:$room_version"
-    implementation "androidx.room:room-rxjava2:$room_version"
-    kapt "androidx.room:room-compiler:$room_version"
+    ksp "com.github.moxy-community:moxy-compiler:$moxy_version"
 
     // logs
     implementation 'com.jakewharton.timber:timber:4.7.1'

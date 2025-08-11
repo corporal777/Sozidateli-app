@@ -7,16 +7,15 @@ import android.text.util.Linkify
 import android.view.View
 import android.widget.TextView
 import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.getDrawable
 import androidx.core.text.toSpannable
 import androidx.core.view.isVisible
+import com.examle.data.models.Notification
+import com.examle.data.models.NotificationLocal
 import com.example.app.R
 import com.example.app.databinding.ItemNotificationAcceptBinding
-import com.example.data.models.Notification
-import com.example.data.models.NotificationLocal
+import com.example.extensions.getDrawable
 import com.example.ui.views.dialogs.DefaultAlertDialog
 import com.example.util.ClickableSpanNew
-import com.example.util.getDrawable
 import dev.androidbroadcast.vbpd.viewBinding
 
 class AcceptNotificationVH(val itemView: View, val listener: OnNotificationActionListener) :

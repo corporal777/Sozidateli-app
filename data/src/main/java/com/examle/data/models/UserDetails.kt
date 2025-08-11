@@ -1,13 +1,14 @@
 package com.examle.data.models
 
 import android.os.Parcelable
-import com.example.extensions.calendar
-import com.example.extensions.defaultServerDateFormatter
-import com.example.extensions.getCalendarYear
-import com.example.extensions.parseToDate
-import com.example.ui.views.UserSubscribeButton
-import com.example.util.PHONE_PERSONAL
-import com.example.util.USER_DATA_EMPTY
+import com.examle.data.models.event.EventUserFavorite
+import com.examle.domain.model.user.EducationLevel
+import com.example.common.constants.PHONE_PERSONAL
+import com.example.common.constants.USER_DATA_EMPTY
+import com.example.common.calendar
+import com.example.common.defaultServerDateFormatter
+import com.example.common.getCalendarYear
+import com.example.common.parseToDate
 import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
 
@@ -116,24 +117,24 @@ data class UserDetail(
         return userInterests
     }
 
-    fun getUserSubscribeAction(): UserSubscribeButton.Action? {
-        return when {
-            isCurrentUser -> null
-            binds?.isUserInBan != null -> UserSubscribeButton.Action.UNBLOCK
-            //user_banned || chat?.isBannedByYou == true -> UserSubscribeButton.Action.UNBLOCK
-            binds?.userFavorite != null -> UserSubscribeButton.Action.UNFAVORITE
-            else -> UserSubscribeButton.Action.FAVORITE
-        }
-    }
+//    fun getUserSubscribeAction(): UserSubscribeButton.Action? {
+//        return when {
+//            isCurrentUser -> null
+//            binds?.isUserInBan != null -> UserSubscribeButton.Action.UNBLOCK
+//            //user_banned || chat?.isBannedByYou == true -> UserSubscribeButton.Action.UNBLOCK
+//            binds?.userFavorite != null -> UserSubscribeButton.Action.UNFAVORITE
+//            else -> UserSubscribeButton.Action.FAVORITE
+//        }
+//    }
 
-    fun getUserFavoriteState() : UserSubscribeButton.Action? {
-        return if (isCurrentUser) null
-        else {
-            if (binds == null) UserSubscribeButton.Action.UNFAVORITE
-            else if (binds!!.userFavorite == null) UserSubscribeButton.Action.UNFAVORITE
-            else UserSubscribeButton.Action.FAVORITE
-        }
-    }
+//    fun getUserFavoriteState() : UserSubscribeButton.Action? {
+//        return if (isCurrentUser) null
+//        else {
+//            if (binds == null) UserSubscribeButton.Action.UNFAVORITE
+//            else if (binds!!.userFavorite == null) UserSubscribeButton.Action.UNFAVORITE
+//            else UserSubscribeButton.Action.FAVORITE
+//        }
+//    }
 
 
     fun loadUserImage(): String? {

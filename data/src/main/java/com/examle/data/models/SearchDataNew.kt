@@ -1,5 +1,7 @@
 package com.examle.data.models
 
+import com.examle.data.models.event.EventResponse
+
 data class SearchDataNew(
     val users: SearchResponseData<UserDetail>,
     val organizations: SearchResponseData<OrganizationNew>,

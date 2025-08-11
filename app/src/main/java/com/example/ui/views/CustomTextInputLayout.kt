@@ -14,7 +14,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.res.getDrawableOrThrow
 import com.example.app.R
 import com.example.common.dp
-import com.example.util.getColorStateList
+import com.example.extensions.getColorStateList
 import com.google.android.material.textfield.TextInputLayout
 
 class CustomTextInputLayout : TextInputLayout {

@@ -13,8 +13,10 @@ import androidx.core.view.isVisible
 import com.example.app.R
 import com.example.app.databinding.LayoutCustomTextInputViewBinding
 import com.example.common.dp
-import com.example.common.extensions.showHidePasswordText
-import com.example.common.extensions.textColor
+import com.example.extensions.onFocusChanged
+import com.example.extensions.onTextChanged
+import com.example.extensions.showHidePasswordText
+import com.example.extensions.textColor
 
 class CustomTextInputView : LinearLayout {
 

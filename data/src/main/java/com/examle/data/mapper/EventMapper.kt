@@ -1,11 +1,18 @@
 package com.examle.data.mapper
 
-import com.examle.data.models.EventListResponse
-import com.examle.data.models.EventResponse
-import com.examle.domain.model.EventModel
-import com.examle.domain.model.EventStatus
+import android.util.Log
+import com.examle.data.models.event.EventListResponse
+import com.examle.data.models.event.EventResponse
 import com.examle.domain.model.PaginationResponse
+import com.examle.domain.model.event.EventModel
+import com.examle.domain.model.event.EventRegistrationModel
+import com.examle.domain.model.event.EventStateModel
+import com.examle.domain.model.event.UserRegistrationModel
 import com.example.common.calendar
+import com.example.common.constants.EVENT_STATUS_APPROVED
+import com.example.common.constants.EVENT_STATUS_REGISTRATION
+import com.example.common.constants.EVENT_STATUS_REGISTRATION_FINISHED
+import com.example.common.constants.EVENT_STATUS_RUNNING
 import com.example.common.defaultServerDateFormatter
 import com.example.common.formatToDefaultDate
 import com.example.common.isSameDay
@@ -22,22 +29,41 @@ internal fun EventResponse.mapToDomainModel(): EventModel {
         name = name,
         holdingDate = transformEventDate(holdingDate?.from, holdingDate?.to),
         backgroundColor = backgroundColor?.value,
-        status = status,
+        status = status.value,
         isStatusActionAvailable = when (status.value) {
-            EventStatus.REGISTRATION.name,
-            EventStatus.REGISTRATION_FINISHED.name,
-            EventStatus.RUNNING.name,
-            EventStatus.APPROVED.name -> true
-
+            EVENT_STATUS_REGISTRATION,
+            EVENT_STATUS_REGISTRATION_FINISHED,
+            EVENT_STATUS_RUNNING,
+            EVENT_STATUS_APPROVED -> true
             else -> false
         },
-        state = state,
+        state = EventStateModel(
+            isRunning = state?.isRunning,
+            isFinished = state?.isFinished,
+            isAvailable = state?.registration?.isAvailable,
+            isFormEnabled = state?.registration?.formEnabled,
+            agreementState = state?.agreement?.state
+        ),
         userAgreement = userAgreement?.uri,
         image = image?.uri,
         address = address?.getShortAddress(),
-        currentUserRegistration = binds?.currentUserRegistration,
-        currentUserRegistrationState = binds?.currentUserRegistrationState,
-        eventRegistrationState = binds?.eventRegistrationState
+        userRegistration = UserRegistrationModel(
+            id = binds?.currentUserRegistration?.id,
+            status = binds?.currentUserRegistration?.status?.value,
+            wasPresent = binds?.currentUserRegistration?.wasPresent
+        ),
+        userRegistrationState = EventRegistrationModel(
+            availableActions = binds?.currentUserRegistrationState?.availableActions,
+            registrationClosed = binds?.currentUserRegistrationState?.prohibitions?.registrationClosed,
+            profileLevel = binds?.currentUserRegistrationState?.prohibitions?.profileLevelToLow?.value,
+            requiredLevel = binds?.currentUserRegistrationState?.prohibitions?.profileLevelToLow?.requiredLevel
+        ),
+        eventRegistrationState = EventRegistrationModel(
+            availableActions = binds?.currentUserRegistrationState?.availableActions,
+            registrationClosed = binds?.currentUserRegistrationState?.prohibitions?.registrationClosed,
+            profileLevel = binds?.currentUserRegistrationState?.prohibitions?.profileLevelToLow?.value,
+            requiredLevel = binds?.currentUserRegistrationState?.prohibitions?.profileLevelToLow?.requiredLevel
+        )
     )
 }
 

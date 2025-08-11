@@ -10,8 +10,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.PersistableBundle
 import com.example.services.NotificationClickJobService
-import com.example.common.FIELD_ACTION
-import com.example.common.FIELD_NOTIFICATION_ID
+import com.example.common.constants.FIELD_ACTION
+import com.example.common.constants.FIELD_NOTIFICATION_ID
 
 class NotificationClickBroadcastReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {

@@ -1,6 +1,6 @@
 package com.example
 
-import com.example.util.AuthValidateUtil
+import com.example.common.util.AuthValidateUtil
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -49,7 +49,7 @@ class AuthValidateUtilTest {
 
     @Test
     fun correctPhoneNumberSimpleReturnsTrue() {
-        assertTrue("Correct phone",AuthValidateUtil.isValidPhone("+79267806176"))
+        assertTrue("Correct phone", AuthValidateUtil.isValidPhone("+79267806176"))
     }
 
     @Test

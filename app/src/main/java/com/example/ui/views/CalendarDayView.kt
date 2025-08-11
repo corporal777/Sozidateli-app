@@ -4,10 +4,10 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
+import com.examle.data.models.EventScheduleDay
 import com.example.app.R
-import com.example.data.models.EventScheduleDay
 import com.example.app.databinding.ItemDayBinding
-import com.example.common.extensions.textColor
+import com.example.extensions.textColor
 
 class CalendarDayView : LinearLayout {
 

@@ -1,13 +1,11 @@
 package com.example.ui.base
 
 import androidx.annotation.StringRes
-import com.example.data.models.UserDetail
+import com.examle.data.models.UserDetail
 import com.example.ui.views.dialogs.StateType
 import moxy.MvpView
-import moxy.viewstate.strategy.OneExecutionStateStrategy
 import moxy.viewstate.strategy.SkipStrategy
 import moxy.viewstate.strategy.StateStrategyType
-import moxy.viewstate.strategy.alias.Skip
 
 interface BaseContract {
     interface View : MvpView, LoadingView {

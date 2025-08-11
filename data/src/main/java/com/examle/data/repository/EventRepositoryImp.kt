@@ -1,17 +1,19 @@
 package com.examle.data.repository
 
-import com.examle.data.api.Api
+import com.examle.data.source.remote.Api
 import com.examle.data.bodies.RegisterToEventBody
-import com.examle.data.models.EventResponse
 import com.examle.data.AppData
+import com.examle.data.mapper.mapToDomainModel
 import com.examle.data.mapper.mapToPagingDomainModel
-import com.examle.domain.model.EventModel
+import com.examle.domain.model.Optional
+import com.examle.domain.model.event.EventModel
 import com.examle.domain.model.PaginationResponse
+import com.examle.domain.model.asOptional
 import com.examle.domain.repository.EventRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
 class EventRepositoryImp
@@ -26,11 +28,8 @@ class EventRepositoryImp
     }
 
 
-    override suspend fun checkEventAgreement(event: EventModel, withAccept: Boolean): Flow<EventModel> {
-        return if (withAccept) flowOf(api.acceptEventAgreement(event.id))
-            .onEach { if (it.isAccepted()) event.state?.agreement?.setAccepted() }
-            .map { event }
-        else flowOf(event)
+    override fun acceptEventAgreement(event: EventModel): Flow<String> {
+        return flow { emit(api.acceptEventAgreement(event.id)) }.map { it.status }
     }
 
     override suspend fun registerEvent(eventId: Int) {
@@ -41,11 +40,12 @@ class EventRepositoryImp
         return api.cancelRegisterEvent(eventId)
     }
 
-
-
-    private fun getCurrentRegistrationBinds(): String {
-        return "current-user-registration," + "current-user-registration-state"
+    override fun getEvent(eventId: String, binds: String): Flow<EventModel> {
+        return flow { emit(api.getEventDetails(eventId, binds)) }
+            .map { it.mapToDomainModel() }
     }
+
+
 
 //    //Alfa API
 //    override fun getEventByCode(code: String): Single<EventNew> {
@@ -61,9 +61,7 @@ class EventRepositoryImp
 //        }
 //    }
 //
-//    override fun getEvent(eventId: String): Maybe<EventNew> {
-//        return api.getEventDetails(eventId, getCurrentRegistrationBinds())
-//    }
+
 //
 //    override fun getEventFlow(eventId: String): Flow<EventNew> {
 //        return flow { emit(api.getEventDetailsNew(eventId, getCurrentRegistrationBinds())) }

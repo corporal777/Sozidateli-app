@@ -1,8 +1,7 @@
 package com.examle.data.models.eventRegister
 
-import com.example.data.models.EventFormFieldModel
-import com.example.extensions.fromJson
-import com.example.util.Utils
+import com.examle.data.models.EventFormFieldModel
+import com.example.common.fromJson
 import com.google.gson.JsonElement
 
 class EventRegisterFieldPhone(
@@ -13,8 +12,9 @@ class EventRegisterFieldPhone(
     var value = result.fromJson<String>()
 
     override fun isValid(): Boolean {
-        return if (field.isRequired || !value.isNullOrEmpty()) Utils.isPhoneNumberValid(value)
-        else true
+        //return if (field.isRequired || !value.isNullOrEmpty()) Utils.isPhoneNumberValid(value)
+        //else true
+        return true
     }
 
     override fun hasForm() = !value.isNullOrEmpty()

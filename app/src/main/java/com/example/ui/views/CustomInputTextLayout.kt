@@ -11,8 +11,8 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import com.example.app.R
 import com.example.app.databinding.LayoutCustomTextInputBinding
-import com.example.common.extensions.onFocusChanged
-import com.example.common.extensions.onTextChanged
+import com.example.extensions.onFocusChanged
+import com.example.extensions.onTextChanged
 
 class CustomInputTextLayout : ConstraintLayout {
 
