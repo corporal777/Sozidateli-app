@@ -11,7 +11,7 @@
     <dimen name="auth_pager_title_text_size">25sp</dimen>
     <dimen name="auth_pager_story_text_size">14sp</dimen>
 
-    <dimen name="event_detail_action_button_min_height">46dp</dimen>
+    <dimen name="event_detail_action_button_min_height">47dp</dimen>
     <dimen name="common_button_min_height">46dp</dimen>
     <dimen name="common_button_text_size">15sp</dimen>
 

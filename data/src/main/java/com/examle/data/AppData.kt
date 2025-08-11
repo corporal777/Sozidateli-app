@@ -12,6 +12,7 @@ import com.examle.domain.model.user.EducationLevel
 import com.examle.domain.model.user.UserProfileState
 import com.examle.domain.repository.AppPrefs
 import com.example.common.BuildConfig
+import com.example.common.constants.AUTH_TOKEN_INVALID
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -72,7 +73,7 @@ class AppData(private val appPrefs: AppPrefs) {
                 if (!isLoggedOut) logout()
                 tokenChangeSubject.onNext(Optional())
                 tokenChangeFlow.update { Optional() }
-            } else if (value == "AUTH_TOKEN_INVALID") {
+            } else if (value == AUTH_TOKEN_INVALID) {
                 field = null
                 appPrefs.userToken = null
             } else if (!isLoggedOut) {
@@ -288,7 +289,7 @@ class AppData(private val appPrefs: AppPrefs) {
         notificationsCount = 0
         chatRequestsCount = 0
         chatUnreadMessageCount = 0
-        "token = AUTH_TOKEN_INVALID"
+        token = AUTH_TOKEN_INVALID
     }
 
     fun isCurrentUser(id: String): Boolean = newUser?.id.toString() == id

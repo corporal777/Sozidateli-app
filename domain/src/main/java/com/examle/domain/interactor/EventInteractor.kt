@@ -1,6 +1,7 @@
 package com.examle.domain.interactor
 
 import com.examle.domain.model.PaginationResponse
+import com.examle.domain.model.event.EventDetailModel
 import com.examle.domain.model.event.EventModel
 import com.examle.domain.repository.EventRepository
 import kotlinx.coroutines.flow.Flow
@@ -38,8 +39,8 @@ class EventInteractor(private val repository: EventRepository) {
         return flow { emit(repository.cancelRegisterEvent(id ?: 0)) }
     }
 
-    fun getEventById(id: Int): Flow<EventModel> {
-        return repository.getEvent(id.toString(), getCurrentRegistrationBinds())
+    fun getEventDetail(id: String): Flow<EventDetailModel> {
+        return repository.getEventDetail(id, getCurrentRegistrationBinds())
     }
 
     fun getEvent(event: EventModel): Flow<EventModel> {

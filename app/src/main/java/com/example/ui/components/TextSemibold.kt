@@ -5,6 +5,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextStyle
@@ -19,7 +20,7 @@ import com.example.util.TextUtils
 
 @Composable
 fun TextSemibold(
-    text: String,
+    text: String?,
     modifier: Modifier = Modifier,
     color: Color = Color.Unspecified,
     fontSize: TextUnit = TextUnit.Unspecified,
@@ -32,26 +33,49 @@ fun TextSemibold(
     softWrap: Boolean = true,
     maxLines: Int = Int.MAX_VALUE,
     minLines: Int = 1,
-    onTextLayout: ((TextLayoutResult) -> Unit)? = null,
-    style: TextStyle = LocalTextStyle.current
+    style: TextStyle = LocalTextStyle.current,
+    textChar : AnnotatedString? = null,
 ) {
-    Text(
-        text = text,
-        modifier = modifier,
-        color = color,
-        fontSize = fontSize,
-        fontStyle = fontStyle,
-        fontFamily = TextUtils.font,
-        letterSpacing = letterSpacing ?: TextUnit(-0.01F, TextUnitType.Sp),
-        textDecoration = textDecoration,
-        textAlign = textAlign,
-        lineHeight = lineHeight,
-        fontWeight = FontWeight.SemiBold,
-        overflow = overflow,
-        softWrap = softWrap,
-        maxLines = maxLines,
-        minLines = minLines,
-        onTextLayout = onTextLayout,
-        style = style.copy(platformStyle = PlatformTextStyle(includeFontPadding = false))
-    )
+    if (textChar == null){
+        Text(
+            text = text ?: "",
+            modifier = modifier,
+            color = color,
+            fontSize = fontSize,
+            fontStyle = fontStyle,
+            fontFamily = TextUtils.font,
+            letterSpacing = letterSpacing ?: TextUnit(-0.01F, TextUnitType.Sp),
+            textDecoration = textDecoration,
+            textAlign = textAlign,
+            lineHeight = lineHeight,
+            fontWeight = FontWeight.SemiBold,
+            overflow = overflow,
+            softWrap = softWrap,
+            maxLines = maxLines,
+            minLines = minLines,
+            onTextLayout = null,
+            style = style.copy(platformStyle = PlatformTextStyle(includeFontPadding = false))
+        )
+    } else {
+        Text(
+            text = textChar,
+            modifier = modifier,
+            color = color,
+            fontSize = fontSize,
+            fontStyle = fontStyle,
+            fontFamily = TextUtils.font,
+            letterSpacing = letterSpacing ?: TextUnit(-0.01F, TextUnitType.Sp),
+            textDecoration = textDecoration,
+            textAlign = textAlign,
+            lineHeight = lineHeight,
+            fontWeight = FontWeight.SemiBold,
+            overflow = overflow,
+            softWrap = softWrap,
+            maxLines = maxLines,
+            minLines = minLines,
+            onTextLayout = { },
+            style = style.copy(platformStyle = PlatformTextStyle(includeFontPadding = false))
+        )
+    }
+
 }

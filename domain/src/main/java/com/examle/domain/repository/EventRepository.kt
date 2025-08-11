@@ -3,6 +3,7 @@ package com.examle.domain.repository
 import com.examle.domain.model.Optional
 import com.examle.domain.model.event.EventModel
 import com.examle.domain.model.PaginationResponse
+import com.examle.domain.model.event.EventDetailModel
 import kotlinx.coroutines.flow.Flow
 
 interface EventRepository {
@@ -15,4 +16,5 @@ interface EventRepository {
     fun acceptEventAgreement(event : EventModel) : Flow<String>
 
     fun getEvent(eventId : String, binds : String) : Flow<EventModel>
+    fun getEventDetail(eventId : String, binds: String) : Flow<EventDetailModel>
 }

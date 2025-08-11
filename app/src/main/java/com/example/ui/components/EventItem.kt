@@ -48,6 +48,7 @@ import com.example.ui.theme.SpotShadowColor
 fun EventCardItem(
     event: EventModel,
     isTemporary: Boolean,
+    onItem: (String) -> Unit,
     onAction: (EventAction) -> Unit,
 ) {
 
@@ -60,7 +61,7 @@ fun EventCardItem(
     ConstraintLayout(
         modifier = Modifier
             .background(Color.White)
-            .clickable(Color.Black) { }
+            .clickable(Color.Black) { onItem(event.id.toString()) }
             .shadow(
                 12.dp,
                 shape = RoundedCornerShape(12.dp),

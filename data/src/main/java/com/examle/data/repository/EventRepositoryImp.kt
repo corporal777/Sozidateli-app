@@ -1,18 +1,17 @@
 package com.examle.data.repository
 
-import com.examle.data.source.remote.Api
-import com.examle.data.bodies.RegisterToEventBody
 import com.examle.data.AppData
-import com.examle.data.mapper.mapToDomainModel
+import com.examle.data.bodies.RegisterToEventBody
+import com.examle.data.mapper.mapToDomainEventDetailModel
+import com.examle.data.mapper.mapToDomainEventModel
 import com.examle.data.mapper.mapToPagingDomainModel
-import com.examle.domain.model.Optional
-import com.examle.domain.model.event.EventModel
+import com.examle.data.source.remote.Api
 import com.examle.domain.model.PaginationResponse
-import com.examle.domain.model.asOptional
+import com.examle.domain.model.event.EventDetailModel
+import com.examle.domain.model.event.EventModel
 import com.examle.domain.repository.EventRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
@@ -42,9 +41,22 @@ class EventRepositoryImp
 
     override fun getEvent(eventId: String, binds: String): Flow<EventModel> {
         return flow { emit(api.getEventDetails(eventId, binds)) }
-            .map { it.mapToDomainModel() }
+            .map { it.mapToDomainEventModel() }
     }
 
+    override fun getEventDetail(eventId: String, binds: String): Flow<EventDetailModel> {
+        return flow {
+            emit(
+                api.getEventDetails(
+                    eventId,
+                    "organization,organization.userFavorite,tag,page,format,activity," +
+                            "activity.userCalendar,activity.auditorium,partner,member,member.user," +
+                            "userFavorite,destination-scheme,is-user-subscribed,event-subscribe," +
+                            "user-form-result," + binds
+                )
+            )
+        }.map { it.mapToDomainEventDetailModel(appData.isTemporaryUser()) }
+    }
 
 
 //    //Alfa API
@@ -62,10 +74,7 @@ class EventRepositoryImp
 //    }
 //
 
-//
-//    override fun getEventFlow(eventId: String): Flow<EventNew> {
-//        return flow { emit(api.getEventDetailsNew(eventId, getCurrentRegistrationBinds())) }
-//    }
+
 //
 //    override fun getEventDetails(eventId: String): Maybe<EventNew> =
 //        getEventFormatsList(mapOf(EventNew.EVENT_LIMIT to 100, EventNew.EVENT_OFFSET to 0))

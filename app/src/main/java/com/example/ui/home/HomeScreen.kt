@@ -44,7 +44,7 @@ import com.example.ui.theme.DefaultHorizontalPadding
 fun HomeScreen(
     paddingValues: PaddingValues,
     viewModel: HomeViewModel = hiltViewModel(),
-    onAuthClick: (String) -> Unit
+    onEventClick: (String) -> Unit
 ) {
 
     val scrollBehavior = rememberToolbarScrollBehavior()
@@ -77,7 +77,7 @@ fun HomeScreen(
             modifier = Modifier,
             collapsingTitle = stringResource(R.string.tab_recommended_title),
             additionalContent = { SearchItem() },
-            rightContent = { AuthButtonItem() { onAuthClick(Route.AuthorizationScreen.route) } },
+            rightContent = { AuthButtonItem() { onEventClick(Route.AuthorizationScreen.route) } },
             scrollBehavior = scrollBehavior
         )
 
@@ -92,13 +92,17 @@ fun HomeScreen(
         ) {
             items(items = events.itemSnapshotList, key = { it?.id ?: 0 }) { event ->
                 if (event == null) return@items
-                EventCardItem(event, false) {
-                    when (it) {
-                        EventAction.REGISTER -> viewModel.onActionRegister(event)
-                        EventAction.CANCEL -> viewModel.onActionCancel(event)
-                        else -> onAuthClick(Route.AuthorizationScreen.route)
-                    }
-                }
+                EventCardItem(
+                    event,
+                    false,
+                    onItem = { onEventClick.invoke(Route.EventDetailScreen.createWay(it)) },
+                    onAction = {
+                        when (it) {
+                            EventAction.REGISTER -> viewModel.onActionRegister(event)
+                            EventAction.CANCEL -> viewModel.onActionCancel(event)
+                            else -> onEventClick(Route.AuthorizationScreen.route)
+                        }
+                    })
             }
         }
     }

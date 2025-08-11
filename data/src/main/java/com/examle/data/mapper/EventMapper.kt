@@ -20,10 +20,10 @@ import com.example.common.parseToDate
 
 
 internal fun EventListResponse.mapToPagingDomainModel(): PaginationResponse<EventModel> {
-    return PaginationResponse(totalCount, data.map { it.mapToDomainModel() })
+    return PaginationResponse(totalCount, data.map { it.mapToDomainEventModel() })
 }
 
-internal fun EventResponse.mapToDomainModel(): EventModel {
+internal fun EventResponse.mapToDomainEventModel(): EventModel {
     return EventModel(
         id = id,
         name = name,
@@ -41,7 +41,7 @@ internal fun EventResponse.mapToDomainModel(): EventModel {
             isRunning = state?.isRunning,
             isFinished = state?.isFinished,
             isAvailable = state?.registration?.isAvailable,
-            isFormEnabled = state?.registration?.formEnabled,
+            isFormEnabled = state?.registration?.formEnabled ?: false,
             agreementState = state?.agreement?.state
         ),
         userAgreement = userAgreement?.uri,

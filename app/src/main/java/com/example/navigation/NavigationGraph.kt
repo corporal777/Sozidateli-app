@@ -28,6 +28,7 @@ import com.example.extensions.animComposable
 import com.example.extensions.enterTransition
 import com.example.ui.auth.authorization.AuthorizationScreen
 import com.example.ui.auth.login.LoginScreen
+import com.example.ui.event.EventDetailScreen
 import com.example.ui.home.HomeScreen
 
 @Composable
@@ -43,6 +44,11 @@ fun NavigationGraph(
         enterTransition = { EnterTransition.None },
         exitTransition = { ExitTransition.None }
     ) {
+        composable(route = Route.HomeScreen.route) {
+            HomeScreen(paddingValues){ navController.navigate(it) }
+        }
+
+
         animComposable(route = Route.AuthorizationScreen.route) {
             AuthorizationScreen(paddingValues) {
                 navController.navigate(Route.LoginScreen.route)
@@ -55,8 +61,9 @@ fun NavigationGraph(
             }
         }
 
-        composable(route = Route.HomeScreen.route) {
-            HomeScreen(paddingValues){ navController.navigate(it) }
+        animComposable(route = Route.EventDetailScreen.route) { stack ->
+            val eventId = stack.arguments?.getString("id") ?: "0"
+            EventDetailScreen(eventId, paddingValues)
         }
     }
 }

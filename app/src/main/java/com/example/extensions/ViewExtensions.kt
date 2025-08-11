@@ -39,6 +39,8 @@ import androidx.appcompat.widget.AppCompatAutoCompleteTextView
 import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.appcompat.widget.AppCompatToggleButton
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import androidx.constraintlayout.widget.Group
 import androidx.core.content.ContextCompat
 import androidx.core.text.getSpans
@@ -63,6 +65,7 @@ import coil.request.ImageRequest
 import coil.size.Scale
 import coil.transform.CircleCropTransformation
 import coil.transform.Transformation
+import coil3.request.crossfade
 import com.example.adapters.NoFilterArrayAdapter
 import com.example.app.R
 import com.example.common.dp
@@ -124,25 +127,8 @@ fun TextView.setRightDrawable(res: Int) {
     this.setCompoundDrawablesWithIntrinsicBounds(0, 0, res, 0)
 }
 
-fun ImageView.setImagePicasso(url: String?, placeholder: Any? = null, error: Any? = null) {
-    Picasso.get()
-        .load(url)
-        .let {
-            when (placeholder) {
-                null -> it
-                is Int -> it.placeholder(placeholder)
-                else -> it.placeholder(placeholder as Drawable)
-            }
-        }
-        .let {
-            when (error) {
-                null -> it
-                is Int -> it.error(error)
-                else -> it.error(error as Drawable)
-            }
-        }
-        .into(this)
-}
+
+
 
 fun ImageView.setImage(
     image: Any?, crossfade: Int? = 500,

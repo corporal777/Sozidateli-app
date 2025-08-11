@@ -15,6 +15,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -26,7 +28,7 @@ import com.example.ui.theme.BtnBackgroundBrownColor
 @Composable
 fun AppLoadingButton(
     modifier: Modifier = Modifier,
-    text: String,
+    text: String? = null,
     textColor: Color = Color.White,
     textSize: Dp = dimensionResource(R.dimen.common_button_text_size),
     backgroundColor: Color = BtnBackgroundBrownColor,
@@ -34,6 +36,7 @@ fun AppLoadingButton(
     isLoading: Boolean = false,
     isEnabled: Boolean = true,
     icon: Int? = null,
+    textChar: AnnotatedString? = null,
     onClick: () -> Unit
 ) {
 
@@ -53,17 +56,22 @@ fun AppLoadingButton(
     ) {
         val (title, load, image) = createRefs()
 
-        TextSemibold(
-            text = if (isLoading) "" else text,
-            color = textColor,
-            fontSize = textSize.value.sp,
-            modifier = Modifier.constrainAs(title) {
-                top.linkTo(parent.top)
-                bottom.linkTo(parent.bottom)
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
-            }
-        )
+        if (!isLoading){
+            TextSemibold(
+                text = text ,
+                textChar = textChar,
+                color = textColor,
+                fontSize = textSize.value.sp,
+                textAlign = TextAlign.Center,
+                lineHeight = 20.sp,
+                modifier = Modifier.constrainAs(title) {
+                    top.linkTo(parent.top)
+                    bottom.linkTo(parent.bottom)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                }
+            )
+        }
 
         if (isLoading) {
             CircularProgressIndicator(

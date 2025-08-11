@@ -31,6 +31,9 @@ val AuthPagerIndicatorSelectedColor = Color(0x4DEBEBF5)
 val MainBrownColor = Color(0xFFBE9B72)
 val BtnBackgroundBrownColor = Color(0xFFC3996C)
 val BtnBackgroundWhiteGhostColor = Color(0xFFF2F2F7)
+val BtnBackgroundGreenColor = Color(0xFF7D9D57)
+val BtnBackgroundApprovedColor = Color(0xFFA4BA89)
+val BtnBackgroundClosedColor = Color(0xFF576E3D)
 val VkBtnBackgroundColor = Color(0xFF0077FF)
 val GosUslugiBtnTextColor = Color(0xFF0D4CD3)
 
@@ -51,5 +54,17 @@ val BottomNavigationNormalColor = Color(0xFF979592)
 
 val CheckBoxCheckedColor = Color(0xFFC49A6C)
 val CheckBoxUncheckedColor = Color(0xFFE6E4EA)
+
+val EventDetailDateColor = Color(0xFF939598)
+val EventDetailIconsBackgroundColor = Color(0x80000000)
+
+val TopGradientColor = Color(0x00000000)
+val CenterGradientColor = Color(0xE6000000)
+val EndGradientColor = Color(0xFF000000)
+
+val ActionTextSmallColor = Color(0xB3FFFFFF)
+val ActionTextClosedColor = Color(0xFFB2B2B2)
+
+val ActionGreenColor = Color(0xFF7D9D57)
 
 
