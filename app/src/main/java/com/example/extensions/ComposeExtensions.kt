@@ -6,7 +6,11 @@ import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.LinearOutSlowInEasing
+import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animate
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -25,12 +29,18 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.debugInspectorInfo
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.unit.Dp
 import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavBackStackEntry
@@ -40,6 +50,8 @@ import androidx.navigation.NavOptions
 import androidx.navigation.Navigator
 import androidx.navigation.compose.composable
 import coil.request.ImageRequest
+import com.example.app.R
+import com.example.ui.theme.EventDetailDateColor
 
 fun Modifier.clickable(
     rippleColor: Color? = null,
@@ -152,4 +164,28 @@ val popEnterTransition: AnimatedContentTransitionScope<NavBackStackEntry>.() -> 
         initialOffsetX = { -it / 5 },
         animationSpec = tween(durationMillis = 300, easing = LinearOutSlowInEasing)
     ) + fadeIn(animationSpec = tween(280, easing = LinearOutSlowInEasing))
+}
+
+
+fun Modifier.shimmerEffect(cornerRadius: CornerRadius = CornerRadius(x = 16f, y = 16f)) = composed {
+    val transition = rememberInfiniteTransition(label = "shimmer effect")
+    val alpha = transition.animateFloat(
+        initialValue = 0.2f, targetValue = 0.9f, animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 1000),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "transparency of the background color"
+    ).value
+    val color = colorResource(id = R.color.placeholder).copy(alpha = alpha)
+    drawBehind {
+        drawRoundRect(
+            color = color,
+            cornerRadius = cornerRadius
+        )
+    }
+}
+
+@Composable
+fun coloredString(res : Int, color: Color): AnnotatedString {
+    return AnnotatedString(stringResource(res), SpanStyle(color))
 }

@@ -30,6 +30,7 @@ import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.examle.data.models.event.EventResponse
+import com.examle.domain.model.event.EventActionStatus
 import com.examle.domain.model.event.EventModel
 import com.example.app.R
 import com.example.common.constants.EVENT_STATUS_APPROVED
@@ -42,32 +43,32 @@ import com.example.extensions.clickable
 import com.example.extensions.verticalGradientBrush
 import com.example.ui.theme.AmbientShadowColor
 import com.example.ui.theme.BtnBackgroundWhiteGhostColor
+import com.example.ui.theme.DefaultHorizontalPadding
 import com.example.ui.theme.SpotShadowColor
 
 @Composable
 fun EventCardItem(
     event: EventModel,
-    isTemporary: Boolean,
     onItem: (String) -> Unit,
-    onAction: (EventAction) -> Unit,
+    onAction: () -> Unit,
 ) {
 
-    var actionButtonText by remember { mutableStateOf(EventAction.NONE) }
-    actionButtonText = getActionButtonText(event, isTemporary)
+    var actionButtonText by remember { mutableStateOf("") }
+    actionButtonText = getActionButtonText(event)
 
     var eventStatus by remember { mutableStateOf(Triple(false, 0, 0)) }
     eventStatus = getEventStatus(event)
 
     ConstraintLayout(
         modifier = Modifier
-            .background(Color.White)
-            .clickable(Color.Black) { onItem(event.id.toString()) }
+            .padding(horizontal = DefaultHorizontalPadding)
             .shadow(
-                12.dp,
+                elevation = 10.dp,
                 shape = RoundedCornerShape(12.dp),
-                ambientColor = AmbientShadowColor,
-                spotColor = SpotShadowColor
             )
+            .background(Color.White)
+            .fillMaxWidth()
+            .clickable(Color.Black) { onItem(event.id.toString()) }
     ) {
 
         val (image, gradient, title, date, location, status, action) = createRefs()
@@ -145,18 +146,18 @@ fun EventCardItem(
         }
 
 
-        if (actionButtonText != EventAction.NONE) {
+        if (actionButtonText.isNotEmpty()) {
             TextSemibold(
                 modifier = Modifier
                     .clip(RoundedCornerShape(12.dp))
                     .background(BtnBackgroundWhiteGhostColor)
-                    .clickable(rippleColor = Color.Black) { onAction(actionButtonText) }
+                    .clickable(rippleColor = Color.Black, onClick = onAction)
                     .padding(horizontal = 20.dp, vertical = 10.dp)
                     .constrainAs(action) {
                         bottom.linkTo(parent.bottom, 20.dp)
                         end.linkTo(parent.end, 20.dp)
                     },
-                text = actionButtonText.text,
+                text = actionButtonText,
                 color = Color.Black,
                 fontSize = dimensionResource(R.dimen.common_button_text_size).value.sp,
             )
@@ -166,17 +167,14 @@ fun EventCardItem(
 
 }
 
-private fun getActionButtonText(event: EventModel, isTemporary: Boolean): EventAction {
-    val registrationState = event.userRegistrationState
-    val registrationClosed = registrationState?.registrationClosed ?: false
-    val actions = registrationState?.availableActions ?: arrayListOf("")
-
-    return if (isTemporary) EventAction.AUTH
-    else if (event.isStatusActionAvailable && !registrationClosed) {
-        if (actions.contains("register")) EventAction.REGISTER
-        else if (actions.contains("withdraw")) EventAction.CANCEL
-        else EventAction.NONE
-    } else EventAction.NONE
+@Composable
+private fun getActionButtonText(event: EventModel): String {
+    return when (event.actionStatus) {
+        EventActionStatus.TEMPORARY, EventActionStatus.REGISTER ->
+            stringResource(R.string.event_action_participate)
+        EventActionStatus.WITHDRAW -> stringResource(R.string.event_cancel_request)
+        else -> ""
+    }
 }
 
 private fun getEventStatus(event: EventModel): Triple<Boolean, Int, Int> {
@@ -189,17 +187,18 @@ private fun getEventStatus(event: EventModel): Triple<Boolean, Int, Int> {
     else if (userRegistration == EVENT_STATUS_APPROVED)
         Triple(true, R.color.event_status_approved_background, R.string.event_status_approved_new)
     else if (userRegistration == EVENT_STATUS_PENDING)
-        Triple(true, R.color.event_status_wait_confirmation_background, R.string.event_status_wait_confirmation)
+        Triple(
+            true,
+            R.color.event_status_wait_confirmation_background,
+            R.string.event_status_wait_confirmation
+        )
     else if (userRegistration == EVENT_STATUS_DECLINED)
         Triple(true, R.color.event_status_declined_background, R.string.event_status_decline_new)
     else if (userRegistration == EVENT_STATUS_REGISTRATION_FINISHED)
-        Triple(true, R.color.event_status_wait_confirmation_background, R.string.event_closed_request)
+        Triple(
+            true,
+            R.color.event_status_wait_confirmation_background,
+            R.string.event_closed_request
+        )
     else Triple(false, R.color.event_status_finished_background, R.string.event_status_finished)
-}
-
-enum class EventAction(val text: String) {
-    AUTH("Участвовать"),
-    REGISTER("Участвовать"),
-    CANCEL("Отозвать заявку"),
-    NONE("")
 }

@@ -63,7 +63,7 @@ fun showEventAgreementDialog(context: Context, event: EventModel, onAccepted: (a
     //if (event.userAgreement?.uri.isNullOrEmpty()) onAccepted.invoke(false)
     //else if (event.state?.isAgreementAccepted() == true) onAccepted.invoke(false)
     if (event.state?.agreementState == "accepted") onAccepted.invoke(false)
-    else EventAgreementBottomSheet(context, event.userAgreement ?: "")
+    else EventAgreementBottomSheet(context, event.state?.userAgreement ?: "")
         .setSelectCallback { if (it) onAccepted.invoke(true) }
         .show()
 }

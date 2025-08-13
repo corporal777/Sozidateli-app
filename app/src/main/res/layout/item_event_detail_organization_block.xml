@@ -47,7 +47,7 @@
             android:maxLines="3"
             android:textColor="@color/white"
             android:textSize="15sp"
-            android:visibility="gone"
+
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/cvImage"
             app:layout_constraintTop_toTopOf="parent"

@@ -39,10 +39,10 @@ data class OrganizationNew(
     val isSpecial: Boolean? = null,
     //val state: Any? = null,
     var binds: OrganizationBindsModel? = null
-): Parcelable {
+) : Parcelable {
 
-    fun getOrganizationName(): String? {
-        return legalInformation?.name?.short ?: legalInformation?.name?.full
+    fun getOrganizationName(): String {
+        return legalInformation?.name?.short ?: legalInformation?.name?.full ?: ""
     }
 
     companion object {
@@ -71,13 +71,13 @@ data class OrganizationNew(
 
 @Parcelize
 data class OrganizationLeaderModel(
-        val id: Int? = null,
-        val organization: Int? = null,
-        val name: String? = null,
-        val position: String? = null,
-        @SerializedName("confirmationFile")
-        val confirmationFile: EventUserAgreement? = null
-): Parcelable
+    val id: Int? = null,
+    val organization: Int? = null,
+    val name: String? = null,
+    val position: String? = null,
+    @SerializedName("confirmationFile")
+    val confirmationFile: EventUserAgreement? = null
+) : Parcelable
 
 @Parcelize
 data class OrganizationBindsModel(
@@ -87,69 +87,69 @@ data class OrganizationBindsModel(
     var membersSize: Int? = 0,
     val user: List<UserDetail>? = null,
     @SerializedName("userFavorite")
-        var userFavorite: EventUserFavorite? = null,
+    var userFavorite: EventUserFavorite? = null,
     var events: List<EventResponse>? = null,
     var eventsSize: Int? = 0
-): Parcelable
+) : Parcelable
 
 @Parcelize
 data class OrganizationMemberBindsModel(
     val user: UserDetail? = null,
     @SerializedName("userFavorite")
     var userFavorite: EventUserFavorite? = null
-): Parcelable
+) : Parcelable
 
 @Parcelize
 data class OrganizationMemberModel(
-        val id: Int? = null,
-        @SerializedName("createdDate")
-        val createdDate: String? = null,
-        @SerializedName("invitedBy")
-        val invitedBy: Int? = null,
-        val organization: Int? = null,
-        val user: Int? = null,
-        var isCurrentUser: Boolean? = false,
-        val position: OrganizationMemberPositionModel? = null,
-        val nko: OrganizationMemberNkoModel? = null,
-        @SerializedName("canCreateEvent")
-        val canCreateEvent: Boolean? = null,
-        val isHidden : Boolean? = null,
-        val status: String? = null,
-        val binds: OrganizationMemberBindsModel? = null
-): Parcelable
+    val id: Int? = null,
+    @SerializedName("createdDate")
+    val createdDate: String? = null,
+    @SerializedName("invitedBy")
+    val invitedBy: Int? = null,
+    val organization: Int? = null,
+    val user: Int? = null,
+    var isCurrentUser: Boolean? = false,
+    val position: OrganizationMemberPositionModel? = null,
+    val nko: OrganizationMemberNkoModel? = null,
+    @SerializedName("canCreateEvent")
+    val canCreateEvent: Boolean? = null,
+    val isHidden: Boolean? = null,
+    val status: String? = null,
+    val binds: OrganizationMemberBindsModel? = null
+) : Parcelable
 
 @Parcelize
 data class OrganizationMemberNkoModel(
     val position: Int? = null,
     val canEdit: Boolean? = null
-): Parcelable
+) : Parcelable
 
 @Parcelize
 data class OrganizationMemberPositionModel(
-        val value: String? = null,
-        val manual: String? = null
-): Parcelable
+    val value: String? = null,
+    val manual: String? = null
+) : Parcelable
 
 @Parcelize
 data class OrganizationAuthorityModel(
-        val type: String? = null,
-        val document: OrganizationDocumentModel? = null
-): Parcelable
+    val type: String? = null,
+    val document: OrganizationDocumentModel? = null
+) : Parcelable
 
 @Parcelize
 data class OrganizationDocumentModel(
     val file: EventUserAgreement? = null
-): Parcelable
+) : Parcelable
 
 @Parcelize
 data class LegalInformationModel(
-        val name: LegalInformationNameModel? = null,
-        val inn: String? = null,
-        val ogrn: String? = null
-): Parcelable
+    val name: LegalInformationNameModel? = null,
+    val inn: String? = null,
+    val ogrn: String? = null
+) : Parcelable
 
 @Parcelize
 data class LegalInformationNameModel(
     val short: String? = null,
     val full: String? = null
-): Parcelable
+) : Parcelable

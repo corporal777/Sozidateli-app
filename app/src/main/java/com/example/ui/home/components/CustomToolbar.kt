@@ -36,7 +36,6 @@ import com.example.ui.components.TextExtraBold
 import com.example.ui.components.TextRegular
 import com.example.ui.components.TextSemibold
 import com.example.ui.theme.AppBackgroundColor
-import com.example.ui.theme.CourseLessonColor
 import kotlin.math.roundToInt
 
 @Composable

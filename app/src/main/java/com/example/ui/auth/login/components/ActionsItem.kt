@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstrainedLayoutReference
@@ -44,7 +45,7 @@ fun ConstraintLayoutScope.ActionsItem(
     )
 
     AppLoadingButton(
-        text = stringResource(R.string.auth_label_login),
+        text = AnnotatedString(stringResource(R.string.auth_label_login)),
         modifier = Modifier
             .padding(horizontal = DefaultHorizontalPadding)
             .constrainAs(login) {

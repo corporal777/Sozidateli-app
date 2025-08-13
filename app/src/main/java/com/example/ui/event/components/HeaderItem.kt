@@ -6,12 +6,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -30,7 +30,7 @@ import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.examle.domain.model.event.EventActionStatus
-import com.examle.domain.model.event.EventDetailModel
+import com.examle.domain.model.event.EventModel
 import com.example.app.R
 import com.example.extensions.verticalGradientBrush
 import com.example.ui.components.AppLoadingButton
@@ -50,10 +50,15 @@ import com.example.ui.theme.CenterGradientColor
 import com.example.ui.theme.DefaultHorizontalPadding
 import com.example.ui.theme.EndGradientColor
 import com.example.ui.theme.EventDetailDateColor
+import com.example.ui.theme.MainBrownColor
 import com.example.ui.theme.TopGradientColor
 
 @Composable
-fun HeaderItem(event: EventDetailModel) {
+fun HeaderItem(
+    event: EventModel,
+    isLoading : Boolean,
+    onClick: (EventActionStatus) -> Unit
+) {
 
     var showFormText by remember { mutableStateOf(AnnotatedString("")) }
     showFormText = getTextShowForm(event)
@@ -85,7 +90,15 @@ fun HeaderItem(event: EventDetailModel) {
             modifier = Modifier
                 .height(dimensionResource(R.dimen.event_image_shadow_height_new))
                 .fillMaxWidth()
-                .background(verticalGradientBrush(listOf(TopGradientColor, CenterGradientColor, EndGradientColor)))
+                .background(
+                    verticalGradientBrush(
+                        listOf(
+                            TopGradientColor,
+                            CenterGradientColor,
+                            EndGradientColor
+                        )
+                    )
+                )
                 .constrainAs(gradient) { bottom.linkTo(image.bottom) }
         )
 
@@ -120,7 +133,8 @@ fun HeaderItem(event: EventDetailModel) {
         )
 
         AppLoadingButton(
-            textChar = actionButtonText,
+            isLoading = isLoading,
+            text = actionButtonText,
             textSize = dimensionResource(R.dimen.auth_buttons_text_size),
             height = dimensionResource(R.dimen.event_detail_action_button_min_height),
             backgroundColor = actionButtonColor,
@@ -131,7 +145,7 @@ fun HeaderItem(event: EventDetailModel) {
                     visibility = if (event.actionStatus == EventActionStatus.NONE) Visibility.Gone
                     else Visibility.Visible
                 }
-        ) { }
+        ) {  onClick.invoke(event.actionStatus) }
 
         TextMedium(
             textChar = showFormText,
@@ -149,7 +163,7 @@ fun HeaderItem(event: EventDetailModel) {
         )
 
         TextNormal(
-            text = event.description,
+            text = event.description ?: "",
             color = Color.White,
             fontSize = 15.sp,
             maxLines = 5,
@@ -197,9 +211,21 @@ private fun getActionButtonText(requestDate: String?, status: EventActionStatus)
     return when (status) {
         EventActionStatus.REGISTER, EventActionStatus.TEMPORARY -> {
             buildAnnotatedString {
-                append(stringRes(R.string.event_action_participate, null, R.dimen.sub_event_description_text_size))
+                append(
+                    stringRes(
+                        R.string.event_action_participate,
+                        null,
+                        R.dimen.sub_event_description_text_size
+                    )
+                )
                 append("\n")
-                append(string(requestDate, ActionTextSmallColor, R.dimen.event_request_date_text_size))
+                append(
+                    string(
+                        requestDate,
+                        ActionTextSmallColor,
+                        R.dimen.event_request_date_text_size
+                    )
+                )
             }
         }
 
@@ -238,7 +264,7 @@ private fun getActionButtonText(requestDate: String?, status: EventActionStatus)
 }
 
 @Composable
-private fun getTextShowForm(eventData: EventDetailModel): AnnotatedString {
+private fun getTextShowForm(eventData: EventModel): AnnotatedString {
     val withDelimiter = when (eventData.actionStatus) {
         EventActionStatus.WITHDRAW -> false
         EventActionStatus.CANCELED -> false

@@ -3,6 +3,8 @@ package com.example.ui.base
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import com.examle.data.AppData
+import com.examle.domain.model.event.EventModel
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Maybe
@@ -23,11 +25,20 @@ import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onErrorReturn
 import kotlinx.coroutines.flow.onStart
 
-abstract class BaseViewModel : ViewModel() {
-
+abstract class BaseViewModel(private val appData: AppData) : ViewModel() {
 
     private val _loading = MutableStateFlow<Boolean>(false)
     val loading: StateFlow<Boolean> = _loading
+
+    fun isProfileLevelLow(event: EventModel): Boolean {
+        val state = event.userRegistrationState ?: return true
+        return if (state.requiredLevel == "basic") !getHasBase()
+        else !getHasMax()
+    }
+
+    fun getHasBase() = appData.hasBaseState
+    fun getHasMax() = appData.hasMaxState
+
 
 
     fun <T> Flow<T>.withLoading(): Flow<T> {

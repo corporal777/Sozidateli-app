@@ -1,6 +1,7 @@
 package com.example.ui.main
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -27,6 +28,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import com.examle.domain.model.event.EventModel
 import com.example.ui.agreement.EventAgreementBottomSheet
 import com.example.ui.components.AppBottomNavigation
 import com.example.ui.theme.BottomNavigationBarColor
@@ -55,6 +57,8 @@ class MainActivity : ComponentActivity() {
 
                 SetProgressLoading()
 
+                SetEventAgreementDialog()
+
                 CompositionLocalProvider(LocalOverscrollConfiguration provides null) {
                     Scaffold(
                         bottomBar = { AppBottomNavigation(navController) }
@@ -66,6 +70,14 @@ class MainActivity : ComponentActivity() {
 
         }
 
+    }
+
+    @Composable
+    private fun SetEventAgreementDialog(){
+        val eventState by viewModel.eventAgreement
+        var event by remember { mutableStateOf<EventModel?>(null) }
+        LaunchedEffect(eventState) { event = eventState }
+        event?.let { EventAgreementBottomSheet(it) { e -> viewModel.sendEventAgreement(e) } }
     }
 
 

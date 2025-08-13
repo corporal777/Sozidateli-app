@@ -32,6 +32,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
@@ -74,14 +75,9 @@ fun EventAgreementBottomSheet(
     var isLoading by remember { mutableStateOf(false) }
     LaunchedEffect(isLoadingState) { isLoading = isLoadingState }
 
-    val eventState by viewModel.eventState.collectAsState()
+    val eventState by viewModel.eventState.collectAsState(null)
     LaunchedEffect(eventState) {
-        if (eventState != null) {
-            scope.invokeHide(state) {
-                onDismiss.invoke(eventState)
-                viewModel.eventState.value = null
-            }
-        }
+        if (eventState != null) scope.invokeHide(state) { onDismiss.invoke(eventState) }
     }
 
     ModalBottomSheet(
@@ -160,7 +156,7 @@ fun EventAgreementBottomSheet(
             )
 
             AppLoadingButton(
-                text = stringResource(R.string.auth_action_continue),
+                text = AnnotatedString(stringResource(R.string.auth_action_continue)),
                 isEnabled = checked,
                 isLoading = isLoading,
                 modifier = Modifier

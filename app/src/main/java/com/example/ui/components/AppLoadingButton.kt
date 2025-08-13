@@ -23,12 +23,16 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.example.app.R
 import com.example.extensions.clickable
+import com.example.ui.theme.BtnBackgroundApprovedColor
 import com.example.ui.theme.BtnBackgroundBrownColor
+import com.example.ui.theme.BtnBackgroundClosedColor
+import com.example.ui.theme.BtnBackgroundGreenColor
+import com.example.ui.theme.VkBtnBackgroundColor
 
 @Composable
 fun AppLoadingButton(
     modifier: Modifier = Modifier,
-    text: String? = null,
+    text: CharSequence,
     textColor: Color = Color.White,
     textSize: Dp = dimensionResource(R.dimen.common_button_text_size),
     backgroundColor: Color = BtnBackgroundBrownColor,
@@ -36,10 +40,8 @@ fun AppLoadingButton(
     isLoading: Boolean = false,
     isEnabled: Boolean = true,
     icon: Int? = null,
-    textChar: AnnotatedString? = null,
     onClick: () -> Unit
 ) {
-
 
     ConstraintLayout(
         modifier = modifier
@@ -56,22 +58,22 @@ fun AppLoadingButton(
     ) {
         val (title, load, image) = createRefs()
 
-        if (!isLoading){
-            TextSemibold(
-                text = text ,
-                textChar = textChar,
-                color = textColor,
-                fontSize = textSize.value.sp,
-                textAlign = TextAlign.Center,
-                lineHeight = 20.sp,
-                modifier = Modifier.constrainAs(title) {
-                    top.linkTo(parent.top)
-                    bottom.linkTo(parent.bottom)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                }
-            )
-        }
+        TextAnnotatedSemibold(
+            text = if (isLoading) AnnotatedString("")
+            else {
+                if (text is String) AnnotatedString(text) else text as AnnotatedString
+            },
+            color = textColor,
+            fontSize = textSize.value.sp,
+            textAlign = TextAlign.Center,
+            lineHeight = 20.sp,
+            modifier = Modifier.constrainAs(title) {
+                top.linkTo(parent.top)
+                bottom.linkTo(parent.bottom)
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
+            }
+        )
 
         if (isLoading) {
             CircularProgressIndicator(
@@ -83,7 +85,14 @@ fun AppLoadingButton(
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
                     },
-                color = textColor,
+                color = when (backgroundColor) {
+                    BtnBackgroundBrownColor,
+                    BtnBackgroundGreenColor,
+                    BtnBackgroundClosedColor,
+                    BtnBackgroundApprovedColor,
+                    VkBtnBackgroundColor -> Color.White
+                    else -> Color.Black
+                },
                 trackColor = Color.Transparent,
                 strokeWidth = ((height - 15.dp) / 10),
                 strokeCap = StrokeCap.Round

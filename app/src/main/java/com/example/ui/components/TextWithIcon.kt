@@ -21,7 +21,6 @@ import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.app.R
-import com.example.ui.theme.CourseMoreTextColor
 import com.example.ui.theme.MainBrownColor
 import com.example.util.TextUtils
 

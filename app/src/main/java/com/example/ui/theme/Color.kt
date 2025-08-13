@@ -12,18 +12,7 @@ val Pink40 = Color(0xFF7D5260)
 
 val AppBackgroundColor = Color(0xFFFFFFFF)
 val BottomSheetBackgroundColor = Color(0xFFFFFFFF)
-val CourseItemColor = Color(0xFF24252A)
-val CourseItemTextColor = Color(0xFFF2F2F3)
-val CourseLessonColor = Color(0x80F2F2F3)
-val CourseMoreTextColor = Color(0xFF12B956)
-val CourseFavoriteBackColor = Color(0xB332333A)
-val CourseFavoriteLoadingBackColor = Color(0xFF32333A)
-val CourseFavoriteIconColor = Color(0xFFF2F2F3)
-val BottomItemIndicatorColor = Color(0xFF32333A)
-val BottomBarLineColor = Color(0xFF4D555E)
-val VkColor = Color(0xFF2683ED)
-val OdnoklassnikiColorTop = Color(0xFFF98509)
-val OdnoklassnikiColorBottom = Color(0xFFF95D00)
+
 
 val AuthTitleShadowColor = Color(0x40000000)
 val AuthPagerIndicatorSelectedColor = Color(0x4DEBEBF5)
@@ -47,6 +36,7 @@ val HomeSearchContainerColor = Color(0x1F767680)
 
 val AmbientShadowColor = Color(0x00486A7A)
 val SpotShadowColor = Color(0xE6181F2A)
+val SpotShadowHalfColor = Color(0xB3181F2A)
 
 val BottomNavigationBarColor = Color(0xFFF9F9F9)
 val BottomNavigationSelectedColor = Color(0xFFC3996C)
@@ -62,9 +52,18 @@ val TopGradientColor = Color(0x00000000)
 val CenterGradientColor = Color(0xE6000000)
 val EndGradientColor = Color(0xFF000000)
 
+val TopSpeakerGradientColor = Color(0x00000000)
+val EndSpeakerGradientColor = Color(0x80000000)
+
 val ActionTextSmallColor = Color(0xB3FFFFFF)
 val ActionTextClosedColor = Color(0xFFB2B2B2)
 
-val ActionGreenColor = Color(0xFF7D9D57)
+val ShimmerBackgroundColor = Color(0x14747480)
+val ShimmerItemColor = Color(0x14747480)
+
+val ItemImageBorderColor = Color(0x1A000000)
+val BtnFavoriteBackgroundColor = Color(0x1FC49A6C)
+
+val EventActivityBackgroundColor = Color(0xFFF6F6F6)
 
 

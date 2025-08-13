@@ -1,6 +1,5 @@
 package com.example.ui.event.components
 
-import android.util.Log
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
@@ -11,16 +10,10 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -30,13 +23,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import com.examle.domain.model.event.EventModel
 import com.example.app.R
 import com.example.extensions.bottomShadow
 import com.example.extensions.clickable
 import com.example.ui.components.TextSemibold
-import com.example.ui.theme.AppBackgroundColor
 import com.example.ui.theme.BottomNavigationBarColor
-import com.example.ui.theme.BottomSheetBackgroundColor
 import com.example.ui.theme.EventDetailIconsBackgroundColor
 import com.example.ui.theme.MainBrownColor
 import kotlin.math.abs
@@ -45,6 +37,7 @@ import kotlin.math.abs
 fun TopBarItem(
     topPadding: Dp,
     scrollState: ScrollState,
+    event : EventModel,
     onBackClick: () -> Unit,
     onAddClick: () -> Unit
 ) {
@@ -122,7 +115,10 @@ fun TopBarItem(
         )
 
         Icon(
-            painter = painterResource(R.drawable.ic_star),
+            painter = painterResource(
+                if (event.userFavorite != null) R.drawable.ic_star_filled
+                else R.drawable.ic_star
+            ),
             contentDescription = "",
             tint = iconTint,
             modifier = Modifier

@@ -9,5 +9,6 @@ data class EventStateModel(
     val isFinished: Boolean?,
     val isAvailable: Boolean?,
     val isFormEnabled: Boolean,
-    var agreementState: String?
+    var agreementState: String?,
+    val userAgreement: String? = null,
 ) : Parcelable

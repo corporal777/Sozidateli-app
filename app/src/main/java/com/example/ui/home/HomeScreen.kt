@@ -26,12 +26,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.examle.domain.model.event.EventActionStatus
 import com.examle.domain.model.event.EventModel
 import com.example.app.R
 import com.example.extensions.showEventAgreementDialog
 import com.example.navigation.Route
 import com.example.ui.agreement.EventAgreementBottomSheet
-import com.example.ui.components.EventAction
 import com.example.ui.components.EventCardItem
 import com.example.ui.home.components.AuthButtonItem
 import com.example.ui.home.components.CustomToolbar
@@ -53,18 +53,6 @@ fun HomeScreen(
         viewModel.setEventsLocal(events.itemSnapshotList.items)
     }
 
-    val eventState by viewModel.updatedEvent.collectAsState()
-    val updatedEvent = remember { mutableStateOf<EventModel?>(null) }
-    LaunchedEffect(eventState) { updatedEvent.value = eventState }
-
-    if (updatedEvent.value != null) {
-        EventAgreementBottomSheet(updatedEvent.value!!) {
-            if (it != null) viewModel.registerToEvent(it)
-            viewModel.updatedEvent.value = null
-        }
-    }
-
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -84,9 +72,9 @@ fun HomeScreen(
         LazyColumn(
             contentPadding = PaddingValues(
                 top = 10.dp,
-                bottom = 50.dp,
-                start = DefaultHorizontalPadding,
-                end = DefaultHorizontalPadding
+                bottom = 150.dp,
+//                start = DefaultHorizontalPadding,
+//                end = DefaultHorizontalPadding
             ),
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
@@ -94,12 +82,11 @@ fun HomeScreen(
                 if (event == null) return@items
                 EventCardItem(
                     event,
-                    false,
                     onItem = { onEventClick.invoke(Route.EventDetailScreen.createWay(it)) },
                     onAction = {
-                        when (it) {
-                            EventAction.REGISTER -> viewModel.onActionRegister(event)
-                            EventAction.CANCEL -> viewModel.onActionCancel(event)
+                        when (event.actionStatus) {
+                            EventActionStatus.REGISTER -> viewModel.onActionRegister(event)
+                            EventActionStatus.WITHDRAW -> viewModel.onActionCancel(event)
                             else -> onEventClick(Route.AuthorizationScreen.route)
                         }
                     })

@@ -1,9 +1,9 @@
 package com.examle.domain.repository
 
+import com.examle.domain.model.FavoriteModel
 import com.examle.domain.model.Optional
 import com.examle.domain.model.event.EventModel
 import com.examle.domain.model.PaginationResponse
-import com.examle.domain.model.event.EventDetailModel
 import kotlinx.coroutines.flow.Flow
 
 interface EventRepository {
@@ -13,8 +13,11 @@ interface EventRepository {
     suspend fun registerEvent(eventId : Int)
     suspend fun cancelRegisterEvent(eventId : Int)
 
-    fun acceptEventAgreement(event : EventModel) : Flow<String>
+    fun acceptEventAgreement(eventId : Int) : Flow<String>
 
     fun getEvent(eventId : String, binds : String) : Flow<EventModel>
-    fun getEventDetail(eventId : String, binds: String) : Flow<EventDetailModel>
+    fun getEventDetail(eventId : String, binds: String) : Flow<EventModel>
+
+    fun addEventToFavorites(eventId: String): Flow<FavoriteModel>
+    fun removeEventFromFavorites(id: String) : Flow<Unit>
 }

@@ -39,26 +39,29 @@ import javax.inject.Inject
 class HomeViewModel
 @Inject constructor(
     private val appData: AppData,
-    private val uiStateData: UiStateData,
+    private val uiState: UiStateData,
     private val interactor: EventInteractor
 ) : BaseEventViewModel(appData) {
-
-    private val pagination = PagingSourceFactory { limit, offset ->
-        getPaginationRequest(limit, offset)
-    }.build(initialSize = 20, distance = 2)
 
     val events = pagination.catch { it.printStackTrace() }.cachedIn(viewModelScope)
 
     private var eventsList = listOf<EventModel>()
 
+
     fun onActionRegister(event: EventModel) {
         if (isProfileLevelLow(event)) return
-        else interactor.checkEventAgreement(event)
-            .onEach { if (it) updatedEvent.update { event } else registerToEvent(event) }
-            .launchIn(viewModelScope)
+        else viewModelScope.launch {
+            interactor.checkEventAgreement(event.state)
+                .flatMap {
+                    if (it) uiState.showEventAgreementDialog(event)
+                    else flowOf(event)
+                }
+                .catch { it.printStackTrace() }
+                .collectLatest { registerToEvent(it) }
+        }
     }
 
-    fun registerToEvent(event: EventModel) {
+    private fun registerToEvent(event: EventModel) {
         viewModelScope.launch {
             if (event.state?.isFormEnabled == true) flowOf(event)
             else interactor.registerEvent(event.id)
@@ -98,10 +101,7 @@ class HomeViewModel
         }
     }
 
-    private suspend fun getPaginationRequest(
-        limit: Int,
-        offset: Int
-    ): PaginationResponse<EventModel> {
+    override suspend fun paginationRequest(limit: Int, offset: Int): PaginationResponse<EventModel> {
         return interactor.getEventsList(
             mapOf(
                 EVENT_LIMIT to limit,

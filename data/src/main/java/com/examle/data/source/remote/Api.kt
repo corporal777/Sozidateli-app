@@ -347,19 +347,19 @@ interface Api {
 
     //+
     @POST("v1/user-favorites")
-    fun addToFavorite(@Body body: AddToFavoriteModel): Single<AddFavoriteModel>
+    suspend fun addToFavorite(@Body body: AddToFavoriteModel): AddFavoriteModel
 
     //+
     @POST("v1/user/temp/user-favorites")
-    fun addToTempFavorite(@Body body: AddToFavoriteModel): Single<AddTempFavoriteModel>
+    suspend fun addToTempFavorite(@Body body: AddToFavoriteModel): AddTempFavoriteModel
 
     //+
     @DELETE("v1/user-favorites/{id}")
-    fun deleteFromFavorite(@Path("id") id: String): Completable
+    suspend fun deleteFromFavorite(@Path("id") id: String)
 
     //+
     @DELETE("v1/user/temp/user-favorites/{id}")
-    fun deleteFromTempFavorite(@Path("id") id: String): Completable
+    suspend fun deleteFromTempFavorite(@Path("id") id: String)
 
     @GET("v1/address/search")
     fun searchAddress(

@@ -294,7 +294,7 @@ data class MemberModel(
     val name: String? = null,
     val lastName: String? = null,
     val middleName: String? = null,
-    val imageUri: ImageModel? = null,
+    val imageUri: String? = null,
     @SerializedName("organizationAndPosition")
     val organizationAndPosition: String? = null,
     val binds: MemberBindsModel? = null
@@ -307,15 +307,6 @@ data class MemberModel(
             else listOfNotNull(name, lastName)
             return nameList.joinToString(" ")
         }
-
-    val memberImage: String?
-        get() {
-            return if (imageUri == null || imageUri.uri.isNullOrEmpty()) {
-                if (binds?.user == null) null
-                else binds.user.loadUserImage()
-            } else imageUri.uri
-        }
-
 
     fun getSpeakerStatus(): String? {
         return if (isRegistered == false) "not_registered"

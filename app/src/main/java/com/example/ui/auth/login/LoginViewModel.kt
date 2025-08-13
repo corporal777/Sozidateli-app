@@ -1,6 +1,7 @@
 package com.example.ui.auth.login
 
 import androidx.lifecycle.viewModelScope
+import com.examle.data.AppData
 import com.examle.domain.model.auth.SnAuthModel
 import com.examle.domain.interactor.AuthInteractor
 import com.example.ui.base.BaseViewModel
@@ -19,8 +20,9 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel
 @Inject constructor(
+    private val appData : AppData,
     private val interactor: AuthInteractor
-) : BaseViewModel() {
+) : BaseViewModel(appData) {
 
     private val _isEnabled = MutableStateFlow<Boolean>(false)
     val isEnabled: StateFlow<Boolean> = _isEnabled

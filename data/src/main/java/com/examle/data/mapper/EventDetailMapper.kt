@@ -2,11 +2,15 @@ package com.examle.data.mapper
 
 import com.examle.data.R
 import com.examle.data.models.event.EventResponse
+import com.examle.domain.model.FavoriteModel
 import com.examle.domain.model.event.EventActionStatus
-import com.examle.domain.model.event.EventDetailModel
+import com.examle.domain.model.event.EventActivityModel
+import com.examle.domain.model.event.EventModel
 import com.examle.domain.model.event.EventRegistrationModel
 import com.examle.domain.model.event.EventStateModel
 import com.examle.domain.model.event.UserRegistrationModel
+import com.examle.domain.model.organization.OrganizationModel
+import com.examle.domain.model.user.SpeakerModel
 import com.example.common.calendar
 import com.example.common.constants.EVENT_STATUS_APPROVED
 import com.example.common.constants.EVENT_STATUS_CANCELED
@@ -16,11 +20,12 @@ import com.example.common.constants.EVENT_STATUS_RUNNING
 import com.example.common.daysBetween
 import com.example.common.defaultServerDateFormatter
 import com.example.common.defaultServerDateTimeFormatter
+import com.example.common.formatTimeIntervalFromTo
 import com.example.common.formatToDefaultDayMonthYearDate
 import com.example.common.formatToDefaultTime
 import com.example.common.isSameDay
 
-internal fun EventResponse.mapToDomainEventDetailModel(isTemp: Boolean): EventDetailModel {
+internal fun EventResponse.mapToDomainEventDetailModel(isTemp: Boolean): EventModel {
     val statusAction = when (status.value) {
         EVENT_STATUS_REGISTRATION,
         EVENT_STATUS_REGISTRATION_FINISHED,
@@ -29,7 +34,7 @@ internal fun EventResponse.mapToDomainEventDetailModel(isTemp: Boolean): EventDe
         else -> false
     }
 
-    return EventDetailModel(
+    return EventModel(
         id = id,
         name = name,
         description = description ?: "",
@@ -45,9 +50,9 @@ internal fun EventResponse.mapToDomainEventDetailModel(isTemp: Boolean): EventDe
             isFinished = state?.isFinished,
             isAvailable = state?.registration?.isAvailable,
             isFormEnabled = state?.registration?.formEnabled ?: false,
-            agreementState = state?.agreement?.state
+            agreementState = state?.agreement?.state,
+            userAgreement = userAgreement?.uri
         ),
-        userAgreement = userAgreement?.uri,
         image = image?.uri,
         address = address?.getShortAddress(),
         userRegistration = UserRegistrationModel(
@@ -66,7 +71,37 @@ internal fun EventResponse.mapToDomainEventDetailModel(isTemp: Boolean): EventDe
             registrationClosed = binds?.currentUserRegistrationState?.prohibitions?.registrationClosed,
             profileLevel = binds?.currentUserRegistrationState?.prohibitions?.profileLevelToLow?.value,
             requiredLevel = binds?.currentUserRegistrationState?.prohibitions?.profileLevelToLow?.requiredLevel
-        )
+        ),
+        organization = OrganizationModel(
+            id = binds?.organization?.id,
+            name = binds?.organization?.getOrganizationName(),
+            image = binds?.organization?.logo?.uri,
+            backgroundColor = binds?.organization?.backgroundColor?.value,
+            userFavorite = binds?.organization?.binds?.userFavorite?.let {
+                FavoriteModel(it.id, it.user)
+            }
+        ),
+        eventSpeakers = binds?.member?.map {
+            SpeakerModel(
+                id = it.id,
+                name = it.name,
+                lastName = it.lastName,
+                image = it.imageUri
+            )
+        } ?: emptyList(),
+        userFavorite = binds?.userFavorite?.let { FavoriteModel(it.id, it.user) },
+        activities = binds?.activity?.map {
+            EventActivityModel(
+                id = it.id,
+                createdDate = it.createdDate,
+                holdingDate = it.holdingDate?.from.formatTimeIntervalFromTo(it.holdingDate?.to, defaultServerDateTimeFormatter, true),
+                event = it.event,
+                title = it.title,
+                description = it.description,
+                auditorium = it.binds?.auditorium?.name,
+                userFavorite = binds?.userFavorite?.let { FavoriteModel(it.id, it.user) }
+            )
+        } ?: emptyList()
     )
 }
 

@@ -24,58 +24,60 @@ fun TextSemibold(
     modifier: Modifier = Modifier,
     color: Color = Color.Unspecified,
     fontSize: TextUnit = TextUnit.Unspecified,
-    fontStyle: FontStyle? = null,
     letterSpacing: TextUnit? = null,
-    textDecoration: TextDecoration? = null,
     textAlign: TextAlign? = null,
     lineHeight: TextUnit = TextUnit.Unspecified,
     overflow: TextOverflow = TextOverflow.Clip,
-    softWrap: Boolean = true,
+    maxLines: Int = Int.MAX_VALUE,
+    minLines: Int = 1,
+    style: TextStyle = LocalTextStyle.current
+) {
+    Text(
+        text = text ?: "",
+        modifier = modifier,
+        color = color,
+        fontSize = fontSize,
+        fontFamily = TextUtils.font,
+        letterSpacing = letterSpacing ?: TextUnit(-0.01F, TextUnitType.Sp),
+        textAlign = textAlign,
+        lineHeight = lineHeight,
+        fontWeight = FontWeight.SemiBold,
+        overflow = overflow,
+        maxLines = maxLines,
+        minLines = minLines,
+        onTextLayout = null,
+        style = style.copy(platformStyle = PlatformTextStyle(includeFontPadding = false))
+    )
+}
+
+@Composable
+fun TextAnnotatedSemibold(
+    text: AnnotatedString,
+    modifier: Modifier = Modifier,
+    color: Color = Color.Unspecified,
+    fontSize: TextUnit = TextUnit.Unspecified,
+    letterSpacing: TextUnit? = null,
+    textAlign: TextAlign? = null,
+    lineHeight: TextUnit = TextUnit.Unspecified,
+    overflow: TextOverflow = TextOverflow.Clip,
     maxLines: Int = Int.MAX_VALUE,
     minLines: Int = 1,
     style: TextStyle = LocalTextStyle.current,
-    textChar : AnnotatedString? = null,
 ) {
-    if (textChar == null){
-        Text(
-            text = text ?: "",
-            modifier = modifier,
-            color = color,
-            fontSize = fontSize,
-            fontStyle = fontStyle,
-            fontFamily = TextUtils.font,
-            letterSpacing = letterSpacing ?: TextUnit(-0.01F, TextUnitType.Sp),
-            textDecoration = textDecoration,
-            textAlign = textAlign,
-            lineHeight = lineHeight,
-            fontWeight = FontWeight.SemiBold,
-            overflow = overflow,
-            softWrap = softWrap,
-            maxLines = maxLines,
-            minLines = minLines,
-            onTextLayout = null,
-            style = style.copy(platformStyle = PlatformTextStyle(includeFontPadding = false))
-        )
-    } else {
-        Text(
-            text = textChar,
-            modifier = modifier,
-            color = color,
-            fontSize = fontSize,
-            fontStyle = fontStyle,
-            fontFamily = TextUtils.font,
-            letterSpacing = letterSpacing ?: TextUnit(-0.01F, TextUnitType.Sp),
-            textDecoration = textDecoration,
-            textAlign = textAlign,
-            lineHeight = lineHeight,
-            fontWeight = FontWeight.SemiBold,
-            overflow = overflow,
-            softWrap = softWrap,
-            maxLines = maxLines,
-            minLines = minLines,
-            onTextLayout = { },
-            style = style.copy(platformStyle = PlatformTextStyle(includeFontPadding = false))
-        )
-    }
-
+    Text(
+        text = text,
+        modifier = modifier,
+        color = color,
+        fontSize = fontSize,
+        fontFamily = TextUtils.font,
+        letterSpacing = letterSpacing ?: TextUnit(-0.01F, TextUnitType.Sp),
+        textAlign = textAlign,
+        lineHeight = lineHeight,
+        fontWeight = FontWeight.SemiBold,
+        overflow = overflow,
+        maxLines = maxLines,
+        minLines = minLines,
+        onTextLayout = { },
+        style = style.copy(platformStyle = PlatformTextStyle(includeFontPadding = false))
+    )
 }

@@ -1,13 +1,17 @@
 package com.examle.data.repository
 
 import com.examle.data.AppData
+import com.examle.data.bodies.AddToFavoriteEntityModel
+import com.examle.data.bodies.AddToFavoriteEntityModel.Companion.FAVORITE_EVENT
+import com.examle.data.bodies.AddToFavoriteModel
 import com.examle.data.bodies.RegisterToEventBody
 import com.examle.data.mapper.mapToDomainEventDetailModel
 import com.examle.data.mapper.mapToDomainEventModel
 import com.examle.data.mapper.mapToPagingDomainModel
+import com.examle.data.models.AddFavoriteModel
 import com.examle.data.source.remote.Api
+import com.examle.domain.model.FavoriteModel
 import com.examle.domain.model.PaginationResponse
-import com.examle.domain.model.event.EventDetailModel
 import com.examle.domain.model.event.EventModel
 import com.examle.domain.repository.EventRepository
 import kotlinx.coroutines.flow.Flow
@@ -23,12 +27,16 @@ class EventRepositoryImp
 
 
     override suspend fun getEventsList(map: Map<String, Any>): PaginationResponse<EventModel> {
-        return api.getEventsList(map).await().mapToPagingDomainModel()
+        return api.getEventsList(map).await().mapToPagingDomainModel(appData.isTemporaryUser())
     }
 
+    override fun getEvent(eventId: String, binds: String): Flow<EventModel> {
+        return flow { emit(api.getEventDetails(eventId, binds)) }
+            .map { it.mapToDomainEventModel(appData.isTemporaryUser()) }
+    }
 
-    override fun acceptEventAgreement(event: EventModel): Flow<String> {
-        return flow { emit(api.acceptEventAgreement(event.id)) }.map { it.status }
+    override fun acceptEventAgreement(eventId: Int): Flow<String> {
+        return flow { emit(api.acceptEventAgreement(eventId)) }.map { it.status }
     }
 
     override suspend fun registerEvent(eventId: Int) {
@@ -39,18 +47,15 @@ class EventRepositoryImp
         return api.cancelRegisterEvent(eventId)
     }
 
-    override fun getEvent(eventId: String, binds: String): Flow<EventModel> {
-        return flow { emit(api.getEventDetails(eventId, binds)) }
-            .map { it.mapToDomainEventModel() }
-    }
 
-    override fun getEventDetail(eventId: String, binds: String): Flow<EventDetailModel> {
+
+    override fun getEventDetail(eventId: String, binds: String): Flow<EventModel> {
         return flow {
             emit(
                 api.getEventDetails(
                     eventId,
                     "organization,organization.userFavorite,tag,page,format,activity," +
-                            "activity.userCalendar,activity.auditorium,partner,member,member.user," +
+                            "activity.userCalendar,activity.auditorium,partner,member," +
                             "userFavorite,destination-scheme,is-user-subscribed,event-subscribe," +
                             "user-form-result," + binds
                 )
@@ -58,6 +63,28 @@ class EventRepositoryImp
         }.map { it.mapToDomainEventDetailModel(appData.isTemporaryUser()) }
     }
 
+    override fun addEventToFavorites(eventId: String): Flow<FavoriteModel> {
+        return if (appData.isTemporaryUser())
+            flow {
+                val body = AddToFavoriteModel(
+                    appData.getTempId(),
+                    AddToFavoriteEntityModel(FAVORITE_EVENT, eventId.toInt())
+                )
+                emit(api.addToTempFavorite(body))
+            }.map { FavoriteModel(it.id, it.tempUser) }
+        else flow {
+            val body = AddToFavoriteModel(
+                appData.getId(),
+                AddToFavoriteEntityModel(FAVORITE_EVENT, eventId.toInt())
+            )
+            emit(api.addToFavorite(body))
+        }.map { FavoriteModel(it.id, it.user) }
+    }
+
+    override fun removeEventFromFavorites(id: String) : Flow<Unit>{
+        return if (appData.isTemporaryUser()) flow { emit(api.deleteFromTempFavorite(id)) }
+        else flow { emit(api.deleteFromFavorite(id)) }
+    }
 
 //    //Alfa API
 //    override fun getEventByCode(code: String): Single<EventNew> {
@@ -211,31 +238,9 @@ class EventRepositoryImp
 //    override fun addToFavorites(body: com.examle.data.bodies.AddToFavoriteModel): Single<AddFavoriteModel> =
 //        api.addToFavorite(body)
 //
-//    override fun deleteFromFavorites(id: String): Completable {
-//        return if (appData.isTemporaryUser()) api.deleteFromTempFavorite(id)
-//        else api.deleteFromFavorite(id)
-//    }
+
 //
-//    override fun addEventToFavorites(eventId: String): Single<AddFavoriteModel> {
-//        return if (appData.isTemporaryUser()) api.addToTempFavorite(
-//            com.examle.data.bodies.AddToFavoriteModel(
-//                appData.getTempId(),
-//                com.examle.data.bodies.AddToFavoriteEntityModel(
-//                    com.examle.data.bodies.AddToFavoriteEntityModel.FAVORITE_EVENT,
-//                    eventId.toInt()
-//                )
-//            )
-//        ).map { AddFavoriteModel(it.id, it.tempUser) }
-//        else api.addToFavorite(
-//            com.examle.data.bodies.AddToFavoriteModel(
-//                appData.getId(),
-//                com.examle.data.bodies.AddToFavoriteEntityModel(
-//                    com.examle.data.bodies.AddToFavoriteEntityModel.FAVORITE_EVENT,
-//                    eventId.toInt()
-//                )
-//            )
-//        )
-//    }
+
 //
 //
 //    override fun addOrgToFavorites(orgId: String): Single<AddFavoriteModel> {

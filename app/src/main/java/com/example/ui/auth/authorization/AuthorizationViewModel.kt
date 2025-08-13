@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.lifecycle.viewModelScope
+import com.examle.data.AppData
 import com.examle.data.models.DataState
 import com.examle.domain.interactor.AuthInteractor
 import com.examle.domain.model.auth.SnType
@@ -28,8 +29,9 @@ import javax.inject.Inject
 @HiltViewModel
 class AuthorizationViewModel
 @Inject constructor(
+    private val appData: AppData,
     private val interactor: AuthInteractor
-) : BaseViewModel() {
+) : BaseViewModel(appData) {
 
     private val _stories = MutableStateFlow<List<String>>(interactor.getStories())
     val stories: StateFlow<List<String>> = _stories.asStateFlow()
