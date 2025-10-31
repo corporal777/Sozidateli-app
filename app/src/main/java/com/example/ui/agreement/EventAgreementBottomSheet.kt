@@ -130,27 +130,16 @@ fun EventAgreementBottomSheet(
                 textAlign = TextAlign.Center
             )
 
-            TextNormal(
-                text = stringResource(R.string.auth_agree_user_agreement),
-                color = Color.Black,
-                fontSize = 15.sp,
+            AppCheckBox(
                 modifier = Modifier
                     .constrainAs(policy) {
                         top.linkTo(title.bottom, 20.dp)
-                        start.linkTo(checkBox.end, 10.dp)
+                        start.linkTo(parent.start, 15.dp)
                         end.linkTo(parent.end, 15.dp)
                         width = Dimension.fillToConstraints
 
-                    }
-            )
-
-            AppCheckBox(
-                modifier = Modifier
-                    .constrainAs(checkBox) {
-                        top.linkTo(policy.top)
-                        bottom.linkTo(policy.bottom)
-                        start.linkTo(parent.start, 15.dp)
                     },
+                text = stringResource(R.string.auth_agree_user_agreement),
                 checked = checked,
                 onCheckedChange = { checked = !checked }
             )

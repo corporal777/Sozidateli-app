@@ -70,16 +70,11 @@ fun HomeScreen(
         )
 
         LazyColumn(
-            contentPadding = PaddingValues(
-                top = 10.dp,
-                bottom = 150.dp,
-//                start = DefaultHorizontalPadding,
-//                end = DefaultHorizontalPadding
-            ),
+            contentPadding = PaddingValues(top = 10.dp, bottom = 150.dp),
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
-            items(items = events.itemSnapshotList, key = { it?.id ?: 0 }) { event ->
-                if (event == null) return@items
+
+            items(items = events.itemSnapshotList.items, key = { it.id }) { event ->
                 EventCardItem(
                     event,
                     onItem = { onEventClick.invoke(Route.EventDetailScreen.createWay(it)) },
@@ -89,7 +84,8 @@ fun HomeScreen(
                             EventActionStatus.WITHDRAW -> viewModel.onActionCancel(event)
                             else -> onEventClick(Route.AuthorizationScreen.route)
                         }
-                    })
+                    }
+                )
             }
         }
     }

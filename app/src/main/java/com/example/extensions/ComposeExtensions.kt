@@ -19,8 +19,12 @@ import androidx.compose.animation.scaleOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.LocalIndication
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.shape.GenericShape
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
@@ -46,11 +50,14 @@ import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavHostController
 import androidx.navigation.NavOptions
 import androidx.navigation.Navigator
 import androidx.navigation.compose.composable
 import coil.request.ImageRequest
 import com.example.app.R
+import com.example.ui.components.AppTopNavigation
+import com.example.ui.theme.AppBackgroundColor
 import com.example.ui.theme.EventDetailDateColor
 
 fun Modifier.clickable(
@@ -107,7 +114,7 @@ fun verticalGradientBrush(colors: List<Color>): Brush {
 }
 
 @Composable
-fun LaunchedAnimation(show : Boolean, onAnim: (alpha: Float) -> Unit) {
+fun LaunchedAnimation(show: Boolean, onAnim: (alpha: Float) -> Unit) {
     LaunchedEffect(show) {
         animate(
             initialValue = if (show) 0f else 1f,
@@ -186,6 +193,21 @@ fun Modifier.shimmerEffect(cornerRadius: CornerRadius = CornerRadius(x = 16f, y 
 }
 
 @Composable
-fun coloredString(res : Int, color: Color): AnnotatedString {
+fun coloredString(res: Int, color: Color): AnnotatedString {
     return AnnotatedString(stringResource(res), SpanStyle(color))
+}
+
+@Composable
+fun ColumnWithTopBar(
+    modifier: Modifier,
+    content: @Composable (ColumnScope.() -> Unit)
+) {
+    Column(
+        modifier = Modifier
+            .background(AppBackgroundColor)
+            .fillMaxSize(),
+        content = {
+            AppTopNavigation(modifier)
+            content()
+        })
 }

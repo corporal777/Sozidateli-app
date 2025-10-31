@@ -58,7 +58,7 @@ import com.example.ui.theme.InputTitleTextColor
 fun LoginScreen(
     paddingValues: PaddingValues,
     viewModel: LoginViewModel = hiltViewModel(),
-    onNavigate : (String) -> Unit
+    onNavigate: (String) -> Unit
 ) {
 
     val isLoadingState by viewModel.loading.collectAsState()
@@ -81,7 +81,7 @@ fun LoginScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(AppBackgroundColor)
-            .padding(top = paddingValues.calculateTopPadding())
+            .padding(top = paddingValues.calculateTopPadding(),)
     ) {
         val (topBar, logo, title, loginTitle, loginInput, passwordTitle, password, forget, action) = createRefs()
 

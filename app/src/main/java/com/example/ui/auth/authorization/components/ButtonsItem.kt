@@ -33,6 +33,7 @@ fun ConstraintLayoutScope.ButtonsItem(
     vk: ConstrainedLayoutReference,
     gos: ConstrainedLayoutReference,
     onLogin: () -> Unit,
+    onRegister : () -> Unit,
     onVk: () -> Unit
 ) {
 
@@ -44,8 +45,9 @@ fun ConstraintLayoutScope.ButtonsItem(
             .padding(horizontal = AuthHorizontalPadding)
             .constrainAs(reg) {
                 bottom.linkTo(login.top, 15.dp)
-            }
-    ) { }
+            },
+        onClick = onRegister
+    )
 
     AppCornersButton(
         text = stringResource(R.string.auth_label_login),

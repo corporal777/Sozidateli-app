@@ -1,12 +1,13 @@
 package com.example.ui.components
 
+import android.util.Log
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -23,8 +24,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
@@ -40,29 +44,28 @@ import com.example.ui.theme.MainBrownColor
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AppTextField(
+fun AppPhoneTextField(
     modifier: Modifier,
     hint: String,
-    text: String = "",
-    iconVisible: Boolean = false,
+    text : String = "",
     onTextChange: (text: String) -> Unit
 ) {
-
-    var inputText by rememberSaveable { mutableStateOf(text) }
+    val mask: String = "+7"
+    var inputText by remember { mutableStateOf(makeMaskedText(text, mask)) }
     val interactionSource = remember { MutableInteractionSource() }
 
+
     BasicTextField(
-        value = inputText,
+        value = makeMaskedText(inputText.text, mask),
         onValueChange = {
             inputText = it
-            onTextChange.invoke(it)
+            onTextChange.invoke(clearPhoneText(it.text))
         },
         modifier = modifier
             .defaultMinSize(
                 minWidth = Dp.Unspecified,
                 minHeight = dimensionResource(R.dimen.common_edit_text_min_height)
-            )
-            .fillMaxWidth(),
+            ).fillMaxWidth(),
         interactionSource = interactionSource,
         singleLine = true,
         textStyle = TextStyle(
@@ -71,6 +74,7 @@ fun AppTextField(
             letterSpacing = TextUnit(-0.01F, TextUnitType.Sp)
         ),
         cursorBrush = SolidColor(MainBrownColor),
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone)
     ) { innerTextField ->
         TextFieldDefaults.DecorationBox(
             value = text,
@@ -91,7 +95,7 @@ fun AppTextField(
                 disabledIndicatorColor = Color.Transparent
             ),
             placeholder = {
-                if (inputText.isBlank())
+                if (inputText.text.isBlank()) {
                     Text(
                         modifier = Modifier.alpha(0.5f),
                         text = hint,
@@ -100,17 +104,73 @@ fun AppTextField(
                         fontWeight = FontWeight.Normal,
                         letterSpacing = TextUnit(-0.01F, TextUnitType.Sp)
                     )
-            },
-            trailingIcon = {
-                if (iconVisible) {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_input_error_icon),
-                        contentDescription = "",
-                        tint = Color.Unspecified
-                    )
                 }
             }
-
         )
+    }
+}
+
+private fun makeMaskedText(text: String, mask : String): TextFieldValue {
+    var formattedText = mask + makeText(text)
+    var textSelection = formattedText.length
+
+    if (formattedText.length < mask.length || formattedText == mask){
+        formattedText = mask
+        textSelection = mask.length
+    }
+    else {
+        formattedText = formatPhoneText(formattedText)
+        textSelection = formattedText.length
+    }
+
+    return TextFieldValue(formattedText, TextRange(textSelection))
+}
+
+private fun makeText(text: String): String {
+    if (text.isEmpty()) return ""
+    else if (text.length < 2) return  ""
+    else {
+        val str = text.cleanStr().replace("+7", "").let {
+            if (it.length > 10 && it.first() == '8') {
+                it.replaceFirst("8", "")
+            }
+            else it
+        }
+        return if (str.length > 10) str.substring(0, 10) else str
+    }
+}
+
+private fun String.cleanStr(): String {
+    return replace(" ", "")
+        .replace("(", "")
+        .replace(")", "")
+        .replace("-", "")
+}
+
+private fun formatPhoneText(text: String?): String {
+    if (text.isNullOrBlank()) return ""
+    else {
+        return if (text.length <= 5)
+            StringBuilder(text).insert(2, " ").toString()
+        else if (text.length <= 8)
+            StringBuilder(text).insert(2, " ").insert(6, " ").toString()
+        else if (text.length <= 10) StringBuilder(text)
+            .insert(2, " ")
+            .insert(6, " ")
+            .insert(10, " ").toString()
+        else StringBuilder(text)
+            .insert(2, " ")
+            .insert(6, " ")
+            .insert(10, " ")
+            .insert(13, " ").toString()
+    }
+}
+
+private fun clearPhoneText(text: String): String {
+    if (text.isEmpty()) return ""
+    else {
+        val str = text.cleanStr()
+        if (str.length > 12) return str.substring(0, 12)
+        else return str
     }
 }

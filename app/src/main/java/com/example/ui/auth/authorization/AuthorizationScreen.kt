@@ -33,6 +33,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.navigation.Route
 import com.example.ui.auth.authorization.components.BackgroundItem
 import com.example.ui.auth.authorization.components.ButtonsItem
 import com.example.ui.auth.authorization.components.PagerItem
@@ -43,7 +44,7 @@ import com.example.ui.theme.AuthHorizontalPadding
 fun AuthorizationScreen(
     padding: PaddingValues,
     viewModel: AuthorizationViewModel = hiltViewModel(),
-    onLogin: () -> Unit
+    onLogin: (String) -> Unit,
 ) {
 
     val storiesState by viewModel.stories.collectAsState()
@@ -72,9 +73,11 @@ fun AuthorizationScreen(
 
         PagerItem(title, pager, indicator, storiesState, timerCount)
 
-        ButtonsItem(isLoading, reg, login, text, vk, gos, onLogin) {
-            viewModel.onAuthVkClick(context)
-        }
+        ButtonsItem(isLoading, reg, login, text, vk, gos,
+            onLogin = { onLogin.invoke(Route.LoginScreen.route) },
+            onRegister = { onLogin.invoke(Route.RegistrationScreen.route) },
+            onVk = { viewModel.onAuthVkClick(context) }
+        )
     }
 
 }

@@ -97,7 +97,17 @@ fun String.parseToDate(parser: DateFormat): Date? {
     }
 }
 
-fun longToTime(date: Date): String = SimpleDateFormat(TIME_FORMAT_DEFAULT).format(date)
+fun Long.parseToDate(): Date? {
+    return try {
+        Date(this)
+    } catch (e: ParseException) {
+        null
+    }
+}
+
+fun Long?.parseToDefaultDateFormat(): String?  {
+    return this?.parseToDate()?.let { defaultDateFormatter.format(it) }
+}
 
 fun String.parseToLong(parser: DateFormat): Long? = parseToDate(parser)?.let { it.time }
 
@@ -212,7 +222,7 @@ fun Calendar.isSameYear(other: Calendar): Boolean {
     return this.get(Calendar.YEAR) == other.get(Calendar.YEAR)
 }
 
-fun Calendar.getCalendarDay(short : Boolean): String {
+fun Calendar.getCalendarDay(short : Boolean = false): String {
     if (short) return this.get(Calendar.DAY_OF_MONTH).toString()
     else {
         val day = this.get(Calendar.DAY_OF_MONTH)
@@ -220,7 +230,7 @@ fun Calendar.getCalendarDay(short : Boolean): String {
         else "0$day"
     }
 }
-fun Calendar.getCalendarMonth(short : Boolean): String {
+fun Calendar.getCalendarMonth(short : Boolean = false): String {
     if (short) return (this.get(Calendar.MONTH) + 1).toString()
     else {
         val month = (this.get(Calendar.MONTH) + 1)

@@ -33,7 +33,6 @@ import com.example.ui.components.AppLabelItem
 import com.example.ui.event.components.HeaderItem
 import com.example.ui.event.components.HeaderShimmerItem
 import com.example.ui.event.components.OrganizationItem
-import com.example.ui.components.SpeakersHorizontalListItem
 import com.example.ui.event.components.ActivitiesListItem
 import com.example.ui.event.components.SpeakersListItem
 import com.example.ui.event.components.TopBarItem

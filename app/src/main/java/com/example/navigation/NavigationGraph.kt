@@ -28,6 +28,7 @@ import com.example.extensions.animComposable
 import com.example.extensions.enterTransition
 import com.example.ui.auth.authorization.AuthorizationScreen
 import com.example.ui.auth.login.LoginScreen
+import com.example.ui.auth.registration.RegistrationScreen
 import com.example.ui.event.EventDetailScreen
 import com.example.ui.home.HomeScreen
 
@@ -51,7 +52,7 @@ fun NavigationGraph(
 
         animComposable(route = Route.AuthorizationScreen.route) {
             AuthorizationScreen(paddingValues) {
-                navController.navigate(Route.LoginScreen.route)
+                navController.navigate(it)
             }
         }
         animComposable(route = Route.LoginScreen.route) {
@@ -59,6 +60,10 @@ fun NavigationGraph(
                 if (it == Route.HomeScreen.route) navigatePopUp(navController, it)
                 else navController.navigate(it)
             }
+        }
+
+        animComposable(route = Route.RegistrationScreen.route) {
+            RegistrationScreen(paddingValues)
         }
 
         animComposable(route = Route.EventDetailScreen.route) { stack ->
